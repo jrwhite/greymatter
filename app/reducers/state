@@ -1,0 +1,96 @@
+
+ state.network = {
+     ghostSynapse: {
+         axon: {
+             id: 'aXXX',
+             neuronId: 'nXXX',
+         },
+         dendrite: {
+             id: 'dXXX',
+             neuronId: 'nXXX',
+         }
+     },
+     neurons: [
+         {
+            id: 'nXXX',
+            pos: (x, y),
+            length: 100,
+            width: 50,
+            potential: XX%,
+            axon: {
+                id: 'aXXX',
+                synapseId: 'sXXX'
+            },
+            dendrites: [ 
+                {
+                    id: 'dXXX',
+                    weighting: 0-100%,
+                    cpos: number,
+                    theta: 0-2PI,
+                    synapseId: 'sXXX',
+                    incomingAngle: 0-1PI
+                },
+                ...
+            ]
+
+         },
+         ...
+     ],
+     synapses: [
+         {
+            id: 'sXXX',
+            axon: {
+                id: 'aXXX',
+                neuronId: 'nXXX',
+            },
+            dendrite: {
+            id: 'dXXX',
+            neuronId: 'nXXX'
+            },
+            length: number,
+            width: number,
+            speed: multiplier
+         },
+         ...
+     ]
+ }
+
+ Point {
+     x: number,
+     y: number,
+     selected: boolean
+ }
+
+<svg>
+    onContextMenu: addNeuron
+    onMouseMove: moveSelectedPoints 
+    onClick: closeOverlay
+    <Neuron>
+        onContextMenu: removeNeuron
+        onDrag: moveNeuron
+        onClick: drawNeuronOverlay finishSynapseAtNewDendrite
+        <Axon>
+            onClick makeSynapseAtAxon
+        <Dendrite>
+            onContextMenu: removeSynapse
+            onDrag moveDendrite
+            onClick makeSynapseAtDend
+            onScroll adjustWeighting
+            ...
+        ...
+    <Synapse>
+        onClick drawSynapseOverlay
+        onScroll adjustSpeed
+        ...
+
+IPC Actions:
+    exciteNeuron
+
+GhostSynapse Props = {
+    axonPos: Point,
+    dendPos: Point
+}
+
+Synapse Props = {
+    
+}
