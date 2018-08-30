@@ -8,8 +8,7 @@ export default class Home extends React.Component {
     return (
       <div>
         <div className={styles.container} data-tid="container">
-          <h2>Home</h2>
-          <Link to="/counter">to Counter</Link>
+          <h2>Greymatter</h2>
           <Link to="/network">to Network</Link>
         </div>
       </div>

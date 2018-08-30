@@ -5,7 +5,6 @@ import { routerMiddleware, push } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
 
-import * as counterActions from '../actions/counter';
 import * as networkActions from '../actions/network'
 
 declare const window: Window & {
@@ -19,7 +18,6 @@ declare const module: NodeModule & {
 };
 
 const actionCreators = Object.assign({}, 
-  counterActions,
   networkActions,
   {push}
 );
