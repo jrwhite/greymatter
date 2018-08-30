@@ -28,7 +28,7 @@ export type Ellipse = {
 export type DendGeo = {
     point: Point,
     nu: number,
-    inTheta: number,
+    inTheta: number
 }
 
 type ArcBezier = {
@@ -43,22 +43,46 @@ export const addPoints = (p1: Point, p2: Point): Point => ({
     y: p1.y + p2.y
 })
 
-export const calcClosestDend = (to: Point, from: Point, ellipse: Ellipse) : DendGeo => {
+export const calc = (to: Point, from: Point, ellipse: Ellipse) => {
 
     const mCircleIn = (to.y - from.y) / (to.x - from.x)
-    const nu = Math.PI+ Math.atan(mCircleIn) 
+    const nu = Math.PI + Math.atan(mCircleIn)
     const point = el(ellipse, nu)
 
-    const elPrimeIn = elPrime(ellipse, nu)
-    const mEllipseIn =  elPrimeIn.y / elPrimeIn.x
-    // const mCircleTan = -1 * ((point.x - to.x) / (point.y - to.y))
-    const thetaIn = Math.atan(mEllipseIn) - nu
+    const thetaIn = Math.atan((point.y - from.y) / (point.x - from.x))
+}
+
+export const calcClosestDend = (to: Point, from: Point, ellipse: Ellipse) : DendGeo => {
+
+    const mCircleIn = (from.y - to.y) / (from.x - to.x)
+    const nu = Math.PI + Math.atan(mCircleIn) 
+    const cpos = el(ellipse, nu)
+
+    const point = addPoints(cpos, to)
+    const thetaIn = Math.PI + Math.atan((point.y - from.y) / (point.x - from.x))
 
     return {
-        point: point,
-        nu: nu / PI,
-        inTheta: thetaIn
+        point: cpos,
+        nu: nu / PI, // position along ellipse
+        inTheta: thetaIn / PI // incoming angle
     }
+}
+
+export const calcDendLines = (
+    synCpos: Point,
+    arc: Arc,
+    ellipse: Ellipse
+) : Array<Line> => {
+    return [
+        {
+            start: el(ellipse, PI * arc.start),
+            stop: synCpos 
+        },
+        {
+            start: synCpos,
+            stop: el(ellipse, PI * arc.stop)
+        }
+    ]
 }
 
 const el = (ellipse: Ellipse, nu: number) : Point => ({

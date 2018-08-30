@@ -97,7 +97,7 @@ export class Network extends React.Component<IProps,IState> {
                     dend={dendNeuron ? {
                         pos: addPoints(dendNeuron.pos, dendNeuron.dends.find(
                             d => d.id === ghostSynapse.dend!!.id
-                        )!!.cpos)
+                        )!!.baseCpos)
                     } : undefined}
                     mouse={this.state.mouse}
                 /> : undefined}
@@ -128,7 +128,7 @@ export class Network extends React.Component<IProps,IState> {
         const step = () => {
             decayNetwork()
         }
-        const interval = d3.interval(step, 100)
-        this.setState({interval: interval})
+        // const interval = d3.interval(step, 100)
+        // this.setState({interval: interval})
     }
 }

@@ -103,7 +103,6 @@ export class Neuron extends React.Component<IProps,IState> {
                 >
                     <NeuronBody dends={dends} />
                     <Soma potential={potential} id={id}/>
-                    {dends.map(d => <Dendrite key={d.id} dend={d} />)}
                 </g>
                 <circle cx={50} cy={0} r={5}
                     onClick = {this.handleAxonClick.bind(this)}

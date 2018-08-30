@@ -34,7 +34,7 @@ export const getAxonAbsPos = (state: IState, props: Partial<IProps>) =>
 const getDendPos = (state: IState, props: IProps) => 
     state.network.neurons.find(n => n.id === props.dend.neuronId)!!
         .dends.find(d => d.id === props.dend.id)!!
-        .cpos
+        .synCpos
 
 export const makeGetSynapseState = () => createSelector(
     getSynapse,

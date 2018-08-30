@@ -1,28 +1,46 @@
 import * as React from 'react'
 import { DendStateType } from '../reducers/network'
-import { Arc } from '../utils/geometry'
+import { Arc, Line as LineGeo, Point, calcDendLines, Ellipse } from '../utils/geometry'
 import { Line } from './Line';
-import { Ellipse } from './Ellipse';
+import { CurveNatural } from './CurveNatural';
+const d3 = require('d3')
+import * as _ from 'lodash'
 
 export interface IProps {
-    dend: DendStateType
+    dend: DendStateType,
+    bodyEllipse: Ellipse
 }
 
-export const Dendrite: React.SFC<IProps> = (props) => {
-    const {
-       dend
-    } = props
+export class Dendrite extends React.Component<IProps> {
+    props: IProps
 
-    const line = {
-        start: {...dend.cpos},
-        stop: {
-            x: Math.cos(dend.nu) * 10,
-            y: Math.sin(dend.nu) * 10
+    render() {
+        const {
+            dend,
+            bodyEllipse
+        } = this.props
+
+        const debugLine: LineGeo = {
+            start: { ...dend.baseCpos },
+            stop: { ...dend.synCpos }
         }
-    }
 
-    return (
-        <Line stroke='red' line={line} />
-        // <Ellipse major={50} minor={30} theta={0} arcs={[dend.arc]} />
-    )
+        const lines: Array<LineGeo> = calcDendLines(
+            dend.synCpos,
+            dend.arc,
+            bodyEllipse
+        )
+
+        return (
+            <g>
+                <Line stroke='black' line={debugLine} /> // debug line
+                {lines.map((l: LineGeo) =>
+                    <CurveNatural
+                        key={_.uniqueId('dl')}
+                        line={l}
+                    />
+                )}
+            </g>
+        )
+    }
 }

@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import { Point, Line, Ellipse, DendGeo, calcClosestDend } from "../utils/geometry";
+import { Point, Line, Ellipse, DendGeo, calcClosestDend, addPoints } from "../utils/geometry";
 import { actionCreator, actionCreatorVoid } from "./helpers";
 import { AxonStateType, DendStateType, NeuronState } from '../reducers/network';
 import { IState } from '../reducers';
@@ -56,7 +56,8 @@ export type MakeGhostSynapseAtDendAction = {
 export type AddDendAction = {
     id: string,
     neuronId: string,
-    cpos: Point,
+    baseCpos: Point,
+    synCpos: Point,
     nu: number,
     incomingAngle: number
 }
@@ -198,7 +199,15 @@ export function addNewDend(newDendId: string, neuronId: string, neuronPos: Point
             {
                 id: newDendId,
                 neuronId: neuronId,
-                cpos: newDendGeo.point,
+                baseCpos: newDendGeo.point,
+                // synCpos: newDendGeo.point,
+                synCpos: addPoints(
+                    newDendGeo.point,
+                    {
+                        x: Math.cos(newDendGeo.inTheta * Math.PI) * 10, // TODO: replace 15 with default short plast
+                        y: Math.sin(newDendGeo.inTheta * Math.PI) * 10
+                    }
+                ),
                 nu: newDendGeo.nu,
                 incomingAngle: newDendGeo.inTheta
             }

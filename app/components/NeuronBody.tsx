@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Ellipse } from './Ellipse'
 import { DendStateType } from '../reducers/network'
+import { Dendrite } from './Dendrite'
 import { Arc, Ellipse as EllipseGeo} from '../utils/geometry';
 import * as _ from 'lodash'
 
@@ -35,10 +36,17 @@ export class NeuronBody extends React.Component<IProps> {
         }
 
         return (
+            <g>
             <Ellipse
                 { ...defaultEllipseGeo }
                 arcs={bodyArcs}
             />
+            {dends.map(d => <Dendrite
+                key={d.id}
+                dend={d}
+                bodyEllipse={defaultEllipseGeo}
+                />)}
+            </g>
         )
   }
 }

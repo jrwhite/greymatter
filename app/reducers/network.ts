@@ -11,14 +11,22 @@ export type AxonStateType = {
     synapses: Array<{id: string}>
 }
 
+export type PlastStateType = {
+    short: number, // short term plasticity
+    long: number // long-term plasticity
+}
+
 export type DendStateType = {
     id: string,
-    weighting: number,
-    cpos: Point,
+    weighting: number, // derived from plast
+    plast: PlastStateType,
+    baseCpos: Point,
+    synCpos: Point, // point of synapse
     nu: number,
-    arc: Arc,
+    arc: Arc, // arc width derived from long-term plast
     synapseId: string,
-    incomingAngle: number
+    incomingAngle: number,
+    length: number // derived from short-term plast
 }
 
 export type NeuronState = {
@@ -102,6 +110,18 @@ const initialSynapseState: SynapseState = {
     actionPotentials: []
 }
 
+const initialDendState: DendStateType = {
+    id: 'd',
+    weighting: 30,
+    plast: {short: 15, long: 15},
+    baseCpos: {x: 0, y: 0},
+    synCpos: {x: 0, y: 0},
+    nu: 1,
+    arc: {start:1, stop:1},
+    synapseId: 's',
+    incomingAngle: 1,
+    length: 2
+}
 const initialInputState: InputState = {
     id: 'in',
     type: 'click',
@@ -384,10 +404,9 @@ export default function network(
                             dends: [
                                 ...n.dends,
                                 {
+                                    ...initialDendState,
                                     ...action.payload,
                                     arc: { start: action.payload.nu - 1 / 16, stop: action.payload.nu + 1 / 16 },
-                                    weighting: 30,
-                                    synapseId: 's'
                                 }
                             ]
                         }
