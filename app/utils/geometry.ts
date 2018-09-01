@@ -18,6 +18,10 @@ export type Line = {
     stop: Point
 }
 
+export type Curve = {
+    points: Array<Point>
+}
+
 export type Ellipse = {
     major: number,
     minor: number,
@@ -43,6 +47,10 @@ export const addPoints = (p1: Point, p2: Point): Point => ({
     y: p1.y + p2.y
 })
 
+export const lineSlope = (line: Line) => {
+    return (line.stop.y - line.start.y) / (line.stop.x - line.start.x)
+}
+
 export const calc = (to: Point, from: Point, ellipse: Ellipse) => {
 
     const mCircleIn = (to.y - from.y) / (to.x - from.x)
@@ -52,10 +60,10 @@ export const calc = (to: Point, from: Point, ellipse: Ellipse) => {
     const thetaIn = Math.atan((point.y - from.y) / (point.x - from.x))
 }
 
-export const calcClosestDend = (to: Point, from: Point, ellipse: Ellipse) : DendGeo => {
+export const calcClosestDend = (to: Point, from: Point, ellipse: Ellipse): DendGeo => {
 
     const mCircleIn = (from.y - to.y) / (from.x - to.x)
-    const nu = Math.PI + Math.atan(mCircleIn) 
+    const nu = Math.PI + Math.atan(mCircleIn)
     const cpos = el(ellipse, nu)
 
     const point = addPoints(cpos, to)
@@ -68,43 +76,53 @@ export const calcClosestDend = (to: Point, from: Point, ellipse: Ellipse) : Dend
     }
 }
 
-export const calcDendLines = (
+export const calcDendCurves = (
+    nu: number,
     synCpos: Point,
+    synWidth: number,
+    ctrlWidth: number, // % of base width maybe?
     arc: Arc,
     ellipse: Ellipse
-) : Array<Line> => {
+): Array<Curve> => {
+    const baseRight = el(ellipse, arc.start)
+    const baseLeft = el(ellipse, arc.stop)
+    const baseLine = { start: baseRight, stop: baseLeft }
+
+    const ctrlRight = 
+
+    const curveRight = [
+        el(ellipse, arc.start),
+
+    ]
     return [
         {
-            start: el(ellipse, PI * arc.start),
-            stop: synCpos 
-        },
-        {
-            start: synCpos,
-            stop: el(ellipse, PI * arc.stop)
+            points: [
+
+            ]
         }
     ]
 }
 
-const el = (ellipse: Ellipse, nu: number) : Point => ({
+const el = (ellipse: Ellipse, nu: number): Point => ({
     "x": (ellipse.major * Math.cos(ellipse.theta) * Math.cos(nu)) - (ellipse.minor * Math.sin(ellipse.theta) * Math.sin(nu)),
     "y": (ellipse.major * Math.sin(ellipse.theta) * Math.cos(nu)) + (ellipse.minor * Math.cos(ellipse.theta) * Math.sin(nu))
 })
 
-const elPrime = (ellipse: Ellipse, nu: number) : Point => ({
+const elPrime = (ellipse: Ellipse, nu: number): Point => ({
     "x": (-ellipse.major * Math.cos(ellipse.theta) * Math.sin(nu)) - (ellipse.minor * Math.sin(ellipse.theta) * Math.cos(nu)),
     "y": (-ellipse.major * Math.sin(ellipse.theta) * Math.sin(nu)) + (ellipse.minor * Math.cos(ellipse.theta) * Math.cos(nu))
 })
 
-function ellipseArcBezier(ellipse: Ellipse, nu1: number, nu2: number) : ArcBezier {
+function ellipseArcBezier(ellipse: Ellipse, nu1: number, nu2: number): ArcBezier {
     const alpha = Math.sin(nu2 - nu1) * ((Math.sqrt(4.00 + 3.00 * Math.pow(Math.tan((nu2 - nu1) / 2.00), 2)) - 1.00) / 3.00)
     const p1 = el(ellipse, nu1)
     const pp1 = elPrime(ellipse, nu1)
     const p2 = el(ellipse, nu2)
     const pp2 = elPrime(ellipse, nu2)
     return {
-         p1,
-         p2,
-         q1: {
+        p1,
+        p2,
+        q1: {
             x: p1.x + alpha * pp1.x,
             y: p1.y + alpha * pp1.y
         },
@@ -119,7 +137,7 @@ export function ellipseBoundarySetter(
     major: number,
     minor: number,
     angle: number
-) : string{
+): string {
     let pathSetter = d3.path()
 
     const ellipse: Ellipse = {
@@ -131,16 +149,16 @@ export function ellipseBoundarySetter(
 
     const arcs = [
         // in pi radians
-        [0, 1/4],
-        [1/4, 1/2],
-        [1/2, 3/2],
-        [3/2, 2]
+        [0, 1 / 4],
+        [1 / 4, 1 / 2],
+        [1 / 2, 3 / 2],
+        [3 / 2, 2]
     ].map(
         x => x.map(xx => xx * PI)
     ).map(
         arc => ellipseArcBezier(ellipse, arc[0], arc[1])
     )
-    _.forEach(arcs, 
+    _.forEach(arcs,
         (b: ArcBezier, i: number) => {
             if (i == 0) pathSetter.moveTo(b.p1.x, b.p1.y)
             pathSetter.bezierCurveTo(
@@ -151,7 +169,7 @@ export function ellipseBoundarySetter(
         }
     )
     return pathSetter.toString()
-} 
+}
 
 export const inUnitArcs = (a: Arc): Array<Arc> => {
     if (a.stop - a.start > 1 / 2) {
@@ -174,7 +192,7 @@ export function ellipsePathSetter(
     major: number,
     minor: number,
     angle: number
-) : string {
+): string {
     let pathSetter = d3.path()
 
     const ellipse: Ellipse = {
