@@ -163,8 +163,6 @@ export const calcDendCurves = (
         const swapVector = (vec: Point) => ({x: vec.y, y: vec.x})
         return {
             start: getMidPoint(line),
-            // stop: vectorMultiply(addPoints(getMidPoint(line), unitVector), perp)
-            // stop: addPoints(getMidPoint(line), vectorMultiply(unitVector, perp))
             stop: addPoints(
                 getMidPoint(line),
                 vectorMultiply(swapVector(unitVector), perp)
@@ -200,17 +198,17 @@ export const calcDendCurves = (
     return [
         {
             points: [
-                // baseLeft, ctrlLeft, synCpos
-                baseLine.start, baseLine.stop,
+                baseLeft, ctrlLeft, synCpos
+                // baseLine.start, baseLine.stop,
                 // baseUnitPerpLine.start, baseUnitPerpLine.stop
-                midLine.start, midLine.stop
+                // midLine.start, midLine.stop
             ]
         },
-        // {
-        //     points: [
-        //         baseRight, ctrlRight, synCpos
-        //     ]
-        // }
+        {
+            points: [
+                baseRight, ctrlRight, synCpos
+            ]
+        }
     ]
 }
 

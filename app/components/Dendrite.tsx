@@ -27,8 +27,8 @@ export class Dendrite extends React.Component<IProps> {
 
         const curves: Array<Curve> = calcDendCurves(
             dend.synCpos,
-            5,
-            10,
+            3, // ctrlWidth
+            5, // ctrlHeight
             dend.arc,
             bodyEllipse
         )
@@ -37,13 +37,13 @@ export class Dendrite extends React.Component<IProps> {
             <g>
                 <Line stroke='black' line={debugLine} /> // debug line
                 {curves.map((curve: Curve) =>
-                    // <CurveNatural
-                    //     key={_.uniqueId('dl')}
-                    //     curve={curve}
-                    // />
-                    curve.points.map(p => 
-                        <circle cx={p.x} cy={p.y} r={2} />
-                    )
+                    <CurveNatural
+                        key={_.uniqueId('dl')}
+                        curve={curve}
+                    />
+                    // curve.points.map(p => 
+                    //     <circle cx={p.x} cy={p.y} r={2} />
+                    // )
                     
                 )}
             </g>
