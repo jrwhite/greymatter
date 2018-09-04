@@ -68,5 +68,38 @@ describe('geometry', () => {
             expect(line.stop.x).toBeCloseTo(-Math.sqrt(0.5), 5)
             expect(line.stop.y).toBeCloseTo(-Math.sqrt(0.5), 5)
         })
+        it('should make offset simple unit line', () => {
+            const line = getUnitLine(
+                {
+                    start: { x: 10, y: 10},
+                    stop: {x: 100, y: 100}
+                }
+            )
+            expect(line.start).toEqual({x: 10, y: 10})
+            expect(line.stop.x).toBeCloseTo(10+Math.sqrt(0.5), 5)
+            expect(line.stop.y).toBeCloseTo(10+Math.sqrt(0.5), 5)
+        })
+        it('should make simple offset negative unit line', () => {
+            const line = getUnitLine(
+                {
+                    start: {x: 10, y: 10},
+                    stop: {x: 2, y: 2}
+                }
+            )
+            expect(line.start).toEqual({x: 10, y: 10})
+            expect(line.stop.x).toBeCloseTo(10-Math.sqrt(0.5), 5)
+            expect(line.stop.y).toBeCloseTo(10-Math.sqrt(0.5), 5)
+        })
+        it('should make simple negative offset negative unit line', () => {
+            const line = getUnitLine(
+                {
+                    start: {x: -10, y: -10},
+                    stop: {x: 2, y: 2}
+                }
+            )
+            expect(line.start).toEqual({x: -10, y: -10})
+            expect(line.stop.x).toBeCloseTo(-10+Math.sqrt(0.5), 5)
+            expect(line.stop.y).toBeCloseTo(-10+Math.sqrt(0.5), 5)
+        })
     })
 })

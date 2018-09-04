@@ -115,8 +115,8 @@ export const getUnitLine = (line: Line) : Line => {
     return {
         start: line.start,
         stop: {
-            x: (line.stop.x - line.start.x) / mag,
-            y: (line.stop.y - line.start.x) / mag
+            x: line.start.x + ((line.stop.x - line.start.x) / mag),
+            y: line.start.y + ((line.stop.y - line.start.y) / mag),
         }
     }
 }
@@ -157,33 +157,42 @@ export const calcDendCurves = (
     const baseLine = { start: baseLeft, stop: baseRight }
     const baseMag = getLineMag(baseLine)
     const baseUnitVector = getLineVector(getUnitLine(baseLine))
-    console.log(baseUnitVector)
 
     const getUnitPerpLine = (line: Line, perp: Point) : Line => {
         const unitVector = getLineVector(getUnitLine(line))
+        const swapVector = (vec: Point) => ({x: vec.y, y: vec.x})
         return {
             start: getMidPoint(line),
             // stop: vectorMultiply(addPoints(getMidPoint(line), unitVector), perp)
-            stop: addPoints(getMidPoint(line), vectorMultiply(unitVector, perp))
+            // stop: addPoints(getMidPoint(line), vectorMultiply(unitVector, perp))
+            stop: addPoints(
+                getMidPoint(line),
+                vectorMultiply(swapVector(unitVector), perp)
+            )
         }
     }
-    // const BasePerpMap = new Map<Quadrant, (line: Line) => Line>([
-    //     [Quadrant.TopLeft, (line: Line) => getUnitPerpLine(line, {x: -1, y: -1})],
-    //     [Quadrant.BottomLeft, (line: Line) => getUnitPerpLine(line, {x: -1, y: -1})],
-    //     [Quadrant.BottomRight, (line: Line) => getUnitPerpLine(line, {x: 1, y: -1})],
-    //     [Quadrant.TopRight, (line: Line) => getUnitPerpLine(line, {x: 1, y: -1})],
-    // ])
-    // const baseUnitPerpLine: Line = BasePerpMap.get( getThetaQuadrant(arc.start) )!(baseLine)
-    const baseUnitPerpLine = getUnitPerpLine(baseLine, {x: -1, y: -1})
+    const BasePerpMap = new Map<Quadrant, (line: Line) => Line>([
+        [Quadrant.TopLeft, (line: Line) => getUnitPerpLine(line, {x: -1, y: 1})],
+        [Quadrant.BottomLeft, (line: Line) => getUnitPerpLine(line, {x: -1, y: 1})],
+        [Quadrant.BottomRight, (line: Line) => getUnitPerpLine(line, {x: -1, y: 1})],
+        [Quadrant.TopRight, (line: Line) => getUnitPerpLine(line, {x: -1, y: 1})],
+    ])
+    const baseUnitPerpLine: Line = BasePerpMap.get( getThetaQuadrant(arc.start) )!(baseLine)
+    // const baseUnitPerpLine = getUnitPerpLine(baseLine, {x: -1, y: 1})
     console.log(getThetaQuadrant(arc.start))
     console.log(baseUnitPerpLine)
-    console.log(getLineMag(baseUnitPerpLine))
+    const baseUnitPerpVector = getLineVector(baseUnitPerpLine)
 
     const midLine: Line = {
         ...baseUnitPerpLine,
-        start: vectorMultiply(baseUnitPerpLine.stop, {x: ctrlHeight, y: ctrlHeight}),
+        stop: addPoints(
+            baseUnitPerpLine.start,
+            vectorMultiply(baseUnitPerpVector, { x: ctrlHeight, y: ctrlHeight })
+        ),
     }
     const midVector: Point = getLineVector(midLine)
+    console.log('midVector', midVector)
+    console.log('midLine', midLine)
     const ctrlLeft = addPoints(baseLeft, addPoints(midVector, vectorScalarMultiply(baseUnitVector, (baseMag - ctrlWidth) / 2)))
 
     const ctrlRight = addPoints(ctrlLeft, vectorScalarMultiply(baseUnitVector, ctrlWidth))
@@ -192,9 +201,9 @@ export const calcDendCurves = (
         {
             points: [
                 // baseLeft, ctrlLeft, synCpos
-                // baseLine.start, baseLine.stop
-                baseUnitPerpLine.start, baseUnitPerpLine.stop
-                // midLine.start, midLine.stop
+                baseLine.start, baseLine.stop,
+                // baseUnitPerpLine.start, baseUnitPerpLine.stop
+                midLine.start, midLine.stop
             ]
         },
         // {
