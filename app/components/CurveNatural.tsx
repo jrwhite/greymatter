@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { Point, Line } from '../utils/geometry'
+import { Point, Line, Curve } from '../utils/geometry'
 const d3 = require('d3')
 
 export interface IProps {
-    line: Line
+    curve: Curve
 }
 
 export const CurveNatural: React.SFC<IProps> = (props) => {
     const {
-        line
+        curve
     } = props
 
     const lineSetter = d3.line()
@@ -19,7 +19,7 @@ export const CurveNatural: React.SFC<IProps> = (props) => {
     return (
         <g>
             <path stroke='red'
-                d={lineSetter([line.start, line.stop])}
+                d={lineSetter(curve.points)}
             />
         </g>
     )

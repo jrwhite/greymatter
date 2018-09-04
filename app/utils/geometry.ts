@@ -42,6 +42,13 @@ type ArcBezier = {
     q2: Point
 }
 
+enum Quadrant {
+    TopRight,
+    TopLeft,
+    BottomLeft,
+    BottomRight
+}
+
 export const addPoints = (p1: Point, p2: Point): Point => ({
     x: p1.x + p2.x,
     y: p1.y + p2.y
@@ -76,30 +83,121 @@ export const calcClosestDend = (to: Point, from: Point, ellipse: Ellipse): DendG
     }
 }
 
+const getThetaQuadrant = (theta: number) : Quadrant => {
+    if (theta > 1.5) {
+        return Quadrant.BottomRight
+    } else if (theta > 1) {
+        return Quadrant.BottomLeft
+    } else if (theta > 0.5) {
+        return Quadrant.TopLeft
+    } else {
+        return Quadrant.TopRight
+    }
+}
+
+const getMidPoint = (line: Line) : Point => {
+    return {
+        x: (line.start.x + line.stop.x) / 2,
+        y: (line.start.y + line.stop.y) / 2,
+    }
+}
+
+const getVectorMag = (vector: Point) : number => {
+    return Math.hypot(vector.x, vector.y)
+}
+
+const getLineMag = (line: Line) : number => {
+    return getVectorMag(getLineVector(line))
+}
+
+const getUnitLine = (line: Line) : Line => {
+    const mag = getLineMag(line)
+    return {
+        start: line.start,
+        stop: {
+            x: (line.stop.x - line.start.x) / mag,
+            y: (line.stop.y - line.start.x) / mag
+        }
+    }
+}
+
+const getLineVector = (line: Line) : Point => {
+    return {
+        x: line.stop.x - line.start.x,
+        y: line.stop.y - line.start.y
+    }
+}
+
+const vectorMultiply = (l1: Point, l2: Point) : Point => {
+    return {
+        x: l1.x * l2.x,
+        y: l1.y * l2.y
+    }
+}
+
+const vectorScalarMultiply = (vec: Point, scal: number) : Point => {
+    return {
+        x: vec.x * scal,
+        y: vec.y * scal
+    }
+}
+
 export const calcDendCurves = (
-    nu: number,
     synCpos: Point,
-    synWidth: number,
+    // synWidth: number,
     ctrlWidth: number, // % of base width maybe?
+    ctrlHeight: number,
     arc: Arc,
     ellipse: Ellipse
 ): Array<Curve> => {
-    const baseRight = el(ellipse, arc.start)
-    const baseLeft = el(ellipse, arc.stop)
-    const baseLine = { start: baseRight, stop: baseLeft }
+    // this is mostly trapezoidal calculations
+    const baseRight = el(ellipse, arc.start * Math.PI)
+    const baseLeft = el(ellipse, arc.stop * PI)
+    const baseLine = { start: baseLeft, stop: baseRight }
+    const baseMag = getLineMag(baseLine)
+    const baseUnitVector = getLineVector(getUnitLine(baseLine))
 
-    const ctrlRight = 
+    const getUnitPerpLine = (line: Line, perp: Point) : Line => {
+        const unitVector = getLineVector(getUnitLine(line))
+        return {
+            start: getMidPoint(line),
+            // stop: vectorMultiply(addPoints(getMidPoint(line), unitVector), perp)
+            stop: addPoints(getMidPoint(line), vectorMultiply(unitVector, perp))
+        }
+    }
+    const BasePerpMap = new Map<Quadrant, (line: Line) => Line>([
+        [Quadrant.TopLeft, (line: Line) => getUnitPerpLine(line, {x: -1, y: 1})],
+        [Quadrant.BottomLeft, (line: Line) => getUnitPerpLine(line, {x: -1, y: 1})],
+        [Quadrant.BottomRight, (line: Line) => getUnitPerpLine(line, {x: 1, y: -1})],
+        [Quadrant.TopRight, (line: Line) => getUnitPerpLine(line, {x: 1, y: -1})],
+    ])
+    const baseUnitPerpLine: Line = BasePerpMap.get( getThetaQuadrant(arc.start) )!(baseLine)
+    console.log(getThetaQuadrant(arc.start))
+    console.log(baseUnitPerpLine)
 
-    const curveRight = [
-        el(ellipse, arc.start),
+    const midLine: Line = {
+        ...baseUnitPerpLine,
+        stop: vectorMultiply(baseUnitPerpLine.stop, {x: ctrlHeight, y: ctrlHeight}),
+    }
+    const midVector: Point = getLineVector(midLine)
+    const ctrlLeft = addPoints(baseLeft, addPoints(midVector, vectorScalarMultiply(baseUnitVector, (baseMag - ctrlWidth) / 2)))
 
-    ]
+    const ctrlRight = addPoints(ctrlLeft, vectorScalarMultiply(baseUnitVector, ctrlWidth))
+
     return [
         {
             points: [
-
+                // baseLeft, ctrlLeft, synCpos
+                // baseLine.start, baseLine.stop
+                baseUnitPerpLine.start, baseUnitPerpLine.stop
+                // midLine.start, midLine.stop
             ]
-        }
+        },
+        // {
+        //     points: [
+        //         baseRight, ctrlRight, synCpos
+        //     ]
+        // }
     ]
 }
 

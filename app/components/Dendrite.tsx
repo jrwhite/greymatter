@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { DendStateType } from '../reducers/network'
-import { Arc, Line as LineGeo, Point, calcDendLines, Ellipse } from '../utils/geometry'
+import { Arc, Line as LineGeo, Point, calcDendCurves, Ellipse, Curve } from '../utils/geometry'
 import { Line } from './Line';
 import { CurveNatural } from './CurveNatural';
 const d3 = require('d3')
@@ -25,8 +25,10 @@ export class Dendrite extends React.Component<IProps> {
             stop: { ...dend.synCpos }
         }
 
-        const lines: Array<LineGeo> = calcDendLines(
+        const curves: Array<Curve> = calcDendCurves(
             dend.synCpos,
+            5,
+            10,
             dend.arc,
             bodyEllipse
         )
@@ -34,11 +36,15 @@ export class Dendrite extends React.Component<IProps> {
         return (
             <g>
                 <Line stroke='black' line={debugLine} /> // debug line
-                {lines.map((l: LineGeo) =>
-                    <CurveNatural
-                        key={_.uniqueId('dl')}
-                        line={l}
-                    />
+                {curves.map((curve: Curve) =>
+                    // <CurveNatural
+                    //     key={_.uniqueId('dl')}
+                    //     curve={curve}
+                    // />
+                    curve.points.map(p => 
+                        <circle cx={p.x} cy={p.y} r={2} />
+                    )
+                    
                 )}
             </g>
         )
