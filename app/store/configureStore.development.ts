@@ -24,7 +24,8 @@ const actionCreators = Object.assign({},
 
 const logger = (<any>createLogger)({
   level: 'info',
-  collapsed: true
+  collapsed: true,
+  predicate: (getState: any, action: any) => action.type !== "DECAY_NETWORK"
 });
 
 const history = createHashHistory();
