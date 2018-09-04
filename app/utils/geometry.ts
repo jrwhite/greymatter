@@ -151,11 +151,13 @@ export const calcDendCurves = (
     ellipse: Ellipse
 ): Array<Curve> => {
     // this is mostly trapezoidal calculations
-    const baseRight = el(ellipse, arc.start * Math.PI)
+    console.log(arc)
+    const baseRight = el(ellipse, arc.start * PI)
     const baseLeft = el(ellipse, arc.stop * PI)
     const baseLine = { start: baseLeft, stop: baseRight }
     const baseMag = getLineMag(baseLine)
     const baseUnitVector = getLineVector(getUnitLine(baseLine))
+    console.log(baseUnitVector)
 
     const getUnitPerpLine = (line: Line, perp: Point) : Line => {
         const unitVector = getLineVector(getUnitLine(line))
@@ -165,19 +167,21 @@ export const calcDendCurves = (
             stop: addPoints(getMidPoint(line), vectorMultiply(unitVector, perp))
         }
     }
-    const BasePerpMap = new Map<Quadrant, (line: Line) => Line>([
-        [Quadrant.TopLeft, (line: Line) => getUnitPerpLine(line, {x: -1, y: 1})],
-        [Quadrant.BottomLeft, (line: Line) => getUnitPerpLine(line, {x: -1, y: 1})],
-        [Quadrant.BottomRight, (line: Line) => getUnitPerpLine(line, {x: 1, y: -1})],
-        [Quadrant.TopRight, (line: Line) => getUnitPerpLine(line, {x: 1, y: -1})],
-    ])
-    const baseUnitPerpLine: Line = BasePerpMap.get( getThetaQuadrant(arc.start) )!(baseLine)
+    // const BasePerpMap = new Map<Quadrant, (line: Line) => Line>([
+    //     [Quadrant.TopLeft, (line: Line) => getUnitPerpLine(line, {x: -1, y: -1})],
+    //     [Quadrant.BottomLeft, (line: Line) => getUnitPerpLine(line, {x: -1, y: -1})],
+    //     [Quadrant.BottomRight, (line: Line) => getUnitPerpLine(line, {x: 1, y: -1})],
+    //     [Quadrant.TopRight, (line: Line) => getUnitPerpLine(line, {x: 1, y: -1})],
+    // ])
+    // const baseUnitPerpLine: Line = BasePerpMap.get( getThetaQuadrant(arc.start) )!(baseLine)
+    const baseUnitPerpLine = getUnitPerpLine(baseLine, {x: -1, y: -1})
     console.log(getThetaQuadrant(arc.start))
     console.log(baseUnitPerpLine)
+    console.log(getLineMag(baseUnitPerpLine))
 
     const midLine: Line = {
         ...baseUnitPerpLine,
-        stop: vectorMultiply(baseUnitPerpLine.stop, {x: ctrlHeight, y: ctrlHeight}),
+        start: vectorMultiply(baseUnitPerpLine.stop, {x: ctrlHeight, y: ctrlHeight}),
     }
     const midVector: Point = getLineVector(midLine)
     const ctrlLeft = addPoints(baseLeft, addPoints(midVector, vectorScalarMultiply(baseUnitVector, (baseMag - ctrlWidth) / 2)))
