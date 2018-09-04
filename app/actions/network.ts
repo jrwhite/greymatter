@@ -71,14 +71,6 @@ export type HyperpolarizeNeuron = {
     id: string
 }
 
-export type FireSynapse = {
-    id: string
-}
-
-export type ResetSynapse = {
-    id: string
-}
-
 export type AddInput = {
     id: string,
     axonId: string,
@@ -119,8 +111,6 @@ export const addDend = actionCreator<AddDendAction>('ADD_DEND')
 export const decayNetwork = actionCreatorVoid('DECAY_NETWORK')
 export const hyperpolarizeNeuron = actionCreator<HyperpolarizeNeuron>('HYPERPOLARIZE_NEURON')
 export const exciteNeuron = actionCreator<ExciteNeuron>('EXCITE_NEURON')
-export const fireSynapse = actionCreator<FireSynapse>('FIRE_SYNAPSE')
-export const resetSynapse = actionCreator<ResetSynapse>('FINISH_FIRING_SYNAPSE')
 export const addInput = actionCreator<AddInput>('ADD_INPUT')
 export const removeInput = actionCreator<RemoveInput>('REMOVE_INPUT')
 export const moveInput = actionCreator<MoveInput>('MOVE_INPUT')
@@ -141,7 +131,6 @@ export function fireNeuron(id: string) {
 
 export function finishFiringApOnSynapse(id: string, synapseId: string) {
     return (dispatch: Function, getState: () => IState) => {
-        dispatch(resetSynapse({id: synapseId}))
         dispatch(removeApFromSynapse({id: id, synapseId: synapseId}))
         const dend: {id: string, neuronId: string} = getState().network.synapses.find(s => s.id == synapseId)!!.dend
         dispatch(exciteNeuron({id: dend.neuronId, dendId: dend.id}))
@@ -204,8 +193,8 @@ export function addNewDend(newDendId: string, neuronId: string, neuronPos: Point
                 synCpos: addPoints(
                     newDendGeo.point,
                     {
-                        x: Math.cos(newDendGeo.inTheta * Math.PI) * 10, // TODO: replace 15 with default short plast
-                        y: Math.sin(newDendGeo.inTheta * Math.PI) * 10
+                        x: Math.cos(newDendGeo.inTheta * Math.PI) * 15, // TODO: replace 15 with default short plast
+                        y: Math.sin(newDendGeo.inTheta * Math.PI) * 15
                     }
                 ),
                 nu: newDendGeo.nu,

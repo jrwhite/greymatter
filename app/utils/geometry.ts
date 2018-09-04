@@ -151,7 +151,6 @@ export const calcDendCurves = (
     ellipse: Ellipse
 ): Array<Curve> => {
     // this is mostly trapezoidal calculations
-    console.log(arc)
     const baseRight = el(ellipse, arc.start * PI)
     const baseLeft = el(ellipse, arc.stop * PI)
     const baseLine = { start: baseLeft, stop: baseRight }
@@ -177,8 +176,6 @@ export const calcDendCurves = (
     ])
     const baseUnitPerpLine: Line = BasePerpMap.get( getThetaQuadrant(arc.start) )!(baseLine)
     // const baseUnitPerpLine = getUnitPerpLine(baseLine, {x: -1, y: 1})
-    console.log(getThetaQuadrant(arc.start))
-    console.log(baseUnitPerpLine)
     const baseUnitPerpVector = getLineVector(baseUnitPerpLine)
 
     const midLine: Line = {
@@ -189,8 +186,6 @@ export const calcDendCurves = (
         ),
     }
     const midVector: Point = getLineVector(midLine)
-    console.log('midVector', midVector)
-    console.log('midLine', midLine)
     const ctrlLeft = addPoints(baseLeft, addPoints(midVector, vectorScalarMultiply(baseUnitVector, (baseMag - ctrlWidth) / 2)))
 
     const ctrlRight = addPoints(ctrlLeft, vectorScalarMultiply(baseUnitVector, ctrlWidth))
@@ -199,9 +194,6 @@ export const calcDendCurves = (
         {
             points: [
                 baseLeft, ctrlLeft, synCpos
-                // baseLine.start, baseLine.stop,
-                // baseUnitPerpLine.start, baseUnitPerpLine.stop
-                // midLine.start, midLine.stop
             ]
         },
         {

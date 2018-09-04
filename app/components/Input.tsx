@@ -1,14 +1,13 @@
 import * as React from 'react'
 import { remote } from 'electron'
 import { RouteComponentProps } from 'react-router';
-import { FireSynapse, moveInput, MoveInput, tryMakeSynapseAtAxon, removeInput, addApToSynapse } from '../actions/network'
+import {  moveInput, MoveInput, tryMakeSynapseAtAxon, removeInput, addApToSynapse } from '../actions/network'
 import { Point } from '../utils/geometry'
 import { AxonStateType } from '../reducers/network';
 const { Menu } = remote
 const d3 = require('d3')
 
 export interface IProps extends RouteComponentProps<any> {
-    fireSynapse: (payload: FireSynapse) => void,
     addNewApToSynapse: (id: string) => void,
     removeInput: (id: string) => void,
     moveInput: (payload: MoveInput) => void,
@@ -38,7 +37,7 @@ export class Input extends React.Component<IProps,IState> {
 
     handleInputClick (e: React.MouseEvent<SVGGElement>) {
         e.preventDefault()
-        const { fireSynapse, axon, addNewApToSynapse } = this.props
+        const { axon, addNewApToSynapse } = this.props
 
         // axon.synapses.forEach(s => fireSynapse({id: s.id}))
         axon.synapses.forEach(s => addNewApToSynapse(s.id))
@@ -69,7 +68,6 @@ export class Input extends React.Component<IProps,IState> {
     
     render() {
         const {
-            fireSynapse,
             pos,
             id,
             axon,

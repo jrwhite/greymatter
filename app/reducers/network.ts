@@ -1,6 +1,6 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, fireSynapse, exciteNeuron, resetSynapse, decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
@@ -262,19 +262,6 @@ export default function network(
                 return n
             })
         }
-    } else if (fireSynapse.test(action)) {
-        return {
-            ...state,
-            synapses: state.synapses.map(s => {
-                if (s.id == action.payload.id) {
-                    return {
-                        ...s,
-                        isFiring: true
-                    }
-                }
-                return s
-            })
-        }
     } else if (addApToSynapse.test(action)) {
         return {
             ...state,
@@ -305,20 +292,6 @@ export default function network(
                             [action.payload],
                             'id'
                         )
-                    }
-                }
-                return s
-            })
-        }
-    }
-    else if (resetSynapse.test(action)) {
-        return {
-            ...state,
-            synapses: state.synapses.map(s => {
-                if (s.id == action.payload.id) {
-                    return {
-                        ...s,
-                        isFiring: false
                     }
                 }
                 return s

@@ -47,6 +47,7 @@ export class Synapse extends React.Component<IProps> {
                 //TODO: refactor into ActionPotential container w/ selector. NEVER RERENDER
                 {actionPotentials.map(ap => 
                     <ActionPotential
+                        key={ap.id}
                         id={ap.id}
                         callback={() => apCallback(ap.id)}
                         type={'EXCIT'}

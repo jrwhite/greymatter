@@ -13,7 +13,6 @@ import {
   tryMakeSynapseAtDend,
   tryMakeSynapseAtNewDend,
   RemoveNeuronsAction,
-  FireSynapse,
   HyperpolarizeNeuron,
   addApToSynapse,
   AddApToSynapse,
@@ -30,7 +29,6 @@ const d3 = require("d3");
 
 export interface IProps extends RouteComponentProps<any> {
   fireNeuron: (id: string) => void;
-  fireSynapse: (payload: FireSynapse) => void;
   addNewApToSynapse: (id: string) => void;
   removeNeuron: (id: string) => void;
   moveNeuron: (payload: MoveNeuronAction) => void;
@@ -91,7 +89,6 @@ export class Neuron extends React.Component<IProps, IState> {
   render() {
     const {
       fireNeuron,
-      fireSynapse,
       addNewApToSynapse,
       pos,
       id,

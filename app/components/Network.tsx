@@ -128,7 +128,7 @@ export class Network extends React.Component<IProps,IState> {
         const step = () => {
             decayNetwork()
         }
-        // const interval = d3.interval(step, 100)
-        // this.setState({interval: interval})
+        const interval = d3.interval(step, 100)
+        this.setState({interval: interval})
     }
 }

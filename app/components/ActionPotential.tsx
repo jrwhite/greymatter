@@ -15,12 +15,27 @@ export interface IProps {
     length: number
 }
 
-export class ActionPotential extends React.Component<IProps> {
+export interface IState {
+    startAnimation: boolean
+}
+
+export class ActionPotential extends React.Component<IProps,IState> {
     props: IProps
+    state: IState = {startAnimation: false}
 
     componentDidMount () {
-        this.renderD3()
+        this.setState({startAnimation: true})
     }
+
+    componentDidUpdate () {
+        if (this.state.startAnimation) {
+            this.renderD3()
+        }
+    }
+    
+    // componentDidMount () {
+    //     this.renderD3()
+    // }
 
     render() {
         const {

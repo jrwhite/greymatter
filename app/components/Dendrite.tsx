@@ -20,11 +20,6 @@ export class Dendrite extends React.Component<IProps> {
             bodyEllipse
         } = this.props
 
-        const debugLine: LineGeo = {
-            start: { ...dend.baseCpos },
-            stop: { ...dend.synCpos }
-        }
-
         const curves: Array<Curve> = calcDendCurves(
             dend.synCpos,
             3, // ctrlWidth
@@ -35,16 +30,11 @@ export class Dendrite extends React.Component<IProps> {
 
         return (
             <g>
-                <Line stroke='black' line={debugLine} /> // debug line
                 {curves.map((curve: Curve) =>
                     <CurveNatural
                         key={_.uniqueId('dl')}
                         curve={curve}
                     />
-                    // curve.points.map(p => 
-                    //     <circle cx={p.x} cy={p.y} r={2} />
-                    // )
-                    
                 )}
             </g>
         )
