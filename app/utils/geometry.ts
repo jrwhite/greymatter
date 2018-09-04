@@ -110,7 +110,7 @@ const getLineMag = (line: Line) : number => {
     return getVectorMag(getLineVector(line))
 }
 
-const getUnitLine = (line: Line) : Line => {
+export const getUnitLine = (line: Line) : Line => {
     const mag = getLineMag(line)
     return {
         start: line.start,

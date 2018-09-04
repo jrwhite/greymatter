@@ -1,4 +1,4 @@
-import { inUnitArcs, ellipsePathSetter } from '../../app/utils/geometry'
+import { inUnitArcs, ellipsePathSetter, getUnitLine } from '../../app/utils/geometry'
 import * as _ from 'lodash'
 
 describe('geometry', () => {
@@ -44,5 +44,20 @@ describe('geometry', () => {
         //     expect(ellipsePathSetter([{ start: 0, stop: 2 }], 50, 30, 0))
         //         .toEqual('')
         // })
+    })
+    describe('getUnitLine', () => {
+        it('should make unit line', () => {
+            expect(getUnitLine(
+                {
+                    start: { x: 0, y: 0 },
+                    stop: { x: 10, y: 10 }
+                }
+            )).toEqual(
+                {
+                    start: { x: 0, y: 0 },
+                    stop: { x: Math.SQRT2, y: Math.SQRT2 }
+                }
+            )
+        })
     })
 })
