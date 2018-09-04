@@ -46,18 +46,27 @@ describe('geometry', () => {
         // })
     })
     describe('getUnitLine', () => {
-        it('should make unit line', () => {
-            expect(getUnitLine(
+        it('should make simply unit line', () => {
+            const line = getUnitLine(
                 {
                     start: { x: 0, y: 0 },
                     stop: { x: 10, y: 10 }
                 }
-            )).toEqual(
+            )
+            expect(line.start).toEqual({x: 0, y: 0})
+            expect(line.stop.x).toBeCloseTo(Math.sqrt(0.5), 5)
+            expect(line.stop.y).toBeCloseTo(Math.sqrt(0.5), 5)
+        })
+        it('should make negative simple unit line', () => {
+            const line = getUnitLine(
                 {
                     start: { x: 0, y: 0 },
-                    stop: { x: Math.SQRT2, y: Math.SQRT2 }
+                    stop: { x: -10, y: -10 }
                 }
             )
+            expect(line.start).toEqual({x: 0, y: 0})
+            expect(line.stop.x).toBeCloseTo(-Math.sqrt(0.5), 5)
+            expect(line.stop.y).toBeCloseTo(-Math.sqrt(0.5), 5)
         })
     })
 })
