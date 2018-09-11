@@ -4,7 +4,7 @@ import { Point } from '../utils/geometry'
 import { ExciteNeuron } from '../actions/network'
 import * as _ from 'lodash'
 const d3 = require('d3')
-
+        
 export interface IProps {
     id: string,
     callback: Function,
@@ -18,7 +18,7 @@ export interface IProps {
 export interface IState {
     startAnimation: boolean
 }
-
+11
 export class ActionPotential extends React.Component<IProps,IState> {
     props: IProps
     state: IState = {startAnimation: false}

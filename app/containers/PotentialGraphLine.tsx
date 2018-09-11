@@ -6,11 +6,11 @@ import { connect, Dispatch } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 const makeMapStateToProps = () => {
-    const getState = makeGetPotentialGraphLineState()
-    return (state: IState, props: IProps) => getState(state, props)
+    const getLineState = makeGetPotentialGraphLineState()
+    return (state: IState, props: IProps) => getLineState(state, props)
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<IState>) : Partial<IProps> => {
+const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
     return bindActionCreators(NetworkActions as any, dispatch)
 }
 

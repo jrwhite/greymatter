@@ -3,13 +3,13 @@ import { IState } from '../reducers'
 import { IProps } from '../components/PotentialGraphLine'
 
 const getNeuronPotential = (state: IState, props: IProps) =>
-    state.network.neurons.find(n => n.id === props.id)!!.potential
+    state.network.neurons.find(n => n.id === props.id)
 
 export const makeGetPotentialGraphLineState = () => createSelector(
     getNeuronPotential,
-    potential => (
+    neuron => (
         {
-            potential: potential
+            potential: neuron ? neuron.potential : 0
         }
     )
 )

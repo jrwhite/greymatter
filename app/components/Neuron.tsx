@@ -26,7 +26,8 @@ import { Soma } from "./Soma";
 import { remote } from "electron";
 import { Popover, Text, Button, Position } from "@blueprintjs/core";
 import { PotentialGraph } from "./PotentialGraph";
-const PotentialGraphLine = require ( "../containers/PotentialGraphLine")
+import PotentialGraphLine from  "../containers/PotentialGraphLine"
+// import { PotentialGraphLine } from "./PotentialGraphLine"
 const { Menu } = remote;
 const d3 = require("d3");
 
@@ -132,7 +133,8 @@ export class Neuron extends React.Component<IProps, IState> {
           /> */}
         {/* </Popover> */}
         <PotentialGraphLine
-          key={id}
+          // key={id}
+          id={id}
           color={'red'}
           deltaX={10}
           height={100}
