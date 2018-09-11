@@ -7,8 +7,11 @@ import { NeuronState, SynapseState, GhostSynapseState, InputState } from '../red
 import Synapse from '../containers/Synapse'
 import Input from '../containers/Input'
 import { GhostSynapse } from './GhostSynapse';
+import { SelectedPanel } from './SelectedPanel';
 const { Menu } = remote
 const d3 = require('d3')
+
+let styles = require('./Network.scss')
 
 export interface IProps extends RouteComponentProps<any> {
     addNewNeuron(pos: Point): void,
@@ -84,9 +87,15 @@ export class Network extends React.Component<IProps,IState> {
         const dendNeuron = ghostSynapse.dend ? neurons.find(n => n.id === ghostSynapse.dend!!.neuronId) : undefined
 
         return (
+            <div 
+                className={styles.container}
+            >
+            <div className={styles.sidebar}>
+            <SelectedPanel></SelectedPanel>
+            </div>
+
             <svg
-                width="1000"
-                height="1000"
+                className={styles.editor}
                 onContextMenu={this.onContextMenu.bind(this)}
                 onMouseMove={this.handleMouseMove.bind(this)}
             >
@@ -120,6 +129,8 @@ export class Network extends React.Component<IProps,IState> {
                     />
                 )}
             </svg>
+            </div>
+
         )
     }
 

@@ -1,0 +1,16 @@
+@import "~@blueprintjs/core/lib/scss/variables";
+
+.container {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.editor {
+    flex: 1 1 auto;
+    background-color: $dark-gray1;
+}
+
+.sidebar {
+    flex: 1 1 100px;
+    background-color: $gray1;
+}

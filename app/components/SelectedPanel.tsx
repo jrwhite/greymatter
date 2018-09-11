@@ -2,11 +2,12 @@ import * as React from 'react'
 import { RouteComponentProps } from 'react-router';
 import { render } from 'enzyme';
 import { NeuronState } from '../reducers/network';
+import { Button } from '@blueprintjs/core'
 
-export interface IProps extends RouteComponentProps<any> {
-    closeSelectedPanel: () => void,
-    openSelectedPanel: () => void,
-    selectedNeuron: NeuronState,
+export interface IProps {
+    // closeSelectedPanel: () => void,
+    // openSelectedPanel: () => void,
+    // selectedNeuron: NeuronState,
 }
 
 export interface IState {
@@ -24,9 +25,13 @@ export class SelectedPanel extends React.Component<IProps,IState> {
     render() {
         
         return (
+            <div>
             <p>
                 "Selected"
             </p>
+            <Button icon='refresh' />
+            </div>
+
         )
     }
 }
