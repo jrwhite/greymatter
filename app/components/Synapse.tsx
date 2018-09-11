@@ -34,7 +34,8 @@ export class Synapse extends React.Component<IProps> {
             actionPotentials
         } = this.props
 
-        const line = {start: axonPos, stop: dendPos}
+        // const line = {start: axonPos, stop: dendPos}
+        const line = {points: [axonPos, dendPos]}
         const length = Math.hypot(axonPos.x - dendPos.x, axonPos.y - dendPos.y)
         const apCallback = (apId: string) => finishFiringApOnSynapse(apId, id)
 

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { RouteComponentProps } from 'react-router';
-import { Point } from '../utils/geometry';
+import { Point, Curve } from '../utils/geometry';
 import { Line } from './Line';
 
 export interface IProps{
@@ -19,11 +19,18 @@ export class GhostSynapse extends React.Component<IProps> {
             mouse
         } = this.props
 
-        const line = axon ?
-            {start: axon.pos, stop: mouse.pos}
+        const mousePoint: Point = {
+            x: mouse.pos.x,
+            y: mouse.pos.y
+        }
+
+        const line: Curve = {
+            points: axon ?
+            [axon.pos, mousePoint]
             : dend ?
-            {start: mouse.pos, stop: dend.pos}
-            : undefined
+            [mousePoint, dend.pos]
+            : []
+        }
 
         if (line) {
             return (

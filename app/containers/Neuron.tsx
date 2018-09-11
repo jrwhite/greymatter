@@ -15,4 +15,4 @@ const mapDispatchToProps = (dispatch: Dispatch<IState>) : Partial<IProps> => {
     return bindActionCreators(NetworkActions as any, dispatch)
 }
 
-export default (connect(makeMapStateToProps, mapDispatchToProps)(Neuron) as any as React.StatelessComponent<Partial<IProps>>)
+export default (connect(makeMapStateToProps, mapDispatchToProps)(Neuron) as any as React.StatelessComponent)

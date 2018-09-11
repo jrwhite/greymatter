@@ -24,6 +24,9 @@ import { NeuronBody } from "./NeuronBody";
 import { Dendrite } from "./Dendrite";
 import { Soma } from "./Soma";
 import { remote } from "electron";
+import { Popover, Text, Button, Position } from "@blueprintjs/core";
+import { PotentialGraph } from "./PotentialGraph";
+const PotentialGraphLine = require ( "../containers/PotentialGraphLine")
 const { Menu } = remote;
 const d3 = require("d3");
 
@@ -97,18 +100,44 @@ export class Neuron extends React.Component<IProps, IState> {
       potential
     } = this.props;
 
+    const graphPopover: JSX.Element = (
+      <Popover>
+        <strong>test</strong>
+      </Popover>
+    )
+
     if (potential > 100) {
       fireNeuron(id);
-      // axon.synapses.forEach(s => fireSynapse(s))
       axon.synapses.forEach(s => addNewApToSynapse(s.id));
     }
 
-    return (
+    return ( 
       <g
         id={id}
         transform={"translate(" + pos.x + " " + pos.y + ")"}
         onContextMenu={this.handleContextMenu.bind(this)}
       >
+       {/* <Popover
+          isOpen={this.state.selected}
+          position={Position.RIGHT}
+        >
+          <Button text="open">
+          </Button>
+        
+         <Text>
+            {"popover"}
+          </Text> */}
+          {/* <PotentialGraph
+            neurons={[{id: id, color: 'red'}]}
+          /> */}
+        {/* </Popover> */}
+        <PotentialGraphLine
+          key={id}
+          color={'red'}
+          deltaX={10}
+          height={100}
+          maxN={50}
+          />
         <g onClick={this.handleNeuronClick.bind(this)}>
           <NeuronBody dends={dends} />
           <Soma potential={potential} id={id} />
@@ -119,8 +148,9 @@ export class Neuron extends React.Component<IProps, IState> {
           r={5}
           onClick={this.handleAxonClick.bind(this)}
         />
-      </g>
-    );
+      </g> 
+      
+    )
   }
 
   setSelected = (val: boolean) => {

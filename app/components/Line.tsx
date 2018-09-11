@@ -1,28 +1,29 @@
 import * as React from 'react'
-import { Line as LineGeo } from '../utils/geometry';
+import { Line as LineGeo, Point, Curve } from '../utils/geometry';
 import { render } from 'enzyme';
+const d3 = require('d3')
 
 export interface IProps {
-    line: LineGeo,
-    stroke?: string
+    line: Curve,
+    stroke?: string,
+    width?: string
 }
 
-export class Line extends React.Component<IProps> {
-    props: IProps
+export const Line: React.SFC<IProps> = (props) => {
+    const {
+        line
+    } = props
 
-    render() {
-        const {
-            line
-        } = this.props
-
-        return (
-            <g>
-                <line
-                    stroke={this.props.stroke ? this.props.stroke : 'blue'}
-                    x1={line.start.x} x2={line.stop.x}
-                    y1={line.start.y} y2={line.stop.y}
-                />
-            </g>
-        )
-    }
+    const lineSetter = d3.line()
+        .x((d: Point) => d.x)
+        .y((d: Point) => d.y)
+    
+    return (
+        <g>
+            <path
+                stroke={props.stroke ? props.stroke : 'red'}
+                d={lineSetter(line.points)}
+            />
+        </g>
+    )
 }
