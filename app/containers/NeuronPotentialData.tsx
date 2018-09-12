@@ -33,7 +33,6 @@ export class NeuronPotentialData extends React.Component<IProps> {
             potential,
             onChange
         } = this.props
-
         onChange(potential)
     }
 

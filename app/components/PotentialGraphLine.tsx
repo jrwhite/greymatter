@@ -49,7 +49,24 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
                 n: n+1
             }
         )
+        this.shift()
     }
+
+    shift = () => {
+        if (this.state.n > this.props.maxN) {
+            this.setState(
+                {
+                    pathData: _.tail(this.state.pathData),
+                    n: this.state.n - 1
+                }
+            )
+        }
+    }
+
+    transitionSetter = d3.transition()
+            .duration(100)
+            .ease(d3.easeLinear)
+            .on("end", this.shift)
 
     render() {
 
@@ -80,10 +97,20 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
                 /> */}
         return (
             <g>
-                <path
+                {/* <path
                     stroke='red'
                     id={id}
                     d={lineSetter(pathData)}
+                /> */}
+                <path 
+                    stroke='red'
+                    ref={
+                        node => d3.select(node)
+                        .attr("d", lineSetter(pathData))
+                        // .attr('transform', null)
+                        // .transition(this.transitionSetter)
+                        // .attr('transform', 'translate(' + deltaX + ')')
+                    }
                 />
                 <NeuronPotentialData
                     id={id}
@@ -92,40 +119,4 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
             </g>
         )
     }
-
-    // renderD3() {
-    //     const {
-    //         potential,
-    //         maxN,
-    //         deltaX
-    //     } = this.props
-
-    //     const {
-    //         path,
-    //         pathData,
-    //         n
-    //     } = this.state
-
-    //     // remove last point
-    //     const shift = () => {
-    //         if (n > maxN) {
-    //             this.setState(
-    //                 {
-    //                     pathData: _.tail(pathData),
-    //                     n: n - 1
-    //                 }
-    //             )
-    //         }
-    //     }
-
-    //     // slide line left
-    //     const transitionSetter = d3.transition()
-    //         .duration(100)
-    //         .ease(d3.easeLinear)
-    //         .on("end", shift)
-
-    //     path.attr('transform', null)
-    //         .transition(transitionSetter)
-    //         .attr('transform', 'translate(' + deltaX + ')')
-    // }
 }

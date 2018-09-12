@@ -83,6 +83,12 @@ export type OutputState = {
     dends: Array<DendStateType>
 }
 
+export type\
+
+export type NetworkConfigState = {
+    selectedNeurons = Array<
+}
+
 export type NetworkState = {
     ghostSynapse: GhostSynapseState,
     neurons: Array<NeuronState>,
