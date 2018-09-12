@@ -49,9 +49,37 @@
             },
             length: number,
             width: number,
-            speed: multiplier
+            speed: multiplier,
+            actionPotentials: [
+                {
+                    id: 'apXXX'
+                },
+                ...
+            ]
          },
          ...
+     ],
+     inputs: [
+         {
+            id: 'inXXX',
+            type: CLICK / TONIC / GYM,
+            pos: (x, y),
+            axon: {
+                id: 'aXXX',
+                neuronId: 'nXXX'
+            }
+         }
+     ],
+     outputs: [
+         {
+            id: 'inXXX',
+            type: not sure...
+            pos: (x, y),
+            dend: {
+                id: 'dXXX',
+                neuronId: 'nXXX'
+            }
+         }
      ]
  }
 
