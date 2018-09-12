@@ -7,7 +7,7 @@ import { NeuronState, SynapseState, GhostSynapseState, InputState } from '../red
 import Synapse from '../containers/Synapse'
 import Input from '../containers/Input'
 import { GhostSynapse } from './GhostSynapse';
-import { SelectedPanel } from './SelectedPanel';
+import Sidebar from '../containers/Sidebar';
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -91,7 +91,7 @@ export class Network extends React.Component<IProps,IState> {
                 className={styles.container}
             >
             <div className={styles.sidebar}>
-            <SelectedPanel></SelectedPanel>
+            <Sidebar/>
             </div>
 
             <svg

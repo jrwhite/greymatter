@@ -38,6 +38,7 @@ export interface IProps extends RouteComponentProps<any> {
   moveNeuron: (payload: MoveNeuronAction) => void;
   tryMakeSynapseAtAxon: (id: string, neuronId: string) => void;
   tryMakeSynapseAtNewDend: (neuronId: string, neuronPos: Point) => void;
+  selectNeuron: (payload: SelectNeuronAction) => void;
   id: string;
   pos: Point;
   axon: AxonStateType;
@@ -65,9 +66,10 @@ export class Neuron extends React.Component<IProps, IState> {
 
   handleNeuronClick(e: React.MouseEvent<SVGGElement>) {
     e.preventDefault();
-    const { tryMakeSynapseAtNewDend, id, pos } = this.props;
+    const { tryMakeSynapseAtNewDend, id, pos, selectNeuron } = this.props;
 
     tryMakeSynapseAtNewDend(id, pos);
+    selectNeuron({id: id})
   }
 
   handleAxonClick(e: React.MouseEvent<SVGCircleElement>) {
@@ -132,14 +134,14 @@ export class Neuron extends React.Component<IProps, IState> {
             neurons={[{id: id, color: 'red'}]}
           /> */}
         {/* </Popover> */}
-        <PotentialGraphLine
+        {/* <PotentialGraphLine
           // key={id}
           id={id}
           color={'red'}
           deltaX={1}
           height={50}
           maxN={200}
-        />
+        /> */}
         
 
         <g onClick={this.handleNeuronClick.bind(this)}>

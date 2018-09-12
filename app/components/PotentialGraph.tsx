@@ -1,9 +1,9 @@
 import * as React from 'react'
-const PotentialGraphLine = require( '../containers/PotentialGraphLine')
+import { PotentialGraphLine } from './PotentialGraphLine';
 const d3 = require('d3')
 
 export interface IProps {
-    neurons: Array<{id: string, color: string}>,
+    neurons: Array<{id: string}>,
     scaleX: number,
     rangeX: number,
     scaleY: number,
@@ -31,9 +31,11 @@ export class PotentialGraph extends React.Component<IProps> {
                     <PotentialGraphLine
                         key={neuron.id}
                         id={neuron.id}
+                        color='red'
                         deltaX={scaleX}
                         height={height}
                         maxN={maxN}
+                        rangeY={rangeY}
                     />
                 )}
             </g>

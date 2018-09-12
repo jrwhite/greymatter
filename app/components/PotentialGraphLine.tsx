@@ -12,6 +12,7 @@ export interface IProps{
     deltaX: number,
     height: number,
     maxN: number,
+    rangeY: {start: number, stop: number},
 }
 
 export interface IState {
@@ -74,16 +75,17 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
             color,
             deltaX,
             id,
-            height
+            height,
+            rangeY
         } = this.props
 
         const {
             pathData
         } = this.state
 
-        // const y = d3.scale.linear()
-        //     .domain([0, 100])
-        //     .range([height, 0])
+        const y = d3.scaleLinear()
+            .domain([rangeY.start, rangeY.stop])
+            .range([0, height])
 
         const lineSetter = d3.line()
             .x((d: number, i: number) => i * deltaX)
