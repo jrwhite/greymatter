@@ -4,10 +4,10 @@ import * as _ from 'lodash'
 import { CanvasPath_D3Shape, Selection } from 'd3';
 import { RouteComponentProps } from 'react-router';
 import { Text } from '@blueprintjs/core';
+import NeuronPotentialData from '../containers/NeuronPotentialData';
 
-export interface IProps extends RouteComponentProps<any>{
+export interface IProps{
     id: string,
-    potential: number,
     color: string,
     deltaX: number,
     height: number,
@@ -38,19 +38,39 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
     //     )
     // }
 
-    componentDidUpdate (prevProps: IProps, prevState: IState) {
-        // this.renderD3()
-        if (this.state.n !== prevState.n) {}
+    onChange = (potential: number) => {
+        const {
+            pathData,
+            n
+        } = this.state
+        this.setState(
+            {
+                pathData: _.concat(pathData, potential),
+                n: n+1
+            }
+        )
+        this.shift()
     }
 
-    static getDerivedStateFromProps () {
-        
+    shift = () => {
+        if (this.state.n > this.props.maxN) {
+            this.setState(
+                {
+                    pathData: _.tail(this.state.pathData),
+                    n: this.state.n - 1
+                }
+            )
+        }
     }
+
+    transitionSetter = d3.transition()
+            .duration(100)
+            .ease(d3.easeLinear)
+            .on("end", this.shift)
 
     render() {
 
         const {
-            potential,
             color,
             deltaX,
             id,
@@ -58,10 +78,7 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
         } = this.props
 
         const {
-            // container,
-            // path,
-            pathData,
-            n
+            pathData
         } = this.state
 
         // const y = d3.scale.linear()
@@ -72,13 +89,7 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
             .x((d: number, i: number) => i * deltaX)
             .y((d: number) => d)
 
-        // add point
-        this.setState(
-            {
-                pathData: _.concat(pathData, potential),
-                n: n+1
-            }
-        )
+        
                 {/* <path 
                     ref={node => d3.select(node).attr("d",
                         lineSetter(pathData)
@@ -86,48 +97,26 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
                 /> */}
         return (
             <g>
-                <path
+                {/* <path
                     stroke='red'
                     id={id}
                     d={lineSetter(pathData)}
+                /> */}
+                <path 
+                    stroke='red'
+                    ref={
+                        node => d3.select(node)
+                        .attr("d", lineSetter(pathData))
+                        // .attr('transform', null)
+                        // .transition(this.transitionSetter)
+                        // .attr('transform', 'translate(' + deltaX + ')')
+                    }
+                />
+                <NeuronPotentialData
+                    id={id}
+                    onChange={this.onChange}
                 />
             </g>
         )
     }
-
-    // renderD3() {
-    //     const {
-    //         potential,
-    //         maxN,
-    //         deltaX
-    //     } = this.props
-
-    //     const {
-    //         path,
-    //         pathData,
-    //         n
-    //     } = this.state
-
-    //     // remove last point
-    //     const shift = () => {
-    //         if (n > maxN) {
-    //             this.setState(
-    //                 {
-    //                     pathData: _.tail(pathData),
-    //                     n: n - 1
-    //                 }
-    //             )
-    //         }
-    //     }
-
-    //     // slide line left
-    //     const transitionSetter = d3.transition()
-    //         .duration(100)
-    //         .ease(d3.easeLinear)
-    //         .on("end", shift)
-
-    //     path.attr('transform', null)
-    //         .transition(transitionSetter)
-    //         .attr('transform', 'translate(' + deltaX + ')')
-    // }
 }

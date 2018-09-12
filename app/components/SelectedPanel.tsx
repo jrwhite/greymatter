@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import { render } from 'enzyme';
 import { NeuronState } from '../reducers/network';
 import { Button } from '@blueprintjs/core'
+import { PotentialGraph } from './PotentialGraph';
 
 export interface IProps {
     // closeSelectedPanel: () => void,
@@ -29,6 +30,9 @@ export class SelectedPanel extends React.Component<IProps,IState> {
             <p>
                 "Selected"
             </p>
+            <PotentialGraph 
+                
+            />
             <Button icon='refresh' />
             </div>
 
