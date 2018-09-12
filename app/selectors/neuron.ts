@@ -11,3 +11,12 @@ export const makeGetNeuronState = () => createSelector(
         {...neuron}
     )
 )
+
+export const makeGetNeuronPotentialState = () => createSelector(
+    getNeuron,
+    neuron => (
+        {
+            potential: neuron ? neuron.potential : undefined
+        }
+    )
+)

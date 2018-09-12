@@ -26,7 +26,7 @@ import { Soma } from "./Soma";
 import { remote } from "electron";
 import { Popover, Text, Button, Position } from "@blueprintjs/core";
 import { PotentialGraph } from "./PotentialGraph";
-import PotentialGraphLine from  "../containers/PotentialGraphLine"
+import { PotentialGraphLine } from "./PotentialGraphLine";
 // import { PotentialGraphLine } from "./PotentialGraphLine"
 const { Menu } = remote;
 const d3 = require("d3");

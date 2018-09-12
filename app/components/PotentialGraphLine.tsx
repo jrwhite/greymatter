@@ -4,10 +4,10 @@ import * as _ from 'lodash'
 import { CanvasPath_D3Shape, Selection } from 'd3';
 import { RouteComponentProps } from 'react-router';
 import { Text } from '@blueprintjs/core';
+import NeuronPotentialData from '../containers/NeuronPotentialData';
 
-export interface IProps extends RouteComponentProps<any>{
+export interface IProps{
     id: string,
-    potential: number,
     color: string,
     deltaX: number,
     height: number,
@@ -38,19 +38,22 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
     //     )
     // }
 
-    componentDidUpdate (prevProps: IProps, prevState: IState) {
-        // this.renderD3()
-        if (this.state.n !== prevState.n) {}
-    }
-
-    static getDerivedStateFromProps () {
-        
+    onChange = (potential: number) => {
+        const {
+            pathData,
+            n
+        } = this.state
+        this.setState(
+            {
+                pathData: _.concat(pathData, potential),
+                n: n+1
+            }
+        )
     }
 
     render() {
 
         const {
-            potential,
             color,
             deltaX,
             id,
@@ -58,10 +61,7 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
         } = this.props
 
         const {
-            // container,
-            // path,
-            pathData,
-            n
+            pathData
         } = this.state
 
         // const y = d3.scale.linear()
@@ -72,13 +72,7 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
             .x((d: number, i: number) => i * deltaX)
             .y((d: number) => d)
 
-        // add point
-        this.setState(
-            {
-                pathData: _.concat(pathData, potential),
-                n: n+1
-            }
-        )
+        
                 {/* <path 
                     ref={node => d3.select(node).attr("d",
                         lineSetter(pathData)
@@ -90,6 +84,10 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
                     stroke='red'
                     id={id}
                     d={lineSetter(pathData)}
+                />
+                <NeuronPotentialData
+                    id={id}
+                    onChange={this.onChange}
                 />
             </g>
         )
