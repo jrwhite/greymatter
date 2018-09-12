@@ -1,6 +1,6 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
@@ -83,10 +83,12 @@ export type OutputState = {
     dends: Array<DendStateType>
 }
 
-export type\
+export type SelectedNeuronState = {
+    id: string
+}
 
 export type NetworkConfigState = {
-    selectedNeurons = Array<
+    selectedNeurons: Array<SelectedNeuronState>
 }
 
 export type NetworkState = {
@@ -95,6 +97,11 @@ export type NetworkState = {
     synapses: Array<SynapseState>,
     inputs:  Array<InputState>,
     outputs: Array<OutputState>,
+    config: NetworkConfigState
+}
+
+const initialNetworkConfigState = {
+    selectedNeurons: []
 }
 
 const initialNeuronState: NeuronState = {
@@ -141,6 +148,7 @@ const initialNetworkState: NetworkState = {
     synapses: [],
     inputs: [],
     outputs: [],
+    config: initialNetworkConfigState
 }
 
 export default function network(
@@ -203,6 +211,18 @@ export default function network(
                 dends: _.differenceWith(n.dends, action.payload.synapses, (a,b) => a.synapseId == b.id)
             })),
             synapses: _.differenceBy(state.synapses, action.payload.synapses, 'id')
+        }
+    } else if (selectNeuron.test(action)) {
+        return {
+            ...state,
+            config: {
+                ...state.config,
+                selectedNeurons: [
+                    {
+                        id: action.payload.id
+                    }
+                ]
+            }
         }
     }
     else if (addInput.test(action)) {
