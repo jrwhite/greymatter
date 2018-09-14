@@ -6,6 +6,8 @@ import { Button } from '@blueprintjs/core'
 import { PotentialGraph } from './PotentialGraph';
 const d3 = require('d3')
 
+const styles = require('./SideBar.scss')
+
 export interface IProps {
     closeSelectedPanel?: () => void,
     openSelectedPanel?: () => void,

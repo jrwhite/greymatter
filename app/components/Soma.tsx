@@ -21,7 +21,9 @@ export const Soma: React.SFC<IProps> = (props) => {
         theta: 0
     }
 
-    const potPx = (80 * (potential / 100)) - 80
+    const potPx = (80 * (potential / 100)) // [-80, 80]
+
+    console.log(potPx)
 
     return (
         <g
@@ -32,7 +34,7 @@ export const Soma: React.SFC<IProps> = (props) => {
             <defs>
                 <clipPath id={"clip-ellipse-" + id}>
                     <rect
-                        x={potPx >= 0 ? potPx : (80 + potPx) -40}
+                        x={potPx >= 0 ? 40-(potPx) : 40 + ( potPx)}
                         y={-24}
                         width={80}
                         height={48}
