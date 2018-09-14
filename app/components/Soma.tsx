@@ -23,8 +23,6 @@ export const Soma: React.SFC<IProps> = (props) => {
 
     const potPx = (80 * (potential / 100)) // [-80, 80]
 
-    console.log(potPx)
-
     return (
         <g
             className={potential >= 0 ? styles.excited : styles.depressed}

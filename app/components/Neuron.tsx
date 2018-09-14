@@ -120,30 +120,6 @@ export class Neuron extends React.Component<IProps, IState> {
         transform={"translate(" + pos.x + " " + pos.y + ")"}
         onContextMenu={this.handleContextMenu.bind(this)}
       >
-       {/* <Popover
-          isOpen={this.state.selected}
-          position={Position.RIGHT}
-        >
-          <Button text="open">
-          </Button>
-        
-         <Text>
-            {"popover"}
-          </Text> */}
-          {/* <PotentialGraph
-            neurons={[{id: id, color: 'red'}]}
-          /> */}
-        {/* </Popover> */}
-        {/* <PotentialGraphLine
-          // key={id}
-          id={id}
-          color={'red'}
-          deltaX={1}
-          height={50}
-          maxN={200}
-        /> */}
-        
-
         <g onClick={this.handleNeuronClick.bind(this)}>
           <NeuronBody dends={dends} />
           <Soma potential={potential} id={id} />

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { remote } from 'electron'
 import { RouteComponentProps } from 'react-router';
-import {  moveInput, MoveInput, tryMakeSynapseAtAxon, removeInput, addApToSynapse } from '../actions/network'
+import {  moveInput, MoveInput, tryMakeSynapseAtAxon, removeInput, addApToSynapse, SelectInputAction } from '../actions/network'
 import { Point } from '../utils/geometry'
 import { AxonStateType } from '../reducers/network';
 const { Menu } = remote
@@ -12,6 +12,7 @@ export interface IProps extends RouteComponentProps<any> {
     removeInput: (id: string) => void,
     moveInput: (payload: MoveInput) => void,
     tryMakeSynapseAtAxon: (id: string, neuronId: string) => void,
+    selectInput: (payload: SelectInputAction) => void,
     id: string,
     pos: Point,
     axon: AxonStateType
@@ -37,10 +38,11 @@ export class Input extends React.Component<IProps,IState> {
 
     handleInputClick (e: React.MouseEvent<SVGGElement>) {
         e.preventDefault()
-        const { axon, addNewApToSynapse } = this.props
+        const { id, axon, addNewApToSynapse, selectInput } = this.props
 
         // axon.synapses.forEach(s => fireSynapse({id: s.id}))
         axon.synapses.forEach(s => addNewApToSynapse(s.id))
+        selectInput({id: id})
     }
 
     handleAxonClick (e: React.MouseEvent<SVGCircleElement>) {
@@ -92,6 +94,7 @@ export class Input extends React.Component<IProps,IState> {
                     onClick = {this.handleAxonClick.bind(this)}
                 />
             </g>
+            
         )
     }
 

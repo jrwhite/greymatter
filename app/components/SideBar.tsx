@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { RouteComponentProps } from 'react-router';
 import { render } from 'enzyme';
-import { NeuronState, SelectedNeuronState } from '../reducers/network';
-import { Button } from '@blueprintjs/core'
+import { NeuronState, SelectedNeuronState, SelectedInputState } from '../reducers/network';
+import { Button, Text, Slider } from '@blueprintjs/core'
 import { PotentialGraph } from './PotentialGraph';
+import SelectedInput from '../containers/SelectedInput';
 const d3 = require('d3')
 
 const styles = require('./SideBar.scss')
@@ -11,7 +12,8 @@ const styles = require('./SideBar.scss')
 export interface IProps {
     closeSelectedPanel?: () => void,
     openSelectedPanel?: () => void,
-    selectedNeurons: Array<SelectedNeuronState>
+    selectedNeurons: Array<SelectedNeuronState>,
+    selectedInputs: Array<SelectedInputState>,
 }
 
 export interface IState {
@@ -28,7 +30,8 @@ export class SideBar extends React.Component<IProps,IState> {
 
     render() {
         const {
-            selectedNeurons
+            selectedNeurons,
+            selectedInputs
         } = this.props
         
         return (
@@ -53,6 +56,17 @@ export class SideBar extends React.Component<IProps,IState> {
                     undefined
                 }
             </svg>
+            {(selectedInputs.length > 0) ?
+                <div
+                    className={styles.input}
+                >
+                <SelectedInput
+                    id={selectedInputs[0].id}
+                    />
+                </div>
+                :
+                undefined
+            }
             <Button icon='refresh' />
             </div>
 

@@ -42,7 +42,6 @@ export class Network extends React.Component<IProps,IState> {
     state: IState = initialState
 
     componentDidMount () {
-        console.log(this.props)
         this.startRuntime()
     }
 
@@ -60,7 +59,7 @@ export class Network extends React.Component<IProps,IState> {
             {
                 label: 'Add input',
                 click: () => addNewInput(pos)
-            } 
+            }
         ]).popup(remote.getCurrentWindow())
     }
 

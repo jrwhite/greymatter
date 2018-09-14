@@ -5,11 +5,16 @@ import { createSelector } from "reselect";
 const getSelectedNeurons = (state: IState, props: IProps) =>
     state.network.config.selectedNeurons
 
+const getSelectedInputs = (state: IState, props: IProps) => 
+    state.network.config.selectedInputs
+
 export const makeGetSidepanelState = () => createSelector(
     getSelectedNeurons,
-    selectedNeurons => (
+    getSelectedInputs,
+    (selectedNeurons, selectedInputs) => (
         {
-            selectedNeurons: selectedNeurons
+            selectedNeurons: selectedNeurons,
+            selectedInputs: selectedInputs
         }
     )
 ) 

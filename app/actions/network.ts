@@ -24,6 +24,10 @@ export type SelectNeuronAction = {
     id: string
 }
 
+export type SelectInputAction = {
+    id: string
+}
+
 export type AddNewSynapseAction = {
     axon: {
         id: string,
@@ -100,6 +104,7 @@ export const removeNeurons = actionCreator<RemoveNeuronsAction>('REMOVE_NEURONS'
 export const moveNeuron = actionCreator<MoveNeuronAction>('MOVE_NEURON')
 export const addNeuron = actionCreator<AddNeuronAction>('ADD_NEURON')
 export const selectNeuron = actionCreator<SelectNeuronAction>('SELECT_NEURON')
+export const selectInput = actionCreator<SelectInputAction>('SELECT_INPUT')
 export const addSynapse = actionCreator<AddSynapseAction>('ADD_SYNAPSE')
 export const removeSynapses = actionCreator<RemoveSynapsesAction>('REMOVE_SYNAPSE')
 export const addApToSynapse = actionCreator<AddApToSynapse>('ADD_AP_TO_SYNAPSE')
