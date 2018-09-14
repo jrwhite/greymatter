@@ -1,5 +1,5 @@
 import { IState } from "../reducers";
-import { IProps } from "../components/SelectedPanel";
+import { IProps } from "../components/SideBar";
 import { createSelector } from "reselect";
 
 const getSelectedNeurons = (state: IState, props: IProps) =>

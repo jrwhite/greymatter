@@ -2,10 +2,15 @@
 // @import "~@blueprintjs/core/lib/css/blueprint.css";
 @import "~@blueprintjs/core/lib/scss/variables";
 
+// html {
+//   height: 100%;
+// }
+
 body {
   position: relative;
   color: white;
   height: 100vh;
+  // height: 100%;
   // background-color: #232C39;
   background-color: $dark-gray1;
   // background-image: linear-gradient(45deg, rgba(230, 230, 230, 0.466) 10%, rgba(74, 75, 72, 0.466));

@@ -20,7 +20,7 @@ const initialState: IState = {
     figures: []
 }
 
-export class SelectedPanel extends React.Component<IProps,IState> {
+export class SideBar extends React.Component<IProps,IState> {
     props: IProps
     state: IState = initialState
 
@@ -39,7 +39,6 @@ export class SelectedPanel extends React.Component<IProps,IState> {
                 height={300}
                 width={300}
             >
-            
                 {(selectedNeurons.length > 0) ?
                     <PotentialGraph
                         neurons={selectedNeurons}
