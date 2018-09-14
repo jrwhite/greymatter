@@ -1,6 +1,6 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
@@ -30,12 +30,28 @@ export type DendStateType = {
     length: number // derived from short-term plast
 }
 
+export type IzhikParams = {
+    a: number,
+    b: number,
+    c: number,
+    d: number
+}
+
+export type IzhikState = {
+    params: IzhikParams,
+    u: number,
+    current: number,
+    potToMv: (pot: number) => number // multiply with potential to get mV
+    mvToPot: (mv: number) => number
+}
+
 export type NeuronState = {
     id: string,
     pos: Point,
     potential: number,
+    izhik: IzhikState,
     axon: AxonStateType,
-    dends: Array<DendStateType>
+    dends: Array<DendStateType>,
 }
 
 export type ActionPotentialState = {
@@ -111,10 +127,24 @@ const initialNetworkConfigState = {
     selectedInputs: [],
 }
 
+const initialIzhikState: IzhikState = {
+    params: {
+        a: 0.02,
+        b: 0.2,
+        c: -65,
+        d: 2
+    },
+    u: 0,
+    current: 0,
+    potToMv: (pot: number) => pot * (30/100),
+    mvToPot: (mv: number) => mv * (100/30)
+}
+
 const initialNeuronState: NeuronState = {
     id: 'n',
     pos: {x: 0, y: 0},
     potential: 0,
+    izhik: initialIzhikState,
     axon: {id: 'a', cpos: {x: 50, y: 0}, synapses: []},
     dends: []
 }
@@ -289,6 +319,27 @@ export default function network(
                         return {
                             ...n,
                             ...action.payload
+                        }
+                    }
+                    return n
+                }
+            )
+        }
+    } else if (changeIzhikParams.test(action)) {
+        return {
+            ...state,
+            neurons: state.neurons.map(
+                (n: NeuronState) => {
+                    if (n.id == action.payload.id) {
+                        return {
+                            ...n,
+                            izhik: {
+                                ...n.izhik,
+                                params: {
+                                    ...n.izhik.params,
+                                    ...action.payload.params
+                                }
+                            }
                         }
                     }
                     return n

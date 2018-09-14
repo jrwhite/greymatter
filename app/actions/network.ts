@@ -1,7 +1,7 @@
 import * as _ from 'lodash'
 import { Point, Line, Ellipse, DendGeo, calcClosestDend, addPoints } from "../utils/geometry";
 import { actionCreator, actionCreatorVoid } from "./helpers";
-import { AxonStateType, DendStateType, NeuronState } from '../reducers/network';
+import { AxonStateType, DendStateType, NeuronState, IzhikParams } from '../reducers/network';
 import { IState } from '../reducers';
 import { getAxonAbsPos } from '../selectors/synapse';
 
@@ -105,6 +105,11 @@ export type RemoveApFromSynapse = {
     synapseId: string
 }
 
+export type ChangeIzhikParamsAction = {
+    id: string,
+    params: Partial<IzhikParams>
+}
+
 export const removeNeurons = actionCreator<RemoveNeuronsAction>('REMOVE_NEURONS')
 export const moveNeuron = actionCreator<MoveNeuronAction>('MOVE_NEURON')
 export const addNeuron = actionCreator<AddNeuronAction>('ADD_NEURON')
@@ -125,6 +130,7 @@ export const addInput = actionCreator<AddInput>('ADD_INPUT')
 export const removeInput = actionCreator<RemoveInput>('REMOVE_INPUT')
 export const moveInput = actionCreator<MoveInput>('MOVE_INPUT')
 export const changeInputRate = actionCreator<ChangeInputRate>('CHANGE_INPUT_RATE')
+export const changeIzhikParams = actionCreator<ChangeIzhikParamsAction>('CHANGE_IZHIK_PARAMS')
 
 export function addNewInput(pos: Point) {
     return (dispatch: Function) => {

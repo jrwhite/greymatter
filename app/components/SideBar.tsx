@@ -5,6 +5,7 @@ import { NeuronState, SelectedNeuronState, SelectedInputState } from '../reducer
 import { Button, Text, Slider } from '@blueprintjs/core'
 import { PotentialGraph } from './PotentialGraph';
 import SelectedInput from '../containers/SelectedInput';
+import SelectedNeuron from '../containers/SelectedNeuron';
 const d3 = require('d3')
 
 const styles = require('./SideBar.scss')
@@ -40,11 +41,10 @@ export class SideBar extends React.Component<IProps,IState> {
             {/* <p>
                 "Selected"
             </p> */}
-            <svg
-                height={300}
-                width={300}
-            >
+            
                 {(selectedNeurons.length > 0) ?
+                    <div>
+                    <svg>
                     <PotentialGraph
                         neurons={selectedNeurons}
                         scaleX={1}
@@ -52,10 +52,14 @@ export class SideBar extends React.Component<IProps,IState> {
                         scaleY={1}
                         rangeY={{ start: -150, stop: 150 }}
                     />
+                    </svg>
+                    <SelectedNeuron
+                        id={selectedNeurons[0].id}
+                    />
+                    </div>
                     :
                     undefined
                 }
-            </svg>
             {(selectedInputs.length > 0) ?
                 <div
                     className={styles.input}
