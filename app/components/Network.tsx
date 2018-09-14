@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router'
 import Neuron from '../containers/Neuron'
 import { Point, addPoints } from '../utils/geometry';
 import { remote } from 'electron';
-import { NeuronState, SynapseState, GhostSynapseState, InputState } from '../reducers/network';
+import { NeuronState, SynapseState, GhostSynapseState, InputState, NetworkConfigState } from '../reducers/network';
 import Synapse from '../containers/Synapse'
 import Input from '../containers/Input'
 import { GhostSynapse } from './GhostSynapse';
@@ -17,10 +17,12 @@ export interface IProps extends RouteComponentProps<any> {
     addNewNeuron(pos: Point): void,
     addNewInput(pos: Point): void,
     decayNetwork: () => void,
+    stepNetwork: () => void, // izhik step
     ghostSynapse: GhostSynapseState,
     inputs: Array<InputState>,
     neurons: Array<NeuronState>,
-    synapses: Array<SynapseState>
+    synapses: Array<SynapseState>,
+    config: NetworkConfigState
 }
 
 export interface IState {
@@ -134,9 +136,10 @@ export class Network extends React.Component<IProps,IState> {
     }
 
     startRuntime() {
-        const { decayNetwork } = this.props
+        const { decayNetwork, stepNetwork } = this.props
         const step = () => {
-            decayNetwork()
+            // decayNetwork()
+            stepNetwork()
         }
         const interval = d3.interval(step, 100)
         this.setState({interval: interval})

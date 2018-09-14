@@ -89,7 +89,8 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
 
         const lineSetter = d3.line()
             .x((d: number, i: number) => i * deltaX)
-            .y((d: number) => d)
+            .y((d: number) => y(d))
+
 
         return (
             <g>

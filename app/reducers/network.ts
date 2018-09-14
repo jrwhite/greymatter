@@ -1,10 +1,11 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
 import { INPUT_GHOST } from "@blueprintjs/core/lib/esm/common/classes";
+import { stepIzhikPotential, stepIzhikU } from "../utils/runtime";
 
 export type AxonStateType = {
     id: string,
@@ -111,6 +112,7 @@ export type SelectedInputState = {
 export type NetworkConfigState = {
     selectedNeurons: Array<SelectedNeuronState>,
     selectedInputs: Array<SelectedInputState>,
+    stepSize: number // in ms
 }
 
 export type NetworkState = {
@@ -125,6 +127,7 @@ export type NetworkState = {
 const initialNetworkConfigState = {
     selectedNeurons: [],
     selectedInputs: [],
+    stepSize: 1
 }
 
 const initialIzhikState: IzhikState = {
@@ -367,7 +370,11 @@ export default function network(
                 if (n.id == action.payload.id) {
                     return {
                         ...n,
-                        potential: -100
+                        potential: n.izhik.mvToPot(n.izhik.params.c),
+                        izhik: {
+                            ...n.izhik,
+                            u: n.izhik.u + n.izhik.params.d
+                        }
                     }
                 }
                 return n
@@ -507,7 +514,31 @@ export default function network(
                 dend: undefined
             }
         }
-    } else if (decayNetwork.test(action)) {
+    } else if (stepNetwork.test(action)) {
+        return {
+            ...state,
+            neurons: state.neurons.map(
+                (n: NeuronState) => {
+                    const v = n.izhik.potToMv(n.potential)
+                    return {
+                        ...n,
+                        potential: n.izhik.mvToPot(stepIzhikPotential(
+                            v,
+                            n.izhik
+                        )),
+                        izhik: {
+                            ...n.izhik,
+                            u: stepIzhikU(
+                                v,
+                                n.izhik
+                            )
+                        }
+                    }
+                }
+            )
+        }
+    }
+    else if (decayNetwork.test(action)) {
         return {
             ...state,
             neurons: state.neurons.map(n => ({

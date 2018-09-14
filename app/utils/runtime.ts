@@ -1,6 +1,6 @@
 import { IState } from "../reducers";
 import * as _ from 'lodash'
-import { SynapseState, NeuronState } from "../reducers/network";
+import { SynapseState, NeuronState, IzhikState } from "../reducers/network";
 
 const d3 = require('d3')
 
@@ -12,9 +12,23 @@ const fireSynapse = (neurons: Array<NeuronState>, synapse: SynapseState) => {
     neurons.find(n => n.id == synapse.dend.neuronId)
 }
 
-const step = (state: IState) => {
+// v in mV
+export const stepIzhikPotential = (
+    v: number,
+    izhik: IzhikState,
+    stepSize: number = 1
+) : number => {
+    return v + stepSize * (
+        (0.04 * Math.pow(v,2)) + (5 * v) + 140 - izhik.u + izhik.current 
+    )
 }
 
-const startRuntime = () => {
-    const interval = d3.interval(step, 100)
+export const stepIzhikU = (
+    v: number,
+    izhik: IzhikState,
+    stepSize: number = 1
+) : number => {
+    const u = izhik.u
+    const {a, b} = izhik.params
+    return u + a * (b * v - u)
 }

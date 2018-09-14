@@ -47,10 +47,10 @@ export class SideBar extends React.Component<IProps,IState> {
                     <svg>
                     <PotentialGraph
                         neurons={selectedNeurons}
-                        scaleX={1}
+                        scaleX={3}
                         rangeX={50}
-                        scaleY={1}
-                        rangeY={{ start: -150, stop: 150 }}
+                        scaleY={0.4}
+                        rangeY={{ start: -300, stop: 100 }}
                     />
                     </svg>
                     <SelectedNeuron

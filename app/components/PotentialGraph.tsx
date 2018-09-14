@@ -25,18 +25,19 @@ export class PotentialGraph extends React.Component<IProps> {
         const maxN = rangeX
         const height = (rangeY.stop - rangeY.start) * scaleY
         const scale = d3.scaleLinear()
-            .domain([-200, 200])
-            .range([0, 200])
+            .domain([rangeY.start, rangeY.stop])
+            .range([0, height])
+            // .clamp(true)
         const axis = d3.axisRight(scale).ticks(5)
 
         return (
             <g
-                transform="translate(100,100)"
+                // transform="translate(100,100)"
             >
             <g
             ref={
                 node => d3.select(node)
-                .attr("transform", "translate(-100,-100)")
+                .attr("transform", "translate(0,0)")
                 .call(axis)
             }
             >

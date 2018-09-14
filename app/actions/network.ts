@@ -131,6 +131,7 @@ export const removeInput = actionCreator<RemoveInput>('REMOVE_INPUT')
 export const moveInput = actionCreator<MoveInput>('MOVE_INPUT')
 export const changeInputRate = actionCreator<ChangeInputRate>('CHANGE_INPUT_RATE')
 export const changeIzhikParams = actionCreator<ChangeIzhikParamsAction>('CHANGE_IZHIK_PARAMS')
+export const stepNetwork = actionCreatorVoid('STEP_NETWORK')
 
 export function addNewInput(pos: Point) {
     return (dispatch: Function) => {
