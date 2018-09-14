@@ -52,6 +52,7 @@ export class SelectedInput extends React.Component<IProps> {
                 value={input.rate}
                 onChange={sliderHandler}
                 vertical={false}
+                onRelease={true}
             />
             </div>
         )
