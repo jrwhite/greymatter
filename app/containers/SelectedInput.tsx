@@ -47,7 +47,7 @@ export class SelectedInput extends React.Component<IProps> {
             <Slider
                 min={0}
                 max={10}
-                stepSize={0.1}
+                stepSize={1}
                 labelStepSize={10}
                 value={input.rate}
                 onRelease={sliderHandler}

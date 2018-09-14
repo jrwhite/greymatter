@@ -4,6 +4,7 @@ import { RouteComponentProps } from 'react-router';
 import {  moveInput, MoveInput, tryMakeSynapseAtAxon, removeInput, addApToSynapse, SelectInputAction } from '../actions/network'
 import { Point } from '../utils/geometry'
 import { AxonStateType } from '../reducers/network';
+import { TimeInterval, Timer } from 'd3';
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -15,20 +16,25 @@ export interface IProps extends RouteComponentProps<any> {
     selectInput: (payload: SelectInputAction) => void,
     id: string,
     pos: Point,
-    axon: AxonStateType
+    axon: AxonStateType,
+    rate: number
 }
 
 export interface IState {
-    selected: boolean
+    selected: boolean,
+    interval?: Timer
 }
 
 export class Input extends React.Component<IProps,IState> {
     props: IProps
-    state: IState = {selected: false}
+    state: IState = {selected: false, interval: undefined}
 
     componentDidUpdate (prevProps: IProps, prevState: IState) {
         if (this.state.selected != prevState.selected) {
             this.renderD3()
+        }
+        if (this.props.rate != prevProps.rate) {
+            this.startFireRate()
         }
     }
 
@@ -36,12 +42,17 @@ export class Input extends React.Component<IProps,IState> {
         this.renderD3()
     }
 
+    fire = () => {
+        const { id, axon, addNewApToSynapse, selectInput } = this.props
+        axon.synapses.forEach(s => addNewApToSynapse(s.id))
+    }
+
     handleInputClick (e: React.MouseEvent<SVGGElement>) {
         e.preventDefault()
         const { id, axon, addNewApToSynapse, selectInput } = this.props
 
         // axon.synapses.forEach(s => fireSynapse({id: s.id}))
-        axon.synapses.forEach(s => addNewApToSynapse(s.id))
+        this.fire()
         selectInput({id: id})
     }
 
@@ -67,12 +78,38 @@ export class Input extends React.Component<IProps,IState> {
             }
         ]).popup(remote.getCurrentWindow())
     }
+
+    startFireRate () {
+        const {
+            rate
+        } = this.props
+
+        const {
+            interval
+        } = this.state
+
+        if (interval) {
+            interval.stop()
+        }
+
+        if (rate != 0) {
+            this.setState(
+                {
+                    interval: d3.interval(
+                        this.fire,
+                        1000 * (1 / rate)
+                    )
+                }
+            )
+        }
+    }
     
     render() {
         const {
             pos,
             id,
             axon,
+            rate
         } = this.props
 
         return (
