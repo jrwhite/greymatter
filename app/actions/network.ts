@@ -90,6 +90,11 @@ export type MoveInput = {
     pos: Point
 }
 
+export type ChangeInputRate = {
+    id: string,
+    rate: number
+}
+
 export type AddApToSynapse = {
     id: string,
     synapseId: string
@@ -119,6 +124,7 @@ export const exciteNeuron = actionCreator<ExciteNeuron>('EXCITE_NEURON')
 export const addInput = actionCreator<AddInput>('ADD_INPUT')
 export const removeInput = actionCreator<RemoveInput>('REMOVE_INPUT')
 export const moveInput = actionCreator<MoveInput>('MOVE_INPUT')
+export const changeInputRate = actionCreator<ChangeInputRate>('CHANGE_INPUT_RATE')
 
 export function addNewInput(pos: Point) {
     return (dispatch: Function) => {

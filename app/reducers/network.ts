@@ -1,9 +1,10 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
+import { INPUT_GHOST } from "@blueprintjs/core/lib/esm/common/classes";
 
 export type AxonStateType = {
     id: string,
@@ -242,6 +243,20 @@ export default function network(
                     }
                 ]
             }
+        }
+    }
+    else if (changeInputRate.test(action)) {
+        return {
+            ...state,
+            inputs: _.map(state.inputs, (input: InputState) => {
+                if (input.id === action.payload.id) {
+                    return {
+                        ...input,
+                        rate: action.payload.rate
+                    }
+                }
+                return input
+            })
         }
     }
     else if (addInput.test(action)) {

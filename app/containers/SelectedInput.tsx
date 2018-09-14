@@ -3,7 +3,7 @@ import { InputState } from '../reducers/network'
 import * as _ from 'lodash'
 import { IState } from '../reducers';
 import { createSelector } from 'reselect';
-import { Slider } from '@blueprintjs/core';
+import { Slider, Text } from '@blueprintjs/core';
 import { Dispatch, bindActionCreators } from 'redux';
 import * as NetworkActions from '../actions/network'
 import { connect } from 'react-redux';
@@ -23,6 +23,7 @@ const makeGetSelecteInputState = () => createSelector(
 )
 
 export interface IProps {
+    changeInputRate: (payload: NetworkActions.ChangeInputRate) => void,
     id: string,
     input: InputState
 }
@@ -32,17 +33,27 @@ export class SelectedInput extends React.Component<IProps> {
 
     render () {
         const {
-            input
+            id,
+            input,
+            changeInputRate
         } = this.props
+
+        const sliderHandler = (value: number) => 
+            changeInputRate({id: id, rate: value})
         
         return (
+            <div>
+            <Text>Input</Text>
             <Slider
                 min={0}
                 max={10}
-                stepSize={1}
-                value={0}
+                stepSize={0.1}
+                labelStepSize={10}
+                value={input.rate}
+                onChange={sliderHandler}
                 vertical={false}
             />
+            </div>
         )
     }
 }
