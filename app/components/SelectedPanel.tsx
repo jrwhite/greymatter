@@ -4,11 +4,12 @@ import { render } from 'enzyme';
 import { NeuronState, SelectedNeuronState } from '../reducers/network';
 import { Button } from '@blueprintjs/core'
 import { PotentialGraph } from './PotentialGraph';
+const d3 = require('d3')
 
 export interface IProps {
     closeSelectedPanel?: () => void,
     openSelectedPanel?: () => void,
-    selectedNeurons: Array<SelectedNeuronState>,
+    selectedNeurons: Array<SelectedNeuronState>
 }
 
 export interface IState {
@@ -29,11 +30,16 @@ export class SelectedPanel extends React.Component<IProps,IState> {
         } = this.props
         
         return (
+
             <div>
-            <p>
+            {/* <p>
                 "Selected"
-            </p>
-            <svg>
+            </p> */}
+            <svg
+                height={300}
+                width={300}
+            >
+            
                 {(selectedNeurons.length > 0) ?
                     <PotentialGraph
                         neurons={selectedNeurons}

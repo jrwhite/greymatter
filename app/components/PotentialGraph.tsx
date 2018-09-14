@@ -24,9 +24,23 @@ export class PotentialGraph extends React.Component<IProps> {
 
         const maxN = rangeX
         const height = (rangeY.stop - rangeY.start) * scaleY
+        const scale = d3.scaleLinear()
+            .domain([-200, 200])
+            .range([0, 200])
+        const axis = d3.axisRight(scale).ticks(5)
 
         return (
-            <g>
+            <g
+                transform="translate(100,100)"
+            >
+            <g
+            ref={
+                node => d3.select(node)
+                .attr("transform", "translate(-100,-100)")
+                .call(axis)
+            }
+            >
+            </g>
                 {neurons.map((neuron: {id: string, color: string}) =>
                     <PotentialGraphLine
                         key={neuron.id}

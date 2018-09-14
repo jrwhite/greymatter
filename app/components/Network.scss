@@ -3,14 +3,20 @@
 .container {
     display: flex;
     flex-direction: row-reverse;
+    align-self: stretch;
+    height:1000px;
 }
 
 .editor {
     flex: 1 1 auto;
     background-color: $dark-gray1;
+    align-self: stretch;
+    height: 100%;
 }
 
 .sidebar {
     flex: 1 1 100px;
     background-color: $gray1;
+    align-self: stretch;
+    height: 100%;
 }

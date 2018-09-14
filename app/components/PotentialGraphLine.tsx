@@ -91,12 +91,6 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
             .x((d: number, i: number) => i * deltaX)
             .y((d: number) => d)
 
-        
-                {/* <path 
-                    ref={node => d3.select(node).attr("d",
-                        lineSetter(pathData)
-                    )}
-                /> */}
         return (
             <g>
                 {/* <path
@@ -105,6 +99,7 @@ export class PotentialGraphLine extends React.Component<IProps,IState> {
                     d={lineSetter(pathData)}
                 /> */}
                 <path 
+                fill='none'
                     stroke='red'
                     ref={
                         node => d3.select(node)
