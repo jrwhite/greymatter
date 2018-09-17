@@ -8,6 +8,7 @@ import Synapse from '../containers/Synapse'
 import Input from '../containers/Input'
 import { GhostSynapse } from './GhostSynapse';
 import Sidebar from '../containers/Sidebar';
+import { Text, Button, ButtonGroup } from '@blueprintjs/core';
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -95,6 +96,7 @@ export class Network extends React.Component<IProps,IState> {
             <Sidebar/>
             </div>
 
+            <div className={styles.wrapper} >
             <svg
                 className={styles.editor}
                 onContextMenu={this.onContextMenu.bind(this)}
@@ -130,8 +132,17 @@ export class Network extends React.Component<IProps,IState> {
                     />
                 )}
             </svg>
+            {/* <Text className={styles.overlay}>Overlay</Text> */}
+            {/* <div className={styles.overlay} > */}
+            <ButtonGroup minimal={true} className={styles.overlay}>
+            <Button icon="fast-backward" />
+            <Button icon="play" />
+            <Button icon="fast-forward" />
+            <Button icon="refresh" />
+            </ButtonGroup>
+            {/* </div> */}
             </div>
-
+            </div>
         )
     }
 
