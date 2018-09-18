@@ -9,6 +9,7 @@ import Input from '../containers/Input'
 import { GhostSynapse } from './GhostSynapse';
 import Sidebar from '../containers/Sidebar';
 import { Text, Button, ButtonGroup } from '@blueprintjs/core';
+import { pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork } from '../actions/network';
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -19,18 +20,22 @@ export interface IProps extends RouteComponentProps<any> {
     addNewInput(pos: Point): void,
     decayNetwork: () => void,
     stepNetwork: () => void, // izhik step
+    pauseNetwork: () => void,
+    resumeNetwork: () => void,
+    speedUpNetwork: () => void,
+    slowDownNetwork: () => void,
     ghostSynapse: GhostSynapseState,
     inputs: Array<InputState>,
     neurons: Array<NeuronState>,
     synapses: Array<SynapseState>,
-    config: NetworkConfigState
+    config: NetworkConfigState,
 }
 
 export interface IState {
     mouse: {
         pos: Point
     }
-    interval: Object
+    interval: any
 }
 
 const initialState: IState = {
@@ -46,6 +51,12 @@ export class Network extends React.Component<IProps,IState> {
 
     componentDidMount () {
         this.startRuntime()
+    }
+
+    componentDidUpdate (prevProps: IProps, prevState: IState) {
+        if (prevProps.config != this.props.config) {
+            this.restartRuntime()
+        }
     }
 
     onContextMenu(e: any) {
@@ -82,6 +93,11 @@ export class Network extends React.Component<IProps,IState> {
             neurons,
             synapses,
             inputs,
+            slowDownNetwork,
+            speedUpNetwork,
+            pauseNetwork,
+            resumeNetwork,
+            config
         } = this.props
 
         // TODO: refactor ghostSynapse into separate component
@@ -135,9 +151,15 @@ export class Network extends React.Component<IProps,IState> {
             {/* <Text className={styles.overlay}>Overlay</Text> */}
             {/* <div className={styles.overlay} > */}
             <ButtonGroup minimal={true} className={styles.overlay}>
-            <Button icon="fast-backward" />
-            <Button icon="play" />
-            <Button icon="fast-forward" />
+            <Button icon="fast-backward" 
+                onClick={slowDownNetwork}
+            />
+            <Button icon={config.isPaused ? "play" : "pause"} 
+                onClick={config.isPaused ? resumeNetwork : pauseNetwork}
+            />
+            <Button icon="fast-forward" 
+                onClick={speedUpNetwork}
+            />
             <Button icon="refresh" />
             </ButtonGroup>
             {/* </div> */}
@@ -147,12 +169,31 @@ export class Network extends React.Component<IProps,IState> {
     }
 
     startRuntime() {
-        const { decayNetwork, stepNetwork } = this.props
+        const { decayNetwork, stepNetwork, config } = this.props
         const step = () => {
             // decayNetwork()
             stepNetwork()
         }
-        const interval = d3.interval(step, 50)
+        const interval = d3.interval(step, config.stepInterval)
         this.setState({interval: interval})
+        if (config.isPaused) {
+            interval.stop()
+        }
+    }
+
+    restartRuntime() {
+        const {config, stepNetwork} = this.props
+        const {interval} = this.state
+        const step = () => {
+            stepNetwork()
+        }
+        if (config.isPaused) {
+            interval.stop()
+        } else {
+            // interval.restart(step, config.stepInterval)
+            interval.stop()
+            const newInterval = d3.interval(step, config.stepInterval)
+            this.setState({interval: newInterval})
+        }
     }
 }

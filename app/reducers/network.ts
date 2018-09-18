@@ -1,6 +1,6 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
@@ -112,7 +112,9 @@ export type SelectedInputState = {
 export type NetworkConfigState = {
     selectedNeurons: Array<SelectedNeuronState>,
     selectedInputs: Array<SelectedInputState>,
-    stepSize: number // in ms
+    stepSize: number, // in ms,
+    stepInterval: number,
+    isPaused: boolean,
 }
 
 export type NetworkState = {
@@ -127,7 +129,9 @@ export type NetworkState = {
 const initialNetworkConfigState = {
     selectedNeurons: [],
     selectedInputs: [],
-    stepSize: 1
+    stepSize: 1,
+    stepInterval: 50,
+    isPaused: true,
 }
 
 const initialIzhikState: IzhikState = {
@@ -536,6 +540,42 @@ export default function network(
                     }
                 }
             )
+        }
+    }
+    
+    else if (pauseNetwork.test(action)) {
+        return {
+            ...state,
+            config: {
+                ...state.config,
+                isPaused: true,
+            }
+        }
+    } else if (resumeNetwork.test(action)) {
+        return {
+            ...state,
+            config: {
+                ...state.config,
+                isPaused: false
+            }
+        }
+    } else if (speedUpNetwork.test(action)) {
+        return {
+            ...state,
+            config: {
+                ...state.config,
+                stepInterval: state.config.stepInterval >= 20 ?
+                    state.config.stepInterval - 10 :
+                    10
+            }
+        }
+    } else if (slowDownNetwork.test(action)) {
+        return {
+            ...state,
+            config: {
+                ...state.config,
+                stepInterval: state.config.stepInterval + 10
+            }
         }
     }
     else if (decayNetwork.test(action)) {

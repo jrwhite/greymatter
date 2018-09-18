@@ -132,6 +132,10 @@ export const moveInput = actionCreator<MoveInput>('MOVE_INPUT')
 export const changeInputRate = actionCreator<ChangeInputRate>('CHANGE_INPUT_RATE')
 export const changeIzhikParams = actionCreator<ChangeIzhikParamsAction>('CHANGE_IZHIK_PARAMS')
 export const stepNetwork = actionCreatorVoid('STEP_NETWORK')
+export const pauseNetwork = actionCreatorVoid('PAUSE_NETWORK')
+export const resumeNetwork = actionCreatorVoid('RESUME_NETWORK')
+export const speedUpNetwork = actionCreatorVoid('SPEED_UP_NETWORK')
+export const slowDownNetwork = actionCreatorVoid('SLOW_DOWN_NETWORK')
 
 export function addNewInput(pos: Point) {
     return (dispatch: Function) => {

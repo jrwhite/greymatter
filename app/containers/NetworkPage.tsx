@@ -10,7 +10,8 @@ function mapStateToProps(state: IState): Partial<IProps> {
         inputs: state.network.inputs,
         neurons: state.network.neurons,
         synapses: state.network.synapses,
-        ghostSynapse: state.network.ghostSynapse
+        ghostSynapse: state.network.ghostSynapse,
+        config: state.network.config,
     }
 }
 
