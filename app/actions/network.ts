@@ -115,6 +115,12 @@ export type ChangeIzhikParamsAction = {
     params: Partial<IzhikParams>
 }
 
+export type ChangeInputHotkeyAction = {
+    id: string,
+    hotkey: string
+}
+
+export const changeInputHotkey = actionCreator<ChangeInputHotkeyAction>('CHANGE_INPUT_HOTKEY')
 export const rotateNeuron = actionCreator<RotateNeuronAction>('ROTATE_NEURON')
 export const removeNeurons = actionCreator<RemoveNeuronsAction>('REMOVE_NEURONS')
 export const moveNeuron = actionCreator<MoveNeuronAction>('MOVE_NEURON')

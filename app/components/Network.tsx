@@ -8,8 +8,8 @@ import Synapse from '../containers/Synapse'
 import Input from '../containers/Input'
 import { GhostSynapse } from './GhostSynapse';
 import Sidebar from '../containers/Sidebar';
-import { Text, Button, ButtonGroup } from '@blueprintjs/core';
-import { pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork } from '../actions/network';
+import { Text, Button, ButtonGroup, HotkeysTarget, Hotkeys, Hotkey } from '@blueprintjs/core';
+import { pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork, addNewApToSynapse } from '../actions/network';
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -25,6 +25,7 @@ export interface IProps extends RouteComponentProps<any> {
     speedUpNetwork: () => void,
     slowDownNetwork: () => void,
     resetNetwork: () => void,
+    addNewApToSynapse: (id: string) => void,
     ghostSynapse: GhostSynapseState,
     inputs: Array<InputState>,
     neurons: Array<NeuronState>,
@@ -46,6 +47,7 @@ const initialState: IState = {
     interval: Object
 }
 
+@HotkeysTarget
 export class Network extends React.Component<IProps,IState> {
     props: IProps
     state: IState = initialState
@@ -170,6 +172,27 @@ export class Network extends React.Component<IProps,IState> {
             </div>
             </div>
         )
+    }
+
+    renderHotkeys() {
+        const {
+            inputs,
+            addNewApToSynapse
+        } = this.props
+
+        return <Hotkeys>
+            {inputs.map((input: InputState) =>
+                input.hotkey ? 
+                <Hotkey
+                    label={"fire input " + input.id}
+                    global={false}
+                    combo={input.hotkey}
+                    onKeyDown={() => input.axon.synapses.forEach(s => addNewApToSynapse(s.id))}
+                />
+                :
+                undefined
+            )}
+        </Hotkeys>
     }
 
     startRuntime() {

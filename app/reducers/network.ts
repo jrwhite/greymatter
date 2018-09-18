@@ -1,6 +1,6 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork, rotateNeuron,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork, rotateNeuron, changeInputHotkey,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
@@ -93,6 +93,7 @@ export type InputState = {
     rate: number,
     pos: Point,
     axon: AxonStateType,
+    hotkey?: string
 }
 
 export type OutputState = {
@@ -186,6 +187,7 @@ const initialInputState: InputState = {
     rate: 0,
     pos: {x: 0, y: 0},
     axon: {id: 'a', cpos: {x: 50, y: 0}, synapses: []},
+    hotkey: undefined
 }
 
 const initialNetworkState: NetworkState = {
@@ -368,6 +370,20 @@ export default function network(
                     return n
                 }
             )
+        }
+    }
+    else if (changeInputHotkey.test(action)) {
+        return {
+            ...state,
+            inputs: _.map(state.inputs, (input: InputState) => {
+                if (input.id == action.payload.id) {
+                    return {
+                        ...input,
+                        hotkey: action.payload.hotkey
+                    }
+                }
+                return input
+            })
         }
     }
     else if (exciteNeuron.test(action)) {

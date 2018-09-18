@@ -60,18 +60,18 @@ export class SideBar extends React.Component<IProps,IState> {
                     :
                     undefined
                 }
-            <ControlGroup 
+            {/* <ControlGroup 
                 fill={false}
                 vertical={true}
-            >
+            > */}
             {(selectedInputs.length > 0) ?
                 <SelectedInput
                     id={selectedInputs[0].id}
-                    />
+                />
                 :
                 undefined
             }
-            </ControlGroup>
+            {/* </ControlGroup> */}
             </div>
 
         )

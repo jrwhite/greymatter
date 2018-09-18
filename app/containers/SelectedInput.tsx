@@ -3,10 +3,11 @@ import { InputState } from '../reducers/network'
 import * as _ from 'lodash'
 import { IState } from '../reducers';
 import { createSelector } from 'reselect';
-import { Slider, Text, Divider } from '@blueprintjs/core';
+import { Slider, Text, Divider, Button } from '@blueprintjs/core';
 import { Dispatch, bindActionCreators } from 'redux';
 import * as NetworkActions from '../actions/network'
 import { connect } from 'react-redux';
+import { remote, ipcRenderer } from 'electron'
 
 const getSelectedInput = (state: IState, props: IProps) =>
     state.network.inputs.find(
@@ -24,18 +25,25 @@ const makeGetSelecteInputState = () => createSelector(
 
 export interface IProps {
     changeInputRate: (payload: NetworkActions.ChangeInputRate) => void,
+    changeInputHotkey: (payload: NetworkActions.ChangeInputHotkeyAction) => void,
     id: string,
     input: InputState
 }
 
-export class SelectedInput extends React.Component<IProps> {
+export interface IIState {
+    listenForHotkey: boolean
+}
+
+export class SelectedInput extends React.Component<IProps,IIState> {
     props: IProps
+    state: IIState = {listenForHotkey: false}
 
     render () {
         const {
             id,
             input,
-            changeInputRate
+            changeInputRate,
+            changeInputHotkey
         } = this.props
 
         const sliderHandler = (value: number) => 
@@ -55,6 +63,16 @@ export class SelectedInput extends React.Component<IProps> {
                 onRelease={sliderHandler}
                 vertical={false}
             />
+            <Divider />
+            <Button 
+                onClick={() => this.setState({listenForHotkey: true})}
+                onKeyPress={(e: any) => changeInputHotkey({id: id, hotkey: e.key})}
+            >
+                Add Hotkey
+            </Button>
+            <Text>
+                {input.hotkey}
+            </Text>
             </div>
         )
     }
