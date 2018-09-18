@@ -2,7 +2,7 @@ import * as React from 'react'
 import { RouteComponentProps } from 'react-router';
 import { render } from 'enzyme';
 import { NeuronState, SelectedNeuronState, SelectedInputState } from '../reducers/network';
-import { Button, Text, Slider } from '@blueprintjs/core'
+import { Button, Text, Slider, ControlGroup } from '@blueprintjs/core'
 import { PotentialGraph } from './PotentialGraph';
 import SelectedInput from '../containers/SelectedInput';
 import SelectedNeuron from '../containers/SelectedNeuron';
@@ -37,7 +37,7 @@ export class SideBar extends React.Component<IProps,IState> {
         
         return (
 
-            <div>
+            <div className={styles.container}>
             {/* <p>
                 "Selected"
             </p> */}
@@ -60,18 +60,18 @@ export class SideBar extends React.Component<IProps,IState> {
                     :
                     undefined
                 }
+            <ControlGroup 
+                fill={false}
+                vertical={true}
+            >
             {(selectedInputs.length > 0) ?
-                <div
-                    className={styles.input}
-                >
                 <SelectedInput
                     id={selectedInputs[0].id}
                     />
-                </div>
                 :
                 undefined
             }
-            <Button icon='refresh' />
+            </ControlGroup>
             </div>
 
         )

@@ -3,7 +3,7 @@ import { InputState } from '../reducers/network'
 import * as _ from 'lodash'
 import { IState } from '../reducers';
 import { createSelector } from 'reselect';
-import { Slider, Text } from '@blueprintjs/core';
+import { Slider, Text, Divider } from '@blueprintjs/core';
 import { Dispatch, bindActionCreators } from 'redux';
 import * as NetworkActions from '../actions/network'
 import { connect } from 'react-redux';
@@ -43,7 +43,9 @@ export class SelectedInput extends React.Component<IProps> {
         
         return (
             <div>
+                <Divider />
             <Text>Input</Text>
+            <Divider />
             <Slider
                 min={0}
                 max={10}

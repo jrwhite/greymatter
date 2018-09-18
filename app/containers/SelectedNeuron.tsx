@@ -3,7 +3,7 @@ import { IzhikParams, NeuronState } from "../reducers/network";
 import { ChangeIzhikParamsAction } from "../actions/network";
 import { IState } from "../reducers";
 import { createSelector } from "reselect";
-import { Text, Slider } from '@blueprintjs/core';
+import { Text, Slider, ControlGroup, Divider } from '@blueprintjs/core';
 import { Dispatch, bindActionCreators } from 'redux';
 import * as NetworkActions from '../actions/network'
 import { connect } from 'react-redux';
@@ -56,8 +56,13 @@ export class SelectedNeuron extends React.Component<IProps> {
         })
 
         return (
-            <div>
+            <ControlGroup
+                fill={false}
+                vertical={true}
+            >
+            <Divider />
             <Text>Selected Neuron</Text>
+            <Divider />
             <Text>Izhik 'a':</Text>
             <Slider 
                 min={0.02}
@@ -94,7 +99,8 @@ export class SelectedNeuron extends React.Component<IProps> {
                 value={izhikParams.d}
                 onRelease={changeD}
             />
-            </div>
+            <Divider />
+            </ControlGroup>
         )
     }
 }
