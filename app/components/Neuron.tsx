@@ -2,6 +2,7 @@ import * as React from "react";
 import { RouteComponentProps, StaticRouter } from "react-router";
 import { Ellipse } from "./Ellipse";
 import { Point } from "../utils/geometry";
+import { Rotate } from "./Rotate"
 import {
   SelectNeuronAction,
   MoveNeuronAction,
@@ -16,7 +17,8 @@ import {
   HyperpolarizeNeuron,
   addApToSynapse,
   AddApToSynapse,
-  addNewApToSynapse
+  addNewApToSynapse,
+  RotateNeuronAction
 } from "../actions/network";
 import Draggable from "react-draggable";
 import { DendStateType, AxonStateType } from "../reducers/network";
@@ -39,8 +41,10 @@ export interface IProps extends RouteComponentProps<any> {
   tryMakeSynapseAtAxon: (id: string, neuronId: string) => void;
   tryMakeSynapseAtNewDend: (neuronId: string, neuronPos: Point) => void;
   selectNeuron: (payload: SelectNeuronAction) => void;
+  rotateNeuron: (payload: RotateNeuronAction) => void;
   id: string;
   pos: Point;
+  theta: number;
   axon: AxonStateType;
   dends: Array<DendStateType>;
   potential: number;
@@ -96,7 +100,9 @@ export class Neuron extends React.Component<IProps, IState> {
     const {
       fireNeuron,
       addNewApToSynapse,
+      rotateNeuron,
       pos,
+      theta,
       id,
       axon,
       dends,
@@ -121,14 +127,19 @@ export class Neuron extends React.Component<IProps, IState> {
         onContextMenu={this.handleContextMenu.bind(this)}
       >
         <g onClick={this.handleNeuronClick.bind(this)}>
-          <NeuronBody dends={dends} />
-          <Soma potential={potential} id={id} />
+          <NeuronBody dends={dends} theta={theta}/>
+          <Soma potential={potential} id={id} theta={theta}/>
         </g>
         <circle
           cx={50}
           cy={0}
           r={5}
           onClick={this.handleAxonClick.bind(this)}
+        />
+        <Rotate 
+          onRotate={(newTheta: number) => rotateNeuron({id: id, theta: newTheta})}
+          sensitivity={0.01}
+          pivot={{x: 0, y: 0}}
         />
       </g> 
       

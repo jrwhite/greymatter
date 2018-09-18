@@ -5,13 +5,15 @@ let styles = require('./Soma.scss')
 
 export interface IProps {
     id: string,
-    potential: number // percentage
+    potential: number, // percentage
+    theta: number
 }
 
 export const Soma: React.SFC<IProps> = (props) => {
     const {
         id,
-        potential
+        potential,
+        theta
     } = props
 
     const geo: Ellipse = {
@@ -40,7 +42,7 @@ export const Soma: React.SFC<IProps> = (props) => {
                 </clipPath>
             </defs>
             <path
-                d={ellipseBoundarySetter(geo.major, geo.minor, geo.theta)}
+                d={ellipseBoundarySetter(geo.major, geo.minor, theta ? theta : geo.theta)}
                 clipPath={"url(#clip-ellipse-" + id + ")"}
             />
         </g>

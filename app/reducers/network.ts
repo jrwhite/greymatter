@@ -1,6 +1,6 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork, rotateNeuron,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
@@ -49,6 +49,7 @@ export type IzhikState = {
 export type NeuronState = {
     id: string,
     pos: Point,
+    theta: number,
     potential: number,
     izhik: IzhikState,
     axon: AxonStateType,
@@ -150,6 +151,7 @@ const initialIzhikState: IzhikState = {
 const initialNeuronState: NeuronState = {
     id: 'n',
     pos: {x: 0, y: 0},
+    theta: 0,
     potential: 0,
     izhik: initialIzhikState,
     axon: {id: 'a', cpos: {x: 50, y: 0}, synapses: []},
@@ -267,6 +269,20 @@ export default function network(
                     }
                 ]
             }
+        }
+    }
+    else if (rotateNeuron.test(action)) {
+        return {
+            ...state,
+            neurons: _.map(state.neurons, (n: NeuronState) => {
+                if (n.id == action.payload.id) {
+                    return {
+                        ...n,
+                        theta: action.payload.theta
+                    }
+                }
+                return n
+            })
         }
     }
     else if (selectInput.test(action)) {

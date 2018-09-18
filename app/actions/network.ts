@@ -10,6 +10,11 @@ export type MoveNeuronAction = {
     pos: Point
 }
 
+export type RotateNeuronAction = {
+    id: string,
+    theta: number
+}
+
 export type RemoveNeuronsAction = {
     neurons: Array<{id: string}>
 }
@@ -110,6 +115,7 @@ export type ChangeIzhikParamsAction = {
     params: Partial<IzhikParams>
 }
 
+export const rotateNeuron = actionCreator<RotateNeuronAction>('ROTATE_NEURON')
 export const removeNeurons = actionCreator<RemoveNeuronsAction>('REMOVE_NEURONS')
 export const moveNeuron = actionCreator<MoveNeuronAction>('MOVE_NEURON')
 export const addNeuron = actionCreator<AddNeuronAction>('ADD_NEURON')

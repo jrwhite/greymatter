@@ -6,7 +6,8 @@ import { Arc, Ellipse as EllipseGeo} from '../utils/geometry';
 import * as _ from 'lodash'
 
 export interface IProps {
-    dends: Array<DendStateType>
+    dends: Array<DendStateType>,
+    theta: number
 }
 
 export class NeuronBody extends React.Component<IProps> {
@@ -14,7 +15,8 @@ export class NeuronBody extends React.Component<IProps> {
 
     render() { 
         const {
-            dends
+            dends,
+            theta
         } = this.props
 
         const bodyArcs: Array<Arc> = _.reduce(dends, (body, d): Array<Arc> => {
@@ -39,6 +41,7 @@ export class NeuronBody extends React.Component<IProps> {
             <g>
             <Ellipse
                 { ...defaultEllipseGeo }
+                theta={theta}
                 arcs={bodyArcs}
             />
             {dends.map(d => <Dendrite
