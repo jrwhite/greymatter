@@ -22,8 +22,8 @@ export class Dendrite extends React.Component<IProps> {
 
         const curves: Array<Curve> = calcDendCurves(
             dend.synCpos,
-            3, // ctrlWidth
-            5, // ctrlHeight
+            dend.weighting / 12, // ctrlWidth
+            dend.weighting / 5, // ctrlHeight
             dend.arc,
             bodyEllipse
         )
