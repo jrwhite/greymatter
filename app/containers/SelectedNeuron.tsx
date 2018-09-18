@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { IzhikParams, NeuronState } from "../reducers/network";
+import { IzhikParams, NeuronState, DendStateType } from "../reducers/network";
 import { ChangeIzhikParamsAction } from "../actions/network";
 import { IState } from "../reducers";
 import { createSelector } from "reselect";
@@ -17,15 +17,18 @@ const makeGetSelectedNeuronState = () => createSelector(
     getSelectedNeuron,
     (selectedNeuron) => (
         {
-            izhikParams: selectedNeuron!!.izhik.params
+            izhikParams: selectedNeuron!!.izhik.params,
+            dends: selectedNeuron!!.dends
         }
     )
 )
 
 export interface IProps {
+    changeDendWeighting: (payload: NetworkActions.ChangeDendWeightingAction) => void,
     changeIzhikParams: (payload: ChangeIzhikParamsAction) => void,
     id: string,
-    izhikParams: IzhikParams
+    izhikParams: IzhikParams,
+    dends: Array<DendStateType>,
 }
 
 export class SelectedNeuron extends React.Component<IProps> {
@@ -35,7 +38,9 @@ export class SelectedNeuron extends React.Component<IProps> {
         const {
             id,
             izhikParams,
-            changeIzhikParams
+            changeIzhikParams,
+            changeDendWeighting,
+            dends
         } = this.props
 
         const changeA = (a: number) => changeIzhikParams({
@@ -100,6 +105,23 @@ export class SelectedNeuron extends React.Component<IProps> {
                 onRelease={changeD}
             />
             <Divider />
+            <Text>Dendrites:</Text>
+            {dends.map(d => 
+                <Slider
+                    min={0}
+                    max={100}
+                    stepSize={1}
+                    labelStepSize={20}
+                    value={d.weighting}
+                    onRelease={(w: number) => 
+                        changeDendWeighting({
+                            neuronId: id,
+                            dendId: d.id,
+                            weighting: w
+                        })
+                    }
+                />
+            )}
             </ControlGroup>
         )
     }

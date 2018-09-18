@@ -120,6 +120,13 @@ export type ChangeInputHotkeyAction = {
     hotkey: string
 }
 
+export type ChangeDendWeightingAction = {
+    neuronId: string,
+    dendId: string,
+    weighting: number,
+}
+
+export const changeDendWeighting = actionCreator<ChangeDendWeightingAction>('CHANGE_DEND_WEIGHTING')
 export const changeInputHotkey = actionCreator<ChangeInputHotkeyAction>('CHANGE_INPUT_HOTKEY')
 export const rotateNeuron = actionCreator<RotateNeuronAction>('ROTATE_NEURON')
 export const removeNeurons = actionCreator<RemoveNeuronsAction>('REMOVE_NEURONS')

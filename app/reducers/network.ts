@@ -1,6 +1,6 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork, rotateNeuron, changeInputHotkey,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork, rotateNeuron, changeInputHotkey, changeDendWeighting,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
@@ -370,6 +370,28 @@ export default function network(
                     return n
                 }
             )
+        }
+    }
+    else if (changeDendWeighting.test(action)) {
+        return {
+            ...state,
+            neurons: _.map(state.neurons, (n: NeuronState) => {
+                if (n.id == action.payload.neuronId) {
+                    return {
+                        ...n,
+                        dends: _.map(n.dends, (d: DendStateType) => {
+                            if (d.id == action.payload.dendId) {
+                                return {
+                                    ...d,
+                                    weighting: action.payload.weighting
+                                }
+                            }
+                            return d
+                        })
+                    }
+                }
+                return n
+            })
         }
     }
     else if (changeInputHotkey.test(action)) {
