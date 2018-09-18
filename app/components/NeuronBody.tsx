@@ -47,7 +47,10 @@ export class NeuronBody extends React.Component<IProps> {
             {dends.map(d => <Dendrite
                 key={d.id}
                 dend={d}
-                bodyEllipse={defaultEllipseGeo}
+                bodyEllipse={{
+                    ...defaultEllipseGeo,
+                    theta: theta
+                }}
                 />)}
             </g>
         )
