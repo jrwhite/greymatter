@@ -1,6 +1,6 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
@@ -584,6 +584,14 @@ export default function network(
             neurons: state.neurons.map(n => ({
                 ...n,
                 potential: n.potential * 63 /64
+            }))
+        }
+    } else if (resetNetwork.test(action)) {
+        return {
+            ...state,
+            neurons: state.neurons.map(n => ({
+                ...n,
+                potential: 0
             }))
         }
     }

@@ -9,7 +9,7 @@ import Input from '../containers/Input'
 import { GhostSynapse } from './GhostSynapse';
 import Sidebar from '../containers/Sidebar';
 import { Text, Button, ButtonGroup } from '@blueprintjs/core';
-import { pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork } from '../actions/network';
+import { pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork } from '../actions/network';
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -24,6 +24,7 @@ export interface IProps extends RouteComponentProps<any> {
     resumeNetwork: () => void,
     speedUpNetwork: () => void,
     slowDownNetwork: () => void,
+    resetNetwork: () => void,
     ghostSynapse: GhostSynapseState,
     inputs: Array<InputState>,
     neurons: Array<NeuronState>,
@@ -89,6 +90,7 @@ export class Network extends React.Component<IProps,IState> {
 
     render() {
         const {
+            resetNetwork,
             ghostSynapse,
             neurons,
             synapses,
@@ -160,7 +162,9 @@ export class Network extends React.Component<IProps,IState> {
             <Button icon="fast-forward" 
                 onClick={speedUpNetwork}
             />
-            <Button icon="refresh" />
+            <Button icon="refresh" 
+                onClick={resetNetwork}
+            />
             </ButtonGroup>
             {/* </div> */}
             </div>
