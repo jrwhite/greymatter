@@ -1,9 +1,10 @@
 import * as _ from 'lodash'
 import { Point, Line, Ellipse, DendGeo, calcClosestDend, addPoints } from "../utils/geometry";
 import { actionCreator, actionCreatorVoid } from "./helpers";
-import { AxonStateType, DendStateType, NeuronState, IzhikParams, CartpoleInputState } from '../reducers/network';
+import { AxonStateType, DendStateType, NeuronState, IzhikParams } from '../reducers/network';
 import { IState } from '../reducers';
 import { getAxonAbsPos } from '../selectors/synapse';
+import { GymEnv } from '../containers/GymClient';
 // import { CartpoleOutputs, CartpoleInputs } from '../containers/GymClient';
 
 export type MoveNeuronAction = {
@@ -127,13 +128,50 @@ export type ChangeDendWeightingAction = {
     weighting: number,
 }
 
-export type ReceiveGymInputsAction = {
-    inputs: CartpoleInputState,
+export type ReceiveGymStepReplyAction = {
+    observation: { [name: string]: any },
+    isDone: boolean,
     reward: number,
+    info?: any,
 }
 
-export const gymStopped = actionCreatorVoid('GYM_STOPPED')
-export const receiveGymInputs = actionCreator<ReceiveGymInputsAction>('RECEIVE_GYM_OUTPUTS')
+export type SetGymEnvAction = {
+    env: GymEnv
+}
+
+export type ResetGymAction = {
+    shouldReset: boolean,
+}
+
+export type CloseGymAction = {
+    shouldClose: boolean
+}
+
+export type StepGymAction = {
+    shouldStep: boolean
+}
+
+export type ChangeGymDoneAction = {
+    isDone: boolean
+}
+
+export type MonitorGymAction = {
+    shouldMonitor: boolean
+}
+
+export type ChangeGymSpace = {
+    space: any
+}
+
+export const changeGymActionSpace = actionCreator<ChangeGymSpace>('CHANGE_GYM_ACTION_SPACE')
+export const changeGymObsSpace = actionCreator<ChangeGymSpace>('CHANGE_GYM_OBS_SPACE')
+export const monitorGym = actionCreator<MonitorGymAction>('MONITOR_GYM')
+export const stepGym = actionCreator<StepGymAction>('STEP_GYM')
+export const closeGym = actionCreator<CloseGymAction>('CLOSE_GYM')
+export const setGymEnv = actionCreator<SetGymEnvAction>('SET_GYM_ENV')
+export const resetGym = actionCreator<ResetGymAction>('RESET_GYM')
+export const receiveGymStepReply = actionCreator<ReceiveGymStepReplyAction>('RECEIVE_GYM_OBSERVATION')
+export const changeGymDone = actionCreator<ChangeGymDoneAction>('GYM_DONE')
 export const changeDendWeighting = actionCreator<ChangeDendWeightingAction>('CHANGE_DEND_WEIGHTING')
 export const changeInputHotkey = actionCreator<ChangeInputHotkeyAction>('CHANGE_INPUT_HOTKEY')
 export const rotateNeuron = actionCreator<RotateNeuronAction>('ROTATE_NEURON')

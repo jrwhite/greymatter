@@ -1,11 +1,12 @@
 import { Line, Point } from "../utils/geometry";
 import { IAction, IActionWithPayload } from "../actions/helpers";
-import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork, rotateNeuron, changeInputHotkey, changeDendWeighting,  } from "../actions/network";
+import { moveNeuron, addNeuron, addSynapse, makeGhostSynapseAtDend, makeGhostSynapseAtAxon, addDend, resetGhostSynapse, removeNeuron, fireNeuron, exciteNeuron,  decayNetwork, hyperpolarizeNeuron, addInput, removeInput, removeSynapses, removeNeurons, moveInput, addApToSynapse, removeApFromSynapse, selectNeuron, selectInput, changeInputRate, changeIzhikParams, stepNetwork, pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork, rotateNeuron, changeInputHotkey, changeDendWeighting, setGymEnv, resetGym, closeGym,  stepGym, changeGymDone, receiveGymStepReply, monitorGym, changeGymActionSpace, changeGymObsSpace,  } from "../actions/network";
 import { Arc } from '../utils/geometry'
 import * as _ from 'lodash'
 import { Neuron } from "../components/Neuron";
 import { INPUT_GHOST } from "@blueprintjs/core/lib/esm/common/classes";
 import { stepIzhikPotential, stepIzhikU } from "../utils/runtime";
+import { GymEnv } from "../containers/GymClient";
 
 export type AxonStateType = {
     id: string,
@@ -119,23 +120,20 @@ export type NetworkConfigState = {
     isPaused: boolean,
 }
 
-export type CartpoleOutputState = {
-    accelerate: number
-}
-
-export type CartpoleInputState = {
-    theta: number,
-    dTheta: number,
-    x: number,
-    y: number,
-    phi: number
-}
-
 export type GymState = {
-    inputs: object,
-    outputs: object,
+    env?: GymEnv,
+    observation: { [name: string]: any },
+    observationSpace?: any,
+    action?: number,
+    actionSpace?: any,
     reward: number,
-    isStopped: boolean, 
+    isDone: boolean, 
+    error?: string,
+    info?: any,
+    shouldReset?: boolean,
+    shouldMonitor?: boolean,
+    shouldClose?: boolean,
+    shouldStep?: boolean,
 }
 
 export type NetworkState = {
@@ -157,10 +155,10 @@ const initialNetworkConfigState = {
 }
 
 const initialGymState = {
-    inputs: {},
-    outputs: {},
+    observation: {},
+    action: undefined,
     reward: 0,
-    isStopped: true
+    isDone: true
 }
 
 const initialIzhikState: IzhikState = {
@@ -325,6 +323,80 @@ export default function network(
                         id: action.payload.id
                     }
                 ]
+            }
+        }
+    } else if (changeGymDone.test(action)) {
+        return {
+            ...state,
+            gym: {
+                ...state.gym,
+                isDone: action.payload.isDone
+            }
+        }
+    }
+    else if (setGymEnv.test(action)) {
+        return {
+            ...state,
+            gym: {
+                ...state.gym,
+                env: action.payload.env
+            }
+        }
+    } else if (resetGym.test(action)) {
+        return {
+            ...state,
+            gym: {
+                ...state.gym,
+                shouldReset: action.payload.shouldReset
+            }
+        }
+    } else if (closeGym.test(action)) {
+        return {
+            ...state,
+            gym: {
+                ...state.gym,
+                shouldClose: action.payload.shouldClose
+            }
+        }
+    } else if (receiveGymStepReply.test(action)) {
+        return {
+            ...state,
+            gym: {
+                ...state.gym,
+                ...action.payload
+            }
+        }
+    } else if (stepGym.test(action)) {
+        return {
+            ...state,
+            gym: {
+                ...state.gym,
+                shouldStep: action.payload.shouldStep
+            }
+        }
+    } else if (monitorGym.test(action)) {
+        return {
+            ...state,
+            gym: {
+                ...state.gym,
+                shouldMonitor: action.payload.shouldMonitor
+            }
+        }
+    } else if (changeGymActionSpace.test(action)) {
+        return {
+            ...state,
+            gym: {
+                ...state.gym,
+                actionSpace: action.payload.space,
+            }
+        }
+    }
+    else if (changeGymObsSpace.test(action)) {
+        return {
+            ...state,
+            gym: {
+                ...state.gym,
+                observationSpace: action.payload.space,
             }
         }
     }

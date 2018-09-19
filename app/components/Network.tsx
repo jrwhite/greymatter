@@ -116,7 +116,7 @@ export class Network extends React.Component<IProps,IState> {
             <div className={styles.sidebar}>
             <Sidebar/>
             </div>
-            <GymClient />
+            { config.isPaused ? <GymClient /> : undefined } 
             <div className={styles.wrapper} >
             <svg
                 className={styles.editor}
