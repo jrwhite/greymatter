@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router';
 import { Point } from '../utils/geometry'
 import { ExciteNeuron } from '../actions/network'
 import * as _ from 'lodash'
+import Axios from 'axios';
 const d3 = require('d3')
         
 export interface IProps {

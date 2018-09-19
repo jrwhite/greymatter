@@ -10,6 +10,7 @@ import { GhostSynapse } from './GhostSynapse';
 import Sidebar from '../containers/Sidebar';
 import { Text, Button, ButtonGroup, HotkeysTarget, Hotkeys, Hotkey } from '@blueprintjs/core';
 import { pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork, addNewApToSynapse } from '../actions/network';
+import GymClient from '../containers/GymClient';
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -115,7 +116,7 @@ export class Network extends React.Component<IProps,IState> {
             <div className={styles.sidebar}>
             <Sidebar/>
             </div>
-
+            <GymClient />
             <div className={styles.wrapper} >
             <svg
                 className={styles.editor}

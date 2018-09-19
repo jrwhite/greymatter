@@ -119,13 +119,33 @@ export type NetworkConfigState = {
     isPaused: boolean,
 }
 
+export type CartpoleOutputState = {
+    accelerate: number
+}
+
+export type CartpoleInputState = {
+    theta: number,
+    dTheta: number,
+    x: number,
+    y: number,
+    phi: number
+}
+
+export type GymState = {
+    inputs: object,
+    outputs: object,
+    reward: number,
+    isStopped: boolean, 
+}
+
 export type NetworkState = {
     ghostSynapse: GhostSynapseState,
     neurons: Array<NeuronState>,
     synapses: Array<SynapseState>,
     inputs:  Array<InputState>,
     outputs: Array<OutputState>,
-    config: NetworkConfigState
+    config: NetworkConfigState,
+    gym: GymState,
 }
 
 const initialNetworkConfigState = {
@@ -134,6 +154,13 @@ const initialNetworkConfigState = {
     stepSize: 1,
     stepInterval: 50,
     isPaused: true,
+}
+
+const initialGymState = {
+    inputs: {},
+    outputs: {},
+    reward: 0,
+    isStopped: true
 }
 
 const initialIzhikState: IzhikState = {
@@ -196,7 +223,8 @@ const initialNetworkState: NetworkState = {
     synapses: [],
     inputs: [],
     outputs: [],
-    config: initialNetworkConfigState
+    config: initialNetworkConfigState,
+    gym: initialGymState,
 }
 
 export default function network(

@@ -163,8 +163,10 @@
   },
   "dependencies": {
     "@blueprintjs/core": "^3.5.1",
+    "@types/axios": "^0.14.0",
     "@types/d3": "^5.0.0",
     "@types/lodash": "^4.14.116",
+    "axios": "^0.18.0",
     "blueprint": "^2.1.5",
     "bourbon": "^5.1.0",
     "d3": "^5.5.0",
@@ -182,7 +184,8 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
     "reselect": "^3.0.1",
-    "source-map-support": "^0.5.0"
+    "source-map-support": "^0.5.0",
+    "zerorpc": "^0.9.8"
   },
   "devEngines": {
     "node": ">=6.x",

@@ -81,6 +81,20 @@
             }
          }
      ]
+     gym: {
+         inputs: {
+             input1: number,
+             input2: number,
+             ...
+         },
+         outputs: {
+             output1: number,
+             output2: number,
+             ...
+         },
+         reward: number,
+         isStopped: boolean,
+     }
  }
 
  Point {

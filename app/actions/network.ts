@@ -1,9 +1,10 @@
 import * as _ from 'lodash'
 import { Point, Line, Ellipse, DendGeo, calcClosestDend, addPoints } from "../utils/geometry";
 import { actionCreator, actionCreatorVoid } from "./helpers";
-import { AxonStateType, DendStateType, NeuronState, IzhikParams } from '../reducers/network';
+import { AxonStateType, DendStateType, NeuronState, IzhikParams, CartpoleInputState } from '../reducers/network';
 import { IState } from '../reducers';
 import { getAxonAbsPos } from '../selectors/synapse';
+// import { CartpoleOutputs, CartpoleInputs } from '../containers/GymClient';
 
 export type MoveNeuronAction = {
     id: string,
@@ -126,6 +127,13 @@ export type ChangeDendWeightingAction = {
     weighting: number,
 }
 
+export type ReceiveGymInputsAction = {
+    inputs: CartpoleInputState,
+    reward: number,
+}
+
+export const gymStopped = actionCreatorVoid('GYM_STOPPED')
+export const receiveGymInputs = actionCreator<ReceiveGymInputsAction>('RECEIVE_GYM_OUTPUTS')
 export const changeDendWeighting = actionCreator<ChangeDendWeightingAction>('CHANGE_DEND_WEIGHTING')
 export const changeInputHotkey = actionCreator<ChangeInputHotkeyAction>('CHANGE_INPUT_HOTKEY')
 export const rotateNeuron = actionCreator<RotateNeuronAction>('ROTATE_NEURON')
