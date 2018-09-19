@@ -1,17 +1,43 @@
 @import "~@blueprintjs/core/lib/scss/variables";
 
-.container {
+.container-top {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: column;
     align-items: stretch;
-    height:100vh;
+    // resize: vertical;
+    overflow-y: auto;
+    height: 100vh;
 }
 
-.wrapper {
+.wrapper-upper {
+    flex: 1;
+    // align-self: stretch;
+}
+
+.wrapper-lower {
+    flex: 0 200px;
+    background-color: $gray2;
+    // height: 100px;
+}
+
+.container-upper {
+    display: flex;
+    flex-direction: row-reverse;
+    // align-items: stretch;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+}
+
+.wrapper-editor {
+    position: relative;
+    left: 0;
+    top: 0;
     flex: 1 1 auto;
     background-color: $dark-gray2;
-    // align-self: stretch;
-    // height: 100%;
+    align-self: stretch;
+    height: 100%;
+    width: 100%;
 }
 
 .editor {
@@ -28,7 +54,7 @@
 }
 
 .overlay {
-    position: fixed;
+    position: absolute;
     // top: 0;
     left: 0;
     // right: 0;

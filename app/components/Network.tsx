@@ -108,16 +108,22 @@ export class Network extends React.Component<IProps,IState> {
         // TODO: refactor ghostSynapse into separate component
         const axonNeuron = ghostSynapse.axon ? neurons.find(n => n.id === ghostSynapse.axon!!.neuronId) : undefined
         const dendNeuron = ghostSynapse.dend ? neurons.find(n => n.id === ghostSynapse.dend!!.neuronId) : undefined
-
+        console.log(styles)
         return (
+            <div
+                className={styles['container-top']}
+            >
+            <div
+                className={styles['wrapper-upper']}
+            >
             <div 
-                className={styles.container}
+                className={styles['container-upper']}
             >
             <div className={styles.sidebar}>
             <Sidebar/>
             </div>
-            { config.isPaused ? <GymClient /> : undefined } 
-            <div className={styles.wrapper} >
+            {/* { config.isPaused ? <GymClient /> : undefined }  */}
+            <div className={styles['wrapper-editor']} >
             <svg
                 className={styles.editor}
                 onContextMenu={this.onContextMenu.bind(this)}
@@ -154,7 +160,7 @@ export class Network extends React.Component<IProps,IState> {
                 )}
             </svg>
             {/* <Text className={styles.overlay}>Overlay</Text> */}
-            {/* <div className={styles.overlay} > */}
+            <div className={styles.overlay} >
             <ButtonGroup minimal={true} className={styles.overlay}>
             <Button icon="fast-backward" 
                 onClick={slowDownNetwork}
@@ -169,7 +175,14 @@ export class Network extends React.Component<IProps,IState> {
                 onClick={resetNetwork}
             />
             </ButtonGroup>
-            {/* </div> */}
+            </div>
+            </div>
+            </div>
+            </div>
+            <div
+                className={styles['wrapper-lower']}
+            >
+                    <Text>lower bar</Text>
             </div>
             </div>
         )
