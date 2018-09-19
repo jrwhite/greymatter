@@ -100,9 +100,7 @@ export class GymClient extends React.Component<IProps,IState> {
 
         } = this.props
 
-        return (
-            undefined
-        )
+        return null
     }
 }
 
