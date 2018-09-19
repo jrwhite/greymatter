@@ -11,6 +11,7 @@ import Sidebar from '../containers/Sidebar';
 import { Text, Button, ButtonGroup, HotkeysTarget, Hotkeys, Hotkey } from '@blueprintjs/core';
 import { pauseNetwork, resumeNetwork, speedUpNetwork, slowDownNetwork, resetNetwork, addNewApToSynapse } from '../actions/network';
 import GymClient from '../containers/GymClient';
+import { LowerBar } from './LowerBar';
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -108,7 +109,7 @@ export class Network extends React.Component<IProps,IState> {
         // TODO: refactor ghostSynapse into separate component
         const axonNeuron = ghostSynapse.axon ? neurons.find(n => n.id === ghostSynapse.axon!!.neuronId) : undefined
         const dendNeuron = ghostSynapse.dend ? neurons.find(n => n.id === ghostSynapse.dend!!.neuronId) : undefined
-        console.log(styles)
+        
         return (
             <div
                 className={styles['container-top']}
@@ -182,7 +183,7 @@ export class Network extends React.Component<IProps,IState> {
             <div
                 className={styles['wrapper-lower']}
             >
-                    <Text>lower bar</Text>
+                <LowerBar/>
             </div>
             </div>
         )

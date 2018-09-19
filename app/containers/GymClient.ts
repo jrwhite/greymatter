@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux'
 import { connect, Dispatch } from 'react-redux';
 
 export enum GymEnv {
-    Cartpole = "CartPole-v0",
+    Cartpole = "CartPole-v1",
 }
 
 export interface CartpoleInputs {
@@ -94,10 +94,6 @@ export class GymClient extends React.Component<IProps,IState> {
         )
     }
 
-    componentDidMount () {
-        this.makeEnv(GymEnv.Cartpole)
-    }
-
     componentDidUpdate(prevProps: IProps, prevState: IState) {
         const {
             gym: prevGym
@@ -106,6 +102,7 @@ export class GymClient extends React.Component<IProps,IState> {
             gym,
             pauseNetwork
         } = this.props
+        console.log(gym)
         // if gym is now done, send a pause command
         if (!prevGym.isDone && gym.isDone) {
             pauseNetwork()
@@ -115,6 +112,9 @@ export class GymClient extends React.Component<IProps,IState> {
         }
         if (!prevGym.shouldStep && gym.shouldStep) {
             this.gymStep()
+        }
+        if (gym.env && prevGym.env != gym.env) {
+            this.makeEnv(gym.env)
         }
     }
 
