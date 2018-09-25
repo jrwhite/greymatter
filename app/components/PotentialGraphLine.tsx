@@ -70,7 +70,7 @@ export class PotentialGraphLine extends React.Component<IProps, IState> {
 
     const y = d3
       .scaleLinear()
-      .domain([rangeY.start, rangeY.stop])
+      .domain([rangeY.stop, rangeY.start])
       .range([0, height]);
 
     const lineSetter = d3

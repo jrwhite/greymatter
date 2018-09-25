@@ -26,7 +26,7 @@ export class PotentialGraph extends React.Component<IProps> {
     const height = (rangeY.stop - rangeY.start) * scaleY;
     const scale = d3
       .scaleLinear()
-      .domain([rangeY.start, rangeY.stop])
+      .domain([rangeY.stop, rangeY.start])
       .range([0, height]);
     // .clamp(true)
     const axis = d3.axisRight(scale).ticks(5);
