@@ -1,29 +1,31 @@
-import * as React from "react";
-import { Tabs, TabId, Tab } from "@blueprintjs/core";
-import GymPanel from "../containers/GymPanel";
+import * as React from 'react'
+import { Tabs, TabId, Tab } from '@blueprintjs/core'
+import GymPanel from '../containers/GymPanel';
 
-export interface IProps {}
-
-export interface IState {
-  navbarTabId: TabId;
+export interface IProps {
+    
 }
 
-export class LowerBar extends React.Component<IProps, IState> {
-  props: IProps;
-  state: IState;
+export interface IState {
+    navbarTabId: TabId,
+}
 
-  handleTabChange = (navbarTabId: TabId) => this.setState({ navbarTabId });
+export class LowerBar extends React.Component<IProps,IState> {
+    props: IProps
+    state: IState
 
-  render() {
-    const {} = this.props;
+    handleTabChange = (navbarTabId: TabId) => this.setState({ navbarTabId })
+    
+    render () {
+        const {
 
-    console.log("test");
+        } = this.props
 
-    return (
-      <Tabs id="lowertabs" onChange={this.handleTabChange}>
-        <Tab id="gym" title="Gym" panel={<GymPanel />} />
-        {/* <Tab id="plas" title="Plasticity" panel={} /> */}
-      </Tabs>
-    );
-  }
+        return (
+            <Tabs id="lowertabs" onChange={this.handleTabChange} >
+                <Tab id="gym" title="Gym" panel={<GymPanel />} />
+                {/* <Tab id="plas" title="Plasticity" panel={} /> */}
+            </Tabs>
+        )
+    }
 }
