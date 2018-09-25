@@ -2,7 +2,7 @@ import * as React from "react";
 import { RouteComponentProps, StaticRouter } from "react-router";
 import { Ellipse } from "./Ellipse";
 import { Point } from "../utils/geometry";
-import { Rotate } from "./Rotate"
+import { Rotate } from "./Rotate";
 import {
   SelectNeuronAction,
   MoveNeuronAction,
@@ -21,7 +21,7 @@ import {
   RotateNeuronAction
 } from "../actions/network";
 import Draggable from "react-draggable";
-import { DendStateType, AxonStateType } from "../reducers/network";
+import { DendState, AxonState } from "../reducers/network";
 import { NeuronBody } from "./NeuronBody";
 import { Dendrite } from "./Dendrite";
 import { Soma } from "./Soma";
@@ -45,8 +45,8 @@ export interface IProps extends RouteComponentProps<any> {
   id: string;
   pos: Point;
   theta: number;
-  axon: AxonStateType;
-  dends: Array<DendStateType>;
+  axon: AxonState;
+  dends: Array<DendState>;
   potential: number;
 }
 
@@ -73,7 +73,7 @@ export class Neuron extends React.Component<IProps, IState> {
     const { tryMakeSynapseAtNewDend, id, pos, selectNeuron } = this.props;
 
     tryMakeSynapseAtNewDend(id, pos);
-    selectNeuron({id: id})
+    selectNeuron({ id: id });
   }
 
   handleAxonClick(e: React.MouseEvent<SVGCircleElement>) {
@@ -113,22 +113,22 @@ export class Neuron extends React.Component<IProps, IState> {
       <Popover>
         <strong>test</strong>
       </Popover>
-    )
+    );
 
     if (potential > 100) {
       fireNeuron(id);
       axon.synapses.forEach(s => addNewApToSynapse(s.id));
     }
 
-    return ( 
+    return (
       <g
         id={id}
         transform={"translate(" + pos.x + " " + pos.y + ")"}
         onContextMenu={this.handleContextMenu.bind(this)}
       >
         <g onClick={this.handleNeuronClick.bind(this)}>
-          <NeuronBody dends={dends} theta={theta}/>
-          <Soma potential={potential} id={id} theta={theta}/>
+          <NeuronBody dends={dends} theta={theta} />
+          <Soma potential={potential} id={id} theta={theta} />
         </g>
         <circle
           cx={50}
@@ -136,14 +136,15 @@ export class Neuron extends React.Component<IProps, IState> {
           r={5}
           onClick={this.handleAxonClick.bind(this)}
         />
-        <Rotate 
-          onRotate={(newTheta: number) => rotateNeuron({id: id, theta: newTheta})}
+        <Rotate
+          onRotate={(newTheta: number) =>
+            rotateNeuron({ id: id, theta: newTheta })
+          }
           sensitivity={0.01}
-          pivot={{x: 0, y: 0}}
+          pivot={{ x: 0, y: 0 }}
         />
-      </g> 
-      
-    )
+      </g>
+    );
   }
 
   setSelected = (val: boolean) => {
