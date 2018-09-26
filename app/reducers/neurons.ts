@@ -1,6 +1,5 @@
-import { Point, Arc } from "../utils/geometry";
-import { IAction } from "../actions/helpers";
 import {
+  addSynapseToDend,
   moveNeuron,
   addNeuron,
   removeNeurons,
@@ -11,9 +10,15 @@ import {
   rotateNeuron,
   addDend,
   stepNetwork
-} from "../actions/network";
+} from "./../actions/neurons";
+import { Point, Arc } from "../utils/geometry";
+import { IAction } from "../actions/helpers";
 import _ = require("lodash");
 import { stepIzhikPotential, stepIzhikU } from "../utils/runtime";
+import {
+  removeSynapsesFromNeurons,
+  addSynapseToAxon
+} from "../actions/neurons";
 
 export interface NeuronState {
   id: string;
@@ -104,7 +109,7 @@ const initialDendState: DendState = {
   length: 2
 };
 
-export default function neuron(
+export default function neurons(
   state: Array<NeuronState> = [],
   action: IAction
 ): Array<NeuronState> {
@@ -234,6 +239,53 @@ export default function neuron(
           u: stepIzhikU(v, n.izhik)
         }
       };
+    });
+  } else if (removeSynapsesFromNeurons.test(action)) {
+    return _.map(state, (n: NeuronState) => ({
+      ...n,
+      axon: {
+        ...n.axon,
+        synapses: _.differenceBy(n.axon.synapses, action.payload.synapses, "id")
+      },
+      dends: _.differenceWith(
+        n.dends,
+        action.payload.synapses,
+        (a, b) => a.synapseId == b.id
+      )
+    }));
+  } else if (addSynapseToAxon.test(action)) {
+    return state.map(n => {
+      if (n.id == action.payload.neuronId) {
+        return {
+          ...n,
+          axon: {
+            ...n.axon,
+            synapses: _.concat(n.axon.synapses, {
+              id: action.payload.synapseId
+            })
+          }
+        };
+      }
+      return n;
+    });
+  } else if (addSynapseToDend.test(action)) {
+    return state.map(n => {
+      if (n.id == action.payload.neuronId) {
+        return {
+          ...n,
+          dends: n.dends.map(d => {
+            if (d.id == action.payload.dendId) {
+              return {
+                ...d,
+                synapseId: action.payload.synapseId
+              };
+            }
+            return d;
+          })
+        };
+      } else {
+        return n;
+      }
     });
   } else {
     return state;

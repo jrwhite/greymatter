@@ -49,27 +49,11 @@ import { Neuron } from "../components/Neuron";
 import { INPUT_GHOST } from "@blueprintjs/core/lib/esm/common/classes";
 import { stepIzhikPotential, stepIzhikU } from "../utils/runtime";
 import { GymEnv } from "../containers/GymClient";
-import { DendState, NeuronState, IzhikState, AxonState } from "./neuron";
+import { DendState, NeuronState, IzhikState, AxonState } from "./neurons";
+import { SynapseState } from "./synapses";
 
 export interface ActionPotentialState {
   id: string;
-}
-
-export interface SynapseState {
-  id: string;
-  axon: {
-    id: string;
-    neuronId: string;
-  };
-  dend: {
-    id: string;
-    neuronId: string;
-  };
-  length: number;
-  width: number;
-  speed: number;
-  isFiring: boolean;
-  actionPotentials: Array<ActionPotentialState>;
 }
 
 export interface GhostSynapseState {
@@ -81,21 +65,6 @@ export interface GhostSynapseState {
     id: string;
     neuronId: string;
   };
-}
-
-export interface InputState {
-  id: string;
-  rate: number;
-  pos: Point;
-  axon: AxonState;
-  hotkey?: string;
-}
-
-export interface OutputState {
-  id: string;
-  interface: string;
-  pos: Point;
-  dends: Array<DendState>;
 }
 
 export interface SelectedNeuronState {
@@ -135,7 +104,6 @@ export interface NetworkState {
   neurons: Array<NeuronState>;
   synapses: Array<SynapseState>;
   inputs: Array<InputState>;
-  outputs: Array<OutputState>;
   config: ConfigState;
   gym: GymState;
 }
@@ -155,25 +123,6 @@ const initialGymState = {
   isDone: true
 };
 
-const initialSynapseState: SynapseState = {
-  id: "s",
-  axon: { id: "a", neuronId: "n" },
-  dend: { id: "d", neuronId: "n" },
-  length: 100,
-  width: 2,
-  speed: 1,
-  isFiring: false,
-  actionPotentials: []
-};
-
-const initialInputState: InputState = {
-  id: "in",
-  rate: 0,
-  pos: { x: 0, y: 0 },
-  axon: { id: "a", cpos: { x: 50, y: 0 }, synapses: [] },
-  hotkey: undefined
-};
-
 const initialNetworkState: NetworkState = {
   ghostSynapse: { axon: undefined, dend: undefined },
   neurons: [],
@@ -188,39 +137,7 @@ export default function network(
   state: NetworkState = initialNetworkState,
   action: IAction
 ): NetworkState {
-  if (removeSynapses.test(action)) {
-    return {
-      ...state,
-      inputs: _.map(state.inputs, n => ({
-        ...n,
-        axon: {
-          ...n.axon,
-          synapses: _.differenceBy(
-            n.axon.synapses,
-            action.payload.synapses,
-            "id"
-          )
-        }
-      })),
-      neurons: _.map(state.neurons, n => ({
-        ...n,
-        axon: {
-          ...n.axon,
-          synapses: _.differenceBy(
-            n.axon.synapses,
-            action.payload.synapses,
-            "id"
-          )
-        },
-        dends: _.differenceWith(
-          n.dends,
-          action.payload.synapses,
-          (a, b) => a.synapseId == b.id
-        )
-      })),
-      synapses: _.differenceBy(state.synapses, action.payload.synapses, "id")
-    };
-  } else if (selectNeuron.test(action)) {
+  if (selectNeuron.test(action)) {
     return {
       ...state,
       config: {
@@ -375,90 +292,6 @@ export default function network(
         }
         return input;
       })
-    };
-  } else if (addApToSynapse.test(action)) {
-    return {
-      ...state,
-      synapses: state.synapses.map(s => {
-        if (s.id == action.payload.synapseId) {
-          return {
-            ...s,
-            actionPotentials: [
-              ...s.actionPotentials,
-              {
-                id: action.payload.id
-              }
-            ]
-          };
-        }
-        return s;
-      })
-    };
-  } else if (removeApFromSynapse.test(action)) {
-    return {
-      ...state,
-      synapses: state.synapses.map(s => {
-        if (s.id == action.payload.synapseId) {
-          return {
-            ...s,
-            actionPotentials: _.differenceBy(
-              s.actionPotentials,
-              [action.payload],
-              "id"
-            )
-          };
-        }
-        return s;
-      })
-    };
-  } else if (addSynapse.test(action)) {
-    return {
-      ...state,
-      // split into two reducers (synapse,neuron) with this logic in action
-      inputs: state.inputs.map(n => {
-        if (n.id == action.payload.axon.neuronId) {
-          return {
-            ...n,
-            axon: {
-              ...n.axon,
-              synapses: _.concat(n.axon.synapses, { id: action.payload.id })
-            }
-          };
-        }
-        return n;
-      }),
-      neurons: state.neurons.map(n => {
-        if (n.id == action.payload.axon.neuronId) {
-          return {
-            ...n,
-            axon: {
-              ...n.axon,
-              synapses: _.concat(n.axon.synapses, { id: action.payload.id })
-            }
-          };
-        } else if (n.id == action.payload.dend.neuronId) {
-          return {
-            ...n,
-            dends: n.dends.map(d => {
-              if (d.id == action.payload.dend.id) {
-                return {
-                  ...d,
-                  synapseId: action.payload.id
-                };
-              }
-              return d;
-            })
-          };
-        }
-        return n;
-      }),
-      synapses: [
-        ...state.synapses,
-        {
-          ...initialSynapseState,
-          ...action.payload
-        }
-      ]
     };
   } else if (makeGhostSynapseAtAxon.test(action)) {
     return {
