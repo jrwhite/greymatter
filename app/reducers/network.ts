@@ -49,61 +49,13 @@ import { Neuron } from "../components/Neuron";
 import { INPUT_GHOST } from "@blueprintjs/core/lib/esm/common/classes";
 import { stepIzhikPotential, stepIzhikU } from "../utils/runtime";
 import { GymEnv } from "../containers/GymClient";
+import { DendState, NeuronState, IzhikState, AxonState } from "./neuron";
 
-export type AxonState = {
+export interface ActionPotentialState {
   id: string;
-  cpos: Point;
-  synapses: Array<{ id: string }>;
-};
+}
 
-export type PlastState = {
-  short: number; // short term plasticity
-  long: number; // long-term plasticity
-};
-
-export type DendState = {
-  id: string;
-  weighting: number; // derived from plast
-  plast: PlastState;
-  baseCpos: Point;
-  synCpos: Point; // point of synapse
-  nu: number;
-  arc: Arc; // arc width derived from long-term plast
-  synapseId: string;
-  incomingAngle: number;
-  length: number; // derived from short-term plast
-};
-
-export type IzhikParams = {
-  a: number;
-  b: number;
-  c: number;
-  d: number;
-};
-
-export type IzhikState = {
-  params: IzhikParams;
-  u: number;
-  current: number;
-  potToMv: (pot: number) => number; // multiply with potential to get mV
-  mvToPot: (mv: number) => number;
-};
-
-export type NeuronState = {
-  id: string;
-  pos: Point;
-  theta: number;
-  potential: number;
-  izhik: IzhikState;
-  axon: AxonState;
-  dends: Array<DendState>;
-};
-
-export type ActionPotentialState = {
-  id: string;
-};
-
-export type SynapseState = {
+export interface SynapseState {
   id: string;
   axon: {
     id: string;
@@ -118,9 +70,9 @@ export type SynapseState = {
   speed: number;
   isFiring: boolean;
   actionPotentials: Array<ActionPotentialState>;
-};
+}
 
-export type GhostSynapseState = {
+export interface GhostSynapseState {
   axon?: {
     id: string;
     neuronId: string;
@@ -129,40 +81,40 @@ export type GhostSynapseState = {
     id: string;
     neuronId: string;
   };
-};
+}
 
-export type InputState = {
+export interface InputState {
   id: string;
   rate: number;
   pos: Point;
   axon: AxonState;
   hotkey?: string;
-};
+}
 
-export type OutputState = {
+export interface OutputState {
   id: string;
-  type: string;
+  interface: string;
   pos: Point;
   dends: Array<DendState>;
-};
+}
 
-export type SelectedNeuronState = {
+export interface SelectedNeuronState {
   id: string;
-};
+}
 
-export type SelectedInputState = {
+export interface SelectedInputState {
   id: string;
-};
+}
 
-export type NetworkConfigState = {
+export interface ConfigState {
   selectedNeurons: Array<SelectedNeuronState>;
   selectedInputs: Array<SelectedInputState>;
   stepSize: number; // in ms,
   stepInterval: number;
   isPaused: boolean;
-};
+}
 
-export type GymState = {
+export interface GymState {
   env?: GymEnv;
   observation: { [name: string]: any };
   observationSpace?: any;
@@ -176,17 +128,17 @@ export type GymState = {
   shouldMonitor?: boolean;
   shouldClose?: boolean;
   shouldStep?: boolean;
-};
+}
 
-export type NetworkState = {
+export interface NetworkState {
   ghostSynapse: GhostSynapseState;
   neurons: Array<NeuronState>;
   synapses: Array<SynapseState>;
   inputs: Array<InputState>;
   outputs: Array<OutputState>;
-  config: NetworkConfigState;
+  config: ConfigState;
   gym: GymState;
-};
+}
 
 const initialNetworkConfigState = {
   selectedNeurons: [],
@@ -203,29 +155,6 @@ const initialGymState = {
   isDone: true
 };
 
-const initialIzhikState: IzhikState = {
-  params: {
-    a: 0.02,
-    b: 0.2,
-    c: -65,
-    d: 2
-  },
-  u: 0,
-  current: 0,
-  potToMv: (pot: number) => pot * (30 / 100),
-  mvToPot: (mv: number) => mv * (100 / 30)
-};
-
-const initialNeuronState: NeuronState = {
-  id: "n",
-  pos: { x: 0, y: 0 },
-  theta: 0,
-  potential: 0,
-  izhik: initialIzhikState,
-  axon: { id: "a", cpos: { x: 50, y: 0 }, synapses: [] },
-  dends: []
-};
-
 const initialSynapseState: SynapseState = {
   id: "s",
   axon: { id: "a", neuronId: "n" },
@@ -237,18 +166,6 @@ const initialSynapseState: SynapseState = {
   actionPotentials: []
 };
 
-const initialDendState: DendState = {
-  id: "d",
-  weighting: 30,
-  plast: { short: 15, long: 15 },
-  baseCpos: { x: 0, y: 0 },
-  synCpos: { x: 0, y: 0 },
-  nu: 1,
-  arc: { start: 1, stop: 1 },
-  synapseId: "s",
-  incomingAngle: 1,
-  length: 2
-};
 const initialInputState: InputState = {
   id: "in",
   rate: 0,
@@ -271,41 +188,7 @@ export default function network(
   state: NetworkState = initialNetworkState,
   action: IAction
 ): NetworkState {
-  if (moveNeuron.test(action)) {
-    return {
-      ...state,
-      neurons: state.neurons.map((n: NeuronState) => {
-        if (n.id === action.payload.id) {
-          return {
-            ...n,
-            ...action.payload
-          };
-        }
-        return n;
-      })
-    };
-  } else if (addNeuron.test(action)) {
-    return {
-      ...state,
-      neurons: [
-        ...state.neurons,
-        {
-          ...initialNeuronState,
-          id: action.payload.id,
-          pos: action.payload.pos,
-          axon: {
-            ...initialNeuronState.axon,
-            id: action.payload.axonId
-          }
-        }
-      ]
-    };
-  } else if (removeNeurons.test(action)) {
-    return {
-      ...state,
-      neurons: _.differenceBy(state.neurons, action.payload.neurons, "id")
-    };
-  } else if (removeSynapses.test(action)) {
+  if (removeSynapses.test(action)) {
     return {
       ...state,
       inputs: _.map(state.inputs, n => ({
@@ -348,19 +231,6 @@ export default function network(
           }
         ]
       }
-    };
-  } else if (rotateNeuron.test(action)) {
-    return {
-      ...state,
-      neurons: _.map(state.neurons, (n: NeuronState) => {
-        if (n.id == action.payload.id) {
-          return {
-            ...n,
-            theta: action.payload.theta
-          };
-        }
-        return n;
-      })
     };
   } else if (selectInput.test(action)) {
     return {
@@ -493,46 +363,6 @@ export default function network(
         return n;
       })
     };
-  } else if (changeIzhikParams.test(action)) {
-    return {
-      ...state,
-      neurons: state.neurons.map((n: NeuronState) => {
-        if (n.id == action.payload.id) {
-          return {
-            ...n,
-            izhik: {
-              ...n.izhik,
-              params: {
-                ...n.izhik.params,
-                ...action.payload.params
-              }
-            }
-          };
-        }
-        return n;
-      })
-    };
-  } else if (changeDendWeighting.test(action)) {
-    return {
-      ...state,
-      neurons: _.map(state.neurons, (n: NeuronState) => {
-        if (n.id == action.payload.neuronId) {
-          return {
-            ...n,
-            dends: _.map(n.dends, (d: DendState) => {
-              if (d.id == action.payload.dendId) {
-                return {
-                  ...d,
-                  weighting: action.payload.weighting
-                };
-              }
-              return d;
-            })
-          };
-        }
-        return n;
-      })
-    };
   } else if (changeInputHotkey.test(action)) {
     return {
       ...state,
@@ -544,38 +374,6 @@ export default function network(
           };
         }
         return input;
-      })
-    };
-  } else if (exciteNeuron.test(action)) {
-    return {
-      ...state,
-      neurons: state.neurons.map(n => {
-        if (n.id == action.payload.id) {
-          return {
-            ...n,
-            potential:
-              n.potential +
-              n.dends.find(d => d.id == action.payload.dendId)!!.weighting
-          };
-        }
-        return n;
-      })
-    };
-  } else if (hyperpolarizeNeuron.test(action)) {
-    return {
-      ...state,
-      neurons: state.neurons.map(n => {
-        if (n.id == action.payload.id) {
-          return {
-            ...n,
-            potential: n.izhik.mvToPot(n.izhik.params.c),
-            izhik: {
-              ...n.izhik,
-              u: n.izhik.u + n.izhik.params.d
-            }
-          };
-        }
-        return n;
       })
     };
   } else if (addApToSynapse.test(action)) {
@@ -680,29 +478,6 @@ export default function network(
         }
       }
     };
-  } else if (addDend.test(action)) {
-    return {
-      ...state,
-      neurons: state.neurons.map((n: NeuronState) => {
-        if (n.id == action.payload.neuronId) {
-          return {
-            ...n,
-            dends: [
-              ...n.dends,
-              {
-                ...initialDendState,
-                ...action.payload,
-                arc: {
-                  start: action.payload.nu - 1 / 16,
-                  stop: action.payload.nu + 1 / 16
-                }
-              }
-            ]
-          };
-        }
-        return n;
-      })
-    };
   } else if (resetGhostSynapse.test(action)) {
     return {
       ...state,
@@ -710,21 +485,6 @@ export default function network(
         axon: undefined,
         dend: undefined
       }
-    };
-  } else if (stepNetwork.test(action)) {
-    return {
-      ...state,
-      neurons: state.neurons.map((n: NeuronState) => {
-        const v = n.izhik.potToMv(n.potential);
-        return {
-          ...n,
-          potential: n.izhik.mvToPot(stepIzhikPotential(v, n.izhik)),
-          izhik: {
-            ...n.izhik,
-            u: stepIzhikU(v, n.izhik)
-          }
-        };
-      })
     };
   } else if (pauseNetwork.test(action)) {
     return {

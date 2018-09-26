@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Ellipse } from "./Ellipse";
-import { DendState } from "../reducers/network";
 import { Dendrite } from "./Dendrite";
 import { Arc, Ellipse as EllipseGeo } from "../utils/geometry";
 import * as _ from "lodash";
+import { DendState } from "../reducers/network";
 
 export interface IProps {
   dends: Array<DendState>;

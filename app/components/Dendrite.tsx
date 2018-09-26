@@ -1,5 +1,4 @@
 import * as React from "react";
-import { DendState } from "../reducers/network";
 import {
   Arc,
   Line as LineGeo,
@@ -12,6 +11,7 @@ import { Line } from "./Line";
 import { CurveNatural } from "./CurveNatural";
 const d3 = require("d3");
 import * as _ from "lodash";
+import { DendState } from "../reducers/network";
 
 export interface IProps {
   dend: DendState;

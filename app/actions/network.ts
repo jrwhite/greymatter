@@ -8,12 +8,7 @@ import {
   addPoints
 } from "../utils/geometry";
 import { actionCreator, actionCreatorVoid } from "./helpers";
-import {
-  AxonState,
-  DendState,
-  NeuronState,
-  IzhikParams
-} from "../reducers/network";
+import { AxonState, NeuronState, IzhikParams } from "../reducers/network";
 import { IState } from "../reducers";
 import { getAxonAbsPos } from "../selectors/synapse";
 import { GymEnv } from "../containers/GymClient";

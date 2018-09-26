@@ -21,7 +21,8 @@ import {
   RotateNeuronAction
 } from "../actions/network";
 import Draggable from "react-draggable";
-import { DendState, AxonState } from "../reducers/network";
+import { AxonState } from "../reducers/network";
+import { DendState } from "../reducers/DendState";
 import { NeuronBody } from "./NeuronBody";
 import { Dendrite } from "./Dendrite";
 import { Soma } from "./Soma";
