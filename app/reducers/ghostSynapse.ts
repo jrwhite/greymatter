@@ -15,8 +15,13 @@ export interface GhostSynapseState {
   };
 }
 
+export const initialGhostSynapseState = {
+  axon: undefined,
+  dend: undefined,
+};
+
 export function ghostSynapse(
-  state: GhostSynapseState,
+  state: GhostSynapseState = initialGhostSynapseState,
   action: IAction
 ): GhostSynapseState {
   if (makeGhostSynapseAtAxon.test(action)) {

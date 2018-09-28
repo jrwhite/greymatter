@@ -1,24 +1,24 @@
-import {
-  addSynapseToDend,
-  moveNeuron,
-  addNeuron,
-  removeNeurons,
-  exciteNeuron,
-  hyperpolarizeNeuron,
-  changeDendWeighting,
-  changeIzhikParams,
-  rotateNeuron,
-  addDend,
-  stepNetwork,
-} from './../actions/neurons';
-import { Point, Arc } from '../utils/geometry';
-import { IAction } from '../actions/helpers';
 import _ = require('lodash');
+import { IAction } from '../actions/helpers';
+import {
+  addSynapseToAxon,
+  removeSynapsesFromNeurons,
+} from '../actions/neurons';
+import { Arc, Point } from '../utils/geometry';
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime';
 import {
-  removeSynapsesFromNeurons,
-  addSynapseToAxon,
-} from '../actions/neurons';
+  addDend,
+  addNeuron,
+  addSynapseToDend,
+  changeDendWeighting,
+  changeIzhikParams,
+  exciteNeuron,
+  hyperpolarizeNeuron,
+  moveNeuron,
+  removeNeurons,
+  rotateNeuron,
+  stepNetwork,
+} from './../actions/neurons';
 
 export interface NeuronState {
   id: string;
@@ -27,7 +27,7 @@ export interface NeuronState {
   potential: number;
   izhik: IzhikState;
   axon: AxonState;
-  dends: Array<DendState>;
+  dends: DendState[];
 }
 
 export interface AxonState {
@@ -110,9 +110,9 @@ const initialDendState: DendState = {
 };
 
 export default function neurons(
-  state: Array<NeuronState> = [],
+  state: NeuronState[] = [],
   action: IAction
-): Array<NeuronState> {
+): NeuronState[] {
   if (moveNeuron.test(action)) {
     return state.map((n: NeuronState) => {
       if (n.id === action.payload.id) {
@@ -140,19 +140,19 @@ export default function neurons(
     return _.differenceBy(state, action.payload.neurons, 'id');
   } else if (exciteNeuron.test(action)) {
     return state.map(n => {
-      if (n.id == action.payload.id) {
+      if (n.id === action.payload.id) {
         return {
           ...n,
           potential:
             n.potential +
-            n.dends.find(d => d.id == action.payload.dendId)!!.weighting,
+            n.dends.find(d => d.id === action.payload.dendId)!!.weighting,
         };
       }
       return n;
     });
   } else if (hyperpolarizeNeuron.test(action)) {
     return state.map(n => {
-      if (n.id == action.payload.id) {
+      if (n.id === action.payload.id) {
         return {
           ...n,
           potential: n.izhik.mvToPot(n.izhik.params.c),
@@ -166,11 +166,11 @@ export default function neurons(
     });
   } else if (changeDendWeighting.test(action)) {
     return _.map(state, (n: NeuronState) => {
-      if (n.id == action.payload.neuronId) {
+      if (n.id === action.payload.neuronId) {
         return {
           ...n,
           dends: _.map(n.dends, (d: DendState) => {
-            if (d.id == action.payload.dendId) {
+            if (d.id === action.payload.dendId) {
               return {
                 ...d,
                 weighting: action.payload.weighting,
@@ -184,7 +184,7 @@ export default function neurons(
     });
   } else if (changeIzhikParams.test(action)) {
     return state.map((n: NeuronState) => {
-      if (n.id == action.payload.id) {
+      if (n.id === action.payload.id) {
         return {
           ...n,
           izhik: {
@@ -200,7 +200,7 @@ export default function neurons(
     });
   } else if (rotateNeuron.test(action)) {
     return _.map(state, (n: NeuronState) => {
-      if (n.id == action.payload.id) {
+      if (n.id === action.payload.id) {
         return {
           ...n,
           theta: action.payload.theta,
@@ -210,7 +210,7 @@ export default function neurons(
     });
   } else if (addDend.test(action)) {
     return state.map((n: NeuronState) => {
-      if (n.id == action.payload.neuronId) {
+      if (n.id === action.payload.neuronId) {
         return {
           ...n,
           dends: [
@@ -242,12 +242,12 @@ export default function neurons(
       dends: _.differenceWith(
         n.dends,
         action.payload.synapses,
-        (a, b) => a.synapseId == b.id
+        (a, b) => a.synapseId === b.id
       ),
     }));
   } else if (addSynapseToAxon.test(action)) {
     return state.map(n => {
-      if (n.id == action.payload.neuronId) {
+      if (n.id === action.payload.neuronId) {
         return {
           ...n,
           axon: {
@@ -262,11 +262,11 @@ export default function neurons(
     });
   } else if (addSynapseToDend.test(action)) {
     return state.map(n => {
-      if (n.id == action.payload.neuronId) {
+      if (n.id === action.payload.neuronId) {
         return {
           ...n,
           dends: n.dends.map(d => {
-            if (d.id == action.payload.dendId) {
+            if (d.id === action.payload.dendId) {
               return {
                 ...d,
                 synapseId: action.payload.synapseId,

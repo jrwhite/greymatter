@@ -1,23 +1,23 @@
-import * as React from "react";
-import { RouteComponentProps, StaticRouter } from "react-router";
-import { Ellipse } from "./Ellipse";
-import { Point } from "../utils/geometry";
-import { Rotate } from "./Rotate";
+import * as React from 'react';
+import { RouteComponentProps, StaticRouter } from 'react-router';
+import { Ellipse } from './Ellipse';
+import { Point } from '../utils/geometry';
+import { Rotate } from './Rotate';
 
-import Draggable from "react-draggable";
-import { NeuronBody } from "./NeuronBody";
-import { Dendrite } from "./Dendrite";
-import { Soma } from "./Soma";
-import { remote } from "electron";
-import { Popover, Text, Button, Position } from "@blueprintjs/core";
-import { PotentialGraph } from "./PotentialGraph";
-import { PotentialGraphLine } from "./PotentialGraphLine";
-import { MoveNeuronAction, RotateNeuronAction } from "../actions/neurons";
-import { SelectNeuronAction } from "../actions/config";
-import { AxonState, DendState } from "../reducers/neurons";
+import Draggable from 'react-draggable';
+import { NeuronBody } from './NeuronBody';
+import { Dendrite } from './Dendrite';
+import { Soma } from './Soma';
+import { remote } from 'electron';
+import { Popover, Text, Button, Position } from '@blueprintjs/core';
+import { PotentialGraph } from './PotentialGraph';
+import { PotentialGraphLine } from './PotentialGraphLine';
+import { MoveNeuronAction, RotateNeuronAction } from '../actions/neurons';
+import { SelectNeuronAction } from '../actions/config';
+import { AxonState, DendState } from '../reducers/neurons';
 // import { PotentialGraphLine } from "./PotentialGraphLine"
 const { Menu } = remote;
-const d3 = require("d3");
+const d3 = require('d3');
 
 export interface IProps extends RouteComponentProps<any> {
   fireNeuron: (id: string) => void;
@@ -32,7 +32,7 @@ export interface IProps extends RouteComponentProps<any> {
   pos: Point;
   theta: number;
   axon: AxonState;
-  dends: Array<DendState>;
+  dends: DendState[];
   potential: number;
 }
 
@@ -41,48 +41,48 @@ export interface IState {
 }
 
 export class Neuron extends React.Component<IProps, IState> {
-  props: IProps;
-  state: IState = { selected: false };
+  public props: IProps;
+  public state: IState = { selected: false };
 
-  componentDidUpdate(prevProps: IProps, prevState: IState) {
+  public componentDidUpdate(prevProps: IProps, prevState: IState) {
     if (this.state.selected != prevState.selected) {
       this.renderD3();
     }
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     this.renderD3();
   }
 
-  handleNeuronClick(e: React.MouseEvent<SVGGElement>) {
+  public handleNeuronClick(e: React.MouseEvent<SVGGElement>) {
     e.preventDefault();
     const { tryMakeSynapseAtNewDend, id, pos, selectNeuron } = this.props;
 
     tryMakeSynapseAtNewDend(id, pos);
-    selectNeuron({ id: id });
+    selectNeuron({ id });
   }
 
-  handleAxonClick(e: React.MouseEvent<SVGCircleElement>) {
+  public handleAxonClick(e: React.MouseEvent<SVGCircleElement>) {
     e.preventDefault();
     const { tryMakeSynapseAtAxon, id, pos, axon } = this.props;
 
     tryMakeSynapseAtAxon(axon.id, id);
   }
 
-  handleContextMenu(e: React.MouseEvent<SVGGElement>) {
+  public handleContextMenu(e: React.MouseEvent<SVGGElement>) {
     e.stopPropagation();
     e.preventDefault();
     const { removeNeuron, id } = this.props;
 
     Menu.buildFromTemplate([
       {
-        label: "Remove neuron",
-        click: () => removeNeuron(id)
-      }
+        label: 'Remove neuron',
+        click: () => removeNeuron(id),
+      },
     ]).popup(remote.getCurrentWindow());
   }
 
-  render() {
+  public render() {
     const {
       fireNeuron,
       addNewApToSynapse,
@@ -92,7 +92,7 @@ export class Neuron extends React.Component<IProps, IState> {
       id,
       axon,
       dends,
-      potential
+      potential,
     } = this.props;
 
     const graphPopover: JSX.Element = (
@@ -109,7 +109,7 @@ export class Neuron extends React.Component<IProps, IState> {
     return (
       <g
         id={id}
-        transform={"translate(" + pos.x + " " + pos.y + ")"}
+        transform={'translate(' + pos.x + ' ' + pos.y + ')'}
         onContextMenu={this.handleContextMenu.bind(this)}
       >
         <g onClick={this.handleNeuronClick.bind(this)}>
@@ -123,9 +123,7 @@ export class Neuron extends React.Component<IProps, IState> {
           onClick={this.handleAxonClick.bind(this)}
         />
         <Rotate
-          onRotate={(newTheta: number) =>
-            rotateNeuron({ id: id, theta: newTheta })
-          }
+          onRotate={(newTheta: number) => rotateNeuron({ id, theta: newTheta })}
           sensitivity={0.01}
           pivot={{ x: 0, y: 0 }}
         />
@@ -133,39 +131,39 @@ export class Neuron extends React.Component<IProps, IState> {
     );
   }
 
-  setSelected = (val: boolean) => {
+  public setSelected = (val: boolean) => {
     this.setState({ selected: val });
   };
 
-  onDragStarted = () => {
+  public onDragStarted = () => {
     this.setSelected(true);
   };
 
-  onDragged = () => {
+  public onDragged = () => {
     const { id, pos, moveNeuron } = this.props;
 
     const newPos: Point = {
-      ...d3.event
+      ...d3.event,
     };
 
     moveNeuron({
-      id: id,
-      pos: newPos
+      id,
+      pos: newPos,
     });
   };
 
-  renderD3() {
+  public renderD3() {
     const { id } = this.props;
 
     const { selected } = this.state;
 
-    d3.select("#" + id)
-      .classed("selected", selected)
+    d3.select('#' + id)
+      .classed('selected', selected)
       .call(
         d3
           .drag()
-          .on("start", this.onDragStarted)
-          .on("drag", this.onDragged)
+          .on('start', this.onDragStarted)
+          .on('drag', this.onDragged)
       );
   }
 }

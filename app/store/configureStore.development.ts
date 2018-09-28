@@ -5,7 +5,11 @@ import { routerMiddleware, push } from 'react-router-redux';
 import { createLogger } from 'redux-logger';
 import rootReducer from '../reducers';
 
-import * as networkActions from '../actions/network'
+import * as neuronActions from '../actions/neurons'
+import * as synapseActions from '../actions/synapses'
+import * as gymActions from '../actions/gym'
+import * as inputsActions from '../actions/inputs'
+import * as ghostSynapseActions from '../actions/ghostSynapse'
 
 declare const window: Window & {
   __REDUX_DEVTOOLS_EXTENSION_COMPOSE__?(a: any): void;
@@ -18,9 +22,18 @@ declare const module: NodeModule & {
 };
 
 const actionCreators = Object.assign({}, 
-  networkActions,
+  neuronActions,
+  synapseActions,
+  gymActions,
+  inputsActions,
+  ghostSynapseActions,
   {push}
 );
+
+const blacklistedActions = [
+  "DECAY_NETWORK",
+  "MOVE_NEURON",
+]
 
 const logger = (<any>createLogger)({
   level: 'info',
