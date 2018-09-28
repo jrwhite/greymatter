@@ -1,11 +1,11 @@
 import * as React from "react";
-import { IzhikParams, NeuronState, DendState } from "../reducers/network";
-import { ChangeIzhikParamsAction } from "../actions/network";
+import { IzhikParams, NeuronState, DendState } from "../reducers/neurons";
+import { ChangeIzhikParamsAction } from "../actions/neurons";
 import { IState } from "../reducers";
 import { createSelector } from "reselect";
 import { Text, Slider, ControlGroup, Divider } from "@blueprintjs/core";
 import { Dispatch, bindActionCreators } from "redux";
-import * as NetworkActions from "../actions/network";
+import * as Actions from "../actions/neurons";
 import { connect } from "react-redux";
 
 const getSelectedNeuron = (state: IState, props: IProps) =>
@@ -18,9 +18,7 @@ const makeGetSelectedNeuronState = () =>
   }));
 
 export interface IProps {
-  changeDendWeighting: (
-    payload: NetworkActions.ChangeDendWeightingAction
-  ) => void;
+  changeDendWeighting: (payload: Actions.ChangeDendWeightingAction) => void;
   changeIzhikParams: (payload: ChangeIzhikParamsAction) => void;
   id: string;
   izhikParams: IzhikParams;
@@ -130,7 +128,7 @@ const makeMapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
-  return bindActionCreators(NetworkActions as any, dispatch);
+  return bindActionCreators(Actions as any, dispatch);
 };
 
 export default (connect(

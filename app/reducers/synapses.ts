@@ -84,19 +84,6 @@ export default function synapses(
   } else if (addSynapse.test(action)) {
     // split into two reducers (synapse,neuron) with this logic in action
     // to neuron reducer: add addSynapseToDend and addSynapseToAxon
-
-    // inputs: state.inputs.map(n => {
-    //   if (n.id == action.payload.axon.neuronId) {
-    //     return {
-    //       ...n,
-    //       axon: {
-    //         ...n.axon,
-    //         synapses: _.concat(n.axon.synapses, { id: action.payload.id })
-    //       }
-    //     };
-    //   }
-    //   return n;
-    // }),
     return [
       ...state,
       {

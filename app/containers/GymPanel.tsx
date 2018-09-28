@@ -1,11 +1,11 @@
 import * as React from "react";
 import { render } from "react-dom";
-import { GymState } from "../reducers/network";
+import { GymState } from "../reducers/gym";
 import { HTMLSelect } from "@blueprintjs/core";
 import GymClient from "./GymClient";
 import { GymEnv } from "./GymClient";
-import { setGymEnv, SetGymEnvAction } from "../actions/network";
-import * as NetworkActions from "../actions/network";
+import { setGymEnv, SetGymEnvAction } from "../actions/gym";
+import * as Actions from "../actions/gym";
 import { IState as IIState } from "../reducers";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
@@ -46,7 +46,7 @@ function mapStateToProps(state: IIState): Partial<IProps> {
 }
 
 function mapDispatchToProps(dispatch: Dispatch<IIState>): Partial<IProps> {
-  return bindActionCreators(NetworkActions as any, dispatch);
+  return bindActionCreators(Actions as any, dispatch);
 }
 
 export default (connect(

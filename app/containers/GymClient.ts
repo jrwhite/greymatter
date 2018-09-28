@@ -1,5 +1,5 @@
 import * as React from "react";
-import { GymState } from "../reducers/network";
+import { GymState } from "../reducers/gym";
 import {
   ResetGymAction,
   StepGymAction,
@@ -10,11 +10,11 @@ import {
   resetGym,
   stepGym,
   ChangeGymSpace
-} from "../actions/network";
+} from "../actions/gym";
 import { GymHttpClient } from "../utils/gymHTTPClient";
 const d3 = require("d3");
 import { IState as IIState } from "../reducers";
-import * as NetworkActions from "../actions/network";
+import * as Actions from "../actions/gym";
 import { bindActionCreators } from "redux";
 import { connect, Dispatch } from "react-redux";
 
@@ -193,7 +193,7 @@ function mapStateToProps(state: IIState): Partial<IProps> {
 }
 
 function mapDispatchToProps(dispatch: Dispatch<IIState>): Partial<IProps> {
-  return bindActionCreators(NetworkActions as any, dispatch);
+  return bindActionCreators(Actions as any, dispatch);
 }
 
 export default (connect(

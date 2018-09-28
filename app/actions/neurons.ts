@@ -31,10 +31,6 @@ export interface AddNeuronAction {
   pos: Point;
 }
 
-export interface SelectNeuronAction {
-  id: string;
-}
-
 export interface ChangeDendWeightingAction {
   neuronId: string;
   dendId: string;
