@@ -17,7 +17,7 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    
+
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
 
@@ -33,7 +33,7 @@
     "app/**/*.tsx",
     "test/**/*.ts",
     "test/**/*.tsx",
-    "node_modules/@types/**/*.d.ts"
+    // "node_modules/@types/**/*.d.ts"
   ],
   "exclude": [
     "dist"

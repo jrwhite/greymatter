@@ -9,16 +9,16 @@ import {
   changeIzhikParams,
   rotateNeuron,
   addDend,
-  stepNetwork
-} from "./../actions/neurons";
-import { Point, Arc } from "../utils/geometry";
-import { IAction } from "../actions/helpers";
-import _ = require("lodash");
-import { stepIzhikPotential, stepIzhikU } from "../utils/runtime";
+  stepNetwork,
+} from './../actions/neurons';
+import { Point, Arc } from '../utils/geometry';
+import { IAction } from '../actions/helpers';
+import _ = require('lodash');
+import { stepIzhikPotential, stepIzhikU } from '../utils/runtime';
 import {
   removeSynapsesFromNeurons,
-  addSynapseToAxon
-} from "../actions/neurons";
+  addSynapseToAxon,
+} from '../actions/neurons';
 
 export interface NeuronState {
   id: string;
@@ -78,35 +78,35 @@ const initialIzhikState: IzhikState = {
     a: 0.02,
     b: 0.2,
     c: -65,
-    d: 2
+    d: 2,
   },
   u: 0,
   current: 0,
   potToMv: (pot: number) => pot * (30 / 100),
-  mvToPot: (mv: number) => mv * (100 / 30)
+  mvToPot: (mv: number) => mv * (100 / 30),
 };
 
 const initialNeuronState: NeuronState = {
-  id: "n",
+  id: 'n',
   pos: { x: 0, y: 0 },
   theta: 0,
   potential: 0,
   izhik: initialIzhikState,
-  axon: { id: "a", cpos: { x: 50, y: 0 }, synapses: [] },
-  dends: []
+  axon: { id: 'a', cpos: { x: 50, y: 0 }, synapses: [] },
+  dends: [],
 };
 
 const initialDendState: DendState = {
-  id: "d",
+  id: 'd',
   weighting: 30,
   plast: { short: 15, long: 15 },
   baseCpos: { x: 0, y: 0 },
   synCpos: { x: 0, y: 0 },
   nu: 1,
   arc: { start: 1, stop: 1 },
-  synapseId: "s",
+  synapseId: 's',
   incomingAngle: 1,
-  length: 2
+  length: 2,
 };
 
 export default function neurons(
@@ -118,7 +118,7 @@ export default function neurons(
       if (n.id === action.payload.id) {
         return {
           ...n,
-          ...action.payload
+          ...action.payload,
         };
       }
       return n;
@@ -132,12 +132,12 @@ export default function neurons(
         pos: action.payload.pos,
         axon: {
           ...initialNeuronState.axon,
-          id: action.payload.axonId
-        }
-      }
+          id: action.payload.axonId,
+        },
+      },
     ];
   } else if (removeNeurons.test(action)) {
-    return _.differenceBy(state, action.payload.neurons, "id");
+    return _.differenceBy(state, action.payload.neurons, 'id');
   } else if (exciteNeuron.test(action)) {
     return state.map(n => {
       if (n.id == action.payload.id) {
@@ -145,7 +145,7 @@ export default function neurons(
           ...n,
           potential:
             n.potential +
-            n.dends.find(d => d.id == action.payload.dendId)!!.weighting
+            n.dends.find(d => d.id == action.payload.dendId)!!.weighting,
         };
       }
       return n;
@@ -158,8 +158,8 @@ export default function neurons(
           potential: n.izhik.mvToPot(n.izhik.params.c),
           izhik: {
             ...n.izhik,
-            u: n.izhik.u + n.izhik.params.d
-          }
+            u: n.izhik.u + n.izhik.params.d,
+          },
         };
       }
       return n;
@@ -173,11 +173,11 @@ export default function neurons(
             if (d.id == action.payload.dendId) {
               return {
                 ...d,
-                weighting: action.payload.weighting
+                weighting: action.payload.weighting,
               };
             }
             return d;
-          })
+          }),
         };
       }
       return n;
@@ -191,9 +191,9 @@ export default function neurons(
             ...n.izhik,
             params: {
               ...n.izhik.params,
-              ...action.payload.params
-            }
-          }
+              ...action.payload.params,
+            },
+          },
         };
       }
       return n;
@@ -203,7 +203,7 @@ export default function neurons(
       if (n.id == action.payload.id) {
         return {
           ...n,
-          theta: action.payload.theta
+          theta: action.payload.theta,
         };
       }
       return n;
@@ -220,38 +220,30 @@ export default function neurons(
               ...action.payload,
               arc: {
                 start: action.payload.nu - 1 / 16,
-                stop: action.payload.nu + 1 / 16
-              }
-            }
-          ]
+                stop: action.payload.nu + 1 / 16,
+              },
+            },
+          ],
         };
       }
       return n;
-    });
-  } else if (stepNetwork.test(action)) {
-    return state.map((n: NeuronState) => {
-      const v = n.izhik.potToMv(n.potential);
-      return {
-        ...n,
-        potential: n.izhik.mvToPot(stepIzhikPotential(v, n.izhik)),
-        izhik: {
-          ...n.izhik,
-          u: stepIzhikU(v, n.izhik)
-        }
-      };
     });
   } else if (removeSynapsesFromNeurons.test(action)) {
     return _.map(state, (n: NeuronState) => ({
       ...n,
       axon: {
         ...n.axon,
-        synapses: _.differenceBy(n.axon.synapses, action.payload.synapses, "id")
+        synapses: _.differenceBy(
+          n.axon.synapses,
+          action.payload.synapses,
+          'id'
+        ),
       },
       dends: _.differenceWith(
         n.dends,
         action.payload.synapses,
         (a, b) => a.synapseId == b.id
-      )
+      ),
     }));
   } else if (addSynapseToAxon.test(action)) {
     return state.map(n => {
@@ -261,9 +253,9 @@ export default function neurons(
           axon: {
             ...n.axon,
             synapses: _.concat(n.axon.synapses, {
-              id: action.payload.synapseId
-            })
-          }
+              id: action.payload.synapseId,
+            }),
+          },
         };
       }
       return n;
@@ -277,15 +269,28 @@ export default function neurons(
             if (d.id == action.payload.dendId) {
               return {
                 ...d,
-                synapseId: action.payload.synapseId
+                synapseId: action.payload.synapseId,
               };
             }
             return d;
-          })
+          }),
         };
       } else {
         return n;
       }
+    });
+    // begin void actions
+  } else if (stepNetwork.test(action)) {
+    return state.map((n: NeuronState) => {
+      const v = n.izhik.potToMv(n.potential);
+      return {
+        ...n,
+        potential: n.izhik.mvToPot(stepIzhikPotential(v, n.izhik)),
+        izhik: {
+          ...n.izhik,
+          u: stepIzhikU(v, n.izhik),
+        },
+      };
     });
   } else {
     return state;

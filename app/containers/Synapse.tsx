@@ -1,9 +1,9 @@
-import { makeGetSynapseState } from "../selectors/synapse";
-import { IState } from "../reducers";
-import { IProps, Synapse } from "../components/Synapse";
-import { Dispatch, connect } from "react-redux";
+import { connect, Dispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as Actions from "../actions/synapses";
+import { IProps, Synapse } from "../components/Synapse";
+import { IState } from "../reducers";
+import { makeGetSynapseState } from "../selectors/synapse";
 
 const makeMapStateToProps = () => {
   const getSynapseState = makeGetSynapseState();

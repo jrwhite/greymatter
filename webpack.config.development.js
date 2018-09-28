@@ -31,8 +31,7 @@ module.exports = merge(baseConfig, {
     //     exclude: /node_modules/
     //   }
     // ],
-    loaders: [
-      {
+    loaders: [{
         test: /\.global\.css$/,
         loaders: [
           'style-loader',
@@ -51,8 +50,7 @@ module.exports = merge(baseConfig, {
       // Add SASS support  - compile all .global.scss files and pipe it to style.css
       {
         test: /\.global\.scss$/,
-        use: [
-          {
+        use: [{
             loader: 'style-loader'
           },
           {
@@ -69,8 +67,7 @@ module.exports = merge(baseConfig, {
       // Add SASS support  - compile all other .scss files and pipe it to style.css
       {
         test: /^((?!\.global).)*\.scss$/,
-        use: [
-          {
+        use: [{
             loader: 'style-loader'
           },
           {
@@ -79,7 +76,7 @@ module.exports = merge(baseConfig, {
               modules: true,
               sourceMap: true,
               importLoaders: 1,
-              localIdentName: '[name]__[local]__[hash:base64:5]',
+              localIdentName: '[name]__[local]__[hash:base64:5]'
             }
           },
           {

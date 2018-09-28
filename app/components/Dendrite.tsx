@@ -11,7 +11,7 @@ import { Line } from "./Line";
 import { CurveNatural } from "./CurveNatural";
 const d3 = require("d3");
 import * as _ from "lodash";
-import { DendState } from "../reducers/network";
+import { DendState } from "../reducers/neurons";
 
 export interface IProps {
   dend: DendState;

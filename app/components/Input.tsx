@@ -1,17 +1,10 @@
 import * as React from "react";
 import { remote } from "electron";
 import { RouteComponentProps } from "react-router";
-import {
-  moveInput,
-  MoveInput,
-  tryMakeSynapseAtAxon,
-  removeInput,
-  addApToSynapse,
-  SelectInputAction
-} from "../actions/network";
 import { Point } from "../utils/geometry";
-import { AxonState } from "../reducers/network";
 import { TimeInterval, Timer } from "d3";
+import { MoveInput, SelectInputAction } from "../actions/inputs";
+import { AxonState } from "../reducers/neurons";
 const { Menu } = remote;
 const d3 = require("d3");
 

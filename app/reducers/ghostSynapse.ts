@@ -1,9 +1,9 @@
-import { IAction } from "./../actions/helpers";
 import {
   makeGhostSynapseAtAxon,
   makeGhostSynapseAtDend,
-  resetGhostSynapse
-} from "../actions/ghostSynapse";
+  resetGhostSynapse,
+} from '../actions/ghostSynapse';
+import { IAction } from './../actions/helpers';
 export interface GhostSynapseState {
   axon?: {
     id: string;
@@ -22,19 +22,19 @@ export function ghostSynapse(
   if (makeGhostSynapseAtAxon.test(action)) {
     return {
       axon: {
-        ...action.payload
-      }
+        ...action.payload,
+      },
     };
   } else if (makeGhostSynapseAtDend.test(action)) {
     return {
       dend: {
-        ...action.payload
-      }
+        ...action.payload,
+      },
     };
   } else if (resetGhostSynapse.test(action)) {
     return {
       axon: undefined,
-      dend: undefined
+      dend: undefined,
     };
   } else {
     return state;

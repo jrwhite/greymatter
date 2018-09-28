@@ -1,15 +1,12 @@
-import { IAction } from "../actions/helpers";
-import { SelectedNeuronState, SelectedInputState } from "./network";
+import { IAction } from '../actions/helpers';
+import { selectNeuron } from '../actions/neurons';
+import { selectInput } from '../actions/inputs';
 import {
   pauseNetwork,
   resumeNetwork,
   speedUpNetwork,
   slowDownNetwork,
-  decayNetwork,
-  resetNetwork
-} from "../actions/network";
-import { selectNeuron } from "../actions/neurons";
-import { selectInput } from "../actions/inputs";
+} from '../actions/config';
 
 export interface ConfigState {
   selectedNeurons: Array<SelectedNeuronState>;
@@ -32,7 +29,7 @@ const initialConfigState = {
   selectedInputs: [],
   stepSize: 1,
   stepInterval: 50,
-  isPaused: true
+  isPaused: true,
 };
 
 export default function config(
@@ -44,39 +41,39 @@ export default function config(
       ...state,
       selectedNeurons: [
         {
-          id: action.payload.id
-        }
-      ]
+          id: action.payload.id,
+        },
+      ],
     };
   } else if (selectInput.test(action)) {
     return {
       ...state,
       selectedInputs: [
         {
-          id: action.payload.id
-        }
-      ]
+          id: action.payload.id,
+        },
+      ],
     };
     // BEGIN VOID ACTIONS
   } else if (pauseNetwork.test(action)) {
     return {
       ...state,
-      isPaused: true
+      isPaused: true,
     };
   } else if (resumeNetwork.test(action)) {
     return {
       ...state,
-      isPaused: false
+      isPaused: false,
     };
   } else if (speedUpNetwork.test(action)) {
     return {
       ...state,
-      stepInterval: state.stepInterval >= 20 ? state.stepInterval - 10 : 10
+      stepInterval: state.stepInterval >= 20 ? state.stepInterval - 10 : 10,
     };
   } else if (slowDownNetwork.test(action)) {
     return {
       ...state,
-      stepInterval: state.stepInterval + 10
+      stepInterval: state.stepInterval + 10,
     };
   } else {
     return state;

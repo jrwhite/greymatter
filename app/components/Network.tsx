@@ -1,40 +1,33 @@
-import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import Neuron from "../containers/Neuron";
-import { Point, addPoints } from "../utils/geometry";
-import { remote } from "electron";
-import {
-  SynapseState,
-  GhostSynapseState,
-  InputState,
-  ConfigState
-} from "../reducers/network";
-import Synapse from "../containers/Synapse";
-import Input from "../containers/Input";
-import { GhostSynapse } from "./GhostSynapse";
-import Sidebar from "../containers/Sidebar";
+import * as React from 'react';
+import { RouteComponentProps } from 'react-router';
+import Neuron from '../containers/Neuron';
+import { Point, addPoints } from '../utils/geometry';
+import { remote } from 'electron';
+
+import Synapse from '../containers/Synapse';
+import Input from '../containers/Input';
+import { GhostSynapse } from './GhostSynapse';
+import Sidebar from '../containers/Sidebar';
 import {
   Text,
   Button,
   ButtonGroup,
   HotkeysTarget,
   Hotkeys,
-  Hotkey
-} from "@blueprintjs/core";
-import {
-  pauseNetwork,
-  resumeNetwork,
-  speedUpNetwork,
-  slowDownNetwork,
-  resetNetwork,
-  addNewApToSynapse
-} from "../actions/network";
-import GymClient from "../containers/GymClient";
-import { LowerBar } from "./LowerBar";
-const { Menu } = remote;
-const d3 = require("d3");
+  Hotkey,
+} from '@blueprintjs/core';
 
-let styles = require("./Network.scss");
+import GymClient from '../containers/GymClient';
+import { LowerBar } from './LowerBar';
+import { GhostSynapseState } from '../reducers/ghostSynapse';
+import { InputState } from '../reducers/inputs';
+import { NeuronState } from '../reducers/neurons';
+import { SynapseState } from '../reducers/synapses';
+import { ConfigState } from '../reducers/config';
+const { Menu } = remote;
+const d3 = require('d3');
+
+let styles = require('./Network.scss');
 
 export interface IProps extends RouteComponentProps<any> {
   addNewNeuron(pos: Point): void;
@@ -63,9 +56,9 @@ export interface IState {
 
 const initialState: IState = {
   mouse: {
-    pos: { x: 0, y: 0 }
+    pos: { x: 0, y: 0 },
   },
-  interval: Object
+  interval: Object,
 };
 
 @HotkeysTarget
@@ -90,14 +83,14 @@ export class Network extends React.Component<IProps, IState> {
 
     Menu.buildFromTemplate([
       {
-        label: "Add neuron",
+        label: 'Add neuron',
         // click: () => addNeuron({key: _.uniqueId('n'), pos: poijknt})
-        click: () => addNewNeuron(pos)
+        click: () => addNewNeuron(pos),
       },
       {
-        label: "Add input",
-        click: () => addNewInput(pos)
-      }
+        label: 'Add input',
+        click: () => addNewInput(pos),
+      },
     ]).popup(remote.getCurrentWindow());
   }
 
@@ -120,7 +113,7 @@ export class Network extends React.Component<IProps, IState> {
       speedUpNetwork,
       pauseNetwork,
       resumeNetwork,
-      config
+      config,
     } = this.props;
 
     // TODO: refactor ghostSynapse into separate component
@@ -132,14 +125,14 @@ export class Network extends React.Component<IProps, IState> {
       : undefined;
 
     return (
-      <div className={styles["container-top"]}>
-        <div className={styles["wrapper-upper"]}>
-          <div className={styles["container-upper"]}>
+      <div className={styles['container-top']}>
+        <div className={styles['wrapper-upper']}>
+          <div className={styles['container-upper']}>
             <div className={styles.sidebar}>
               <Sidebar />
             </div>
             {/* { config.isPaused ? <GymClient /> : undefined }  */}
-            <div className={styles["wrapper-editor"]}>
+            <div className={styles['wrapper-editor']}>
               <svg
                 className={styles.editor}
                 onContextMenu={this.onContextMenu.bind(this)}
@@ -150,7 +143,10 @@ export class Network extends React.Component<IProps, IState> {
                     axon={
                       axonNeuron
                         ? {
-                            pos: addPoints(axonNeuron.pos, axonNeuron.axon.cpos)
+                            pos: addPoints(
+                              axonNeuron.pos,
+                              axonNeuron.axon.cpos
+                            ),
                           }
                         : undefined
                     }
@@ -162,7 +158,7 @@ export class Network extends React.Component<IProps, IState> {
                               dendNeuron.dends.find(
                                 d => d.id === ghostSynapse.dend!!.id
                               )!!.baseCpos
-                            )
+                            ),
                           }
                         : undefined
                     }
@@ -186,7 +182,7 @@ export class Network extends React.Component<IProps, IState> {
                 <ButtonGroup minimal={true} className={styles.overlay}>
                   <Button icon="fast-backward" onClick={slowDownNetwork} />
                   <Button
-                    icon={config.isPaused ? "play" : "pause"}
+                    icon={config.isPaused ? 'play' : 'pause'}
                     onClick={config.isPaused ? resumeNetwork : pauseNetwork}
                   />
                   <Button icon="fast-forward" onClick={speedUpNetwork} />
@@ -196,7 +192,7 @@ export class Network extends React.Component<IProps, IState> {
             </div>
           </div>
         </div>
-        <div className={styles["wrapper-lower"]}>
+        <div className={styles['wrapper-lower']}>
           <LowerBar />
         </div>
       </div>
@@ -212,7 +208,7 @@ export class Network extends React.Component<IProps, IState> {
           (input: InputState) =>
             input.hotkey ? (
               <Hotkey
-                label={"fire input " + input.id}
+                label={'fire input ' + input.id}
                 global={false}
                 combo={input.hotkey}
                 onKeyDown={() =>

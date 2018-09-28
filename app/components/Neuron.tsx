@@ -3,26 +3,8 @@ import { RouteComponentProps, StaticRouter } from "react-router";
 import { Ellipse } from "./Ellipse";
 import { Point } from "../utils/geometry";
 import { Rotate } from "./Rotate";
-import {
-  SelectNeuronAction,
-  MoveNeuronAction,
-  makeGhostSynapseAtAxon,
-  MakeGhostSynapseAtAxonAction,
-  makeGhostSynapseAtDend,
-  MakeGhostSynapseAtDendAction,
-  tryMakeSynapseAtAxon,
-  tryMakeSynapseAtDend,
-  tryMakeSynapseAtNewDend,
-  RemoveNeuronsAction,
-  HyperpolarizeNeuron,
-  addApToSynapse,
-  AddApToSynapse,
-  addNewApToSynapse,
-  RotateNeuronAction
-} from "../actions/network";
+
 import Draggable from "react-draggable";
-import { AxonState } from "../reducers/network";
-import { DendState } from "../reducers/DendState";
 import { NeuronBody } from "./NeuronBody";
 import { Dendrite } from "./Dendrite";
 import { Soma } from "./Soma";
@@ -30,6 +12,9 @@ import { remote } from "electron";
 import { Popover, Text, Button, Position } from "@blueprintjs/core";
 import { PotentialGraph } from "./PotentialGraph";
 import { PotentialGraphLine } from "./PotentialGraphLine";
+import { MoveNeuronAction, RotateNeuronAction } from "../actions/neurons";
+import { SelectNeuronAction } from "../actions/config";
+import { AxonState, DendState } from "../reducers/neurons";
 // import { PotentialGraphLine } from "./PotentialGraphLine"
 const { Menu } = remote;
 const d3 = require("d3");

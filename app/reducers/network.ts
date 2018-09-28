@@ -1,11 +1,11 @@
 import * as _ from "lodash";
+import { combineReducers } from "redux";
+import config, { ConfigState } from "./config";
+import { ghostSynapse, GhostSynapseState } from "./ghostSynapse";
+import { gym, GymState } from "./gym";
+import inputs, { InputState } from "./inputs";
 import neurons, { NeuronState } from "./neurons";
 import synapses, { SynapseState } from "./synapses";
-import inputs, { InputState } from "./inputs";
-import config, { ConfigState } from "./config";
-import { combineReducers } from "redux";
-import { ghostSynapse, GhostSynapseState } from "./ghostSynapse";
-import { GymState, gym } from "./gym";
 
 export interface ActionPotentialState {
   id: string;
@@ -13,9 +13,9 @@ export interface ActionPotentialState {
 
 export interface NetworkState {
   ghostSynapse: GhostSynapseState;
-  neurons: Array<NeuronState>;
-  synapses: Array<SynapseState>;
-  inputs: Array<InputState>;
+  neurons: NeuronState[];
+  synapses: SynapseState[];
+  inputs: InputState[];
   config: ConfigState;
   gym: GymState;
 }

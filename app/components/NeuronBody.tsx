@@ -3,7 +3,7 @@ import { Ellipse } from "./Ellipse";
 import { Dendrite } from "./Dendrite";
 import { Arc, Ellipse as EllipseGeo } from "../utils/geometry";
 import * as _ from "lodash";
-import { DendState } from "../reducers/network";
+import { DendState } from "../reducers/neurons";
 
 export interface IProps {
   dends: Array<DendState>;

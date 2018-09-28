@@ -1,79 +1,70 @@
-import * as React from 'react'
-import { RouteComponentProps } from 'react-router';
-import { render } from 'enzyme';
-import { NeuronState, SelectedNeuronState, SelectedInputState } from '../reducers/network';
-import { Button, Text, Slider, ControlGroup } from '@blueprintjs/core'
-import { PotentialGraph } from './PotentialGraph';
-import SelectedInput from '../containers/SelectedInput';
-import SelectedNeuron from '../containers/SelectedNeuron';
-const d3 = require('d3')
+import * as React from "react";
+import { RouteComponentProps } from "react-router";
+import { render } from "enzyme";
+import { Button, Text, Slider, ControlGroup } from "@blueprintjs/core";
+import { PotentialGraph } from "./PotentialGraph";
+import SelectedInput from "../containers/SelectedInput";
+import SelectedNeuron from "../containers/SelectedNeuron";
+import { SelectedNeuronState, SelectedInputState } from "../reducers/config";
+const d3 = require("d3");
 
-const styles = require('./SideBar.scss')
+const styles = require("./SideBar.scss");
 
 export interface IProps {
-    closeSelectedPanel?: () => void,
-    openSelectedPanel?: () => void,
-    selectedNeurons: Array<SelectedNeuronState>,
-    selectedInputs: Array<SelectedInputState>,
+  closeSelectedPanel?: () => void;
+  openSelectedPanel?: () => void;
+  selectedNeurons: Array<SelectedNeuronState>;
+  selectedInputs: Array<SelectedInputState>;
 }
 
 export interface IState {
-    figures: Array<Object>,
+  figures: Array<Object>;
 }
 
 const initialState: IState = {
-    figures: []
-}
+  figures: []
+};
 
-export class SideBar extends React.Component<IProps,IState> {
-    props: IProps
-    state: IState = initialState
+export class SideBar extends React.Component<IProps, IState> {
+  props: IProps;
+  state: IState = initialState;
 
-    render() {
-        const {
-            selectedNeurons,
-            selectedInputs
-        } = this.props
-        
-        return (
+  render() {
+    const { selectedNeurons, selectedInputs } = this.props;
 
-            <div className={styles.container}>
-            {/* <p>
+    return (
+      <div className={styles.container}>
+        {/* <p>
                 "Selected"
             </p> */}
-            
-                {(selectedNeurons.length > 0) ?
-                    <div>
-                    <svg>
-                    <PotentialGraph
-                        neurons={selectedNeurons}
-                        scaleX={3}
-                        rangeX={50}
-                        scaleY={0.4}
-                        rangeY={{ start: -300, stop: 100 }}
-                    />
-                    </svg>
-                    <SelectedNeuron
-                        id={selectedNeurons[0].id}
-                    />
-                    </div>
-                    :
-                    undefined
-                }
-            {/* <ControlGroup 
+
+        {selectedNeurons.length > 0 ? (
+          <div>
+            <svg>
+              <PotentialGraph
+                neurons={selectedNeurons}
+                scaleX={3}
+                rangeX={50}
+                scaleY={0.4}
+                rangeY={{ start: -300, stop: 100 }}
+              />
+            </svg>
+            <SelectedNeuron id={selectedNeurons[0].id} />
+          </div>
+        ) : (
+          undefined
+        )}
+        {/* <ControlGroup 
                 fill={false}
                 vertical={true}
             > */}
-            {(selectedInputs.length > 0) ?
-                <SelectedInput
-                    id={selectedInputs[0].id}
-                />
-                :
-                undefined
-            }
-            {/* </ControlGroup> */}
-            </div>
-
-        )
-    }
+        {selectedInputs.length > 0 ? (
+          <SelectedInput id={selectedInputs[0].id} />
+        ) : (
+          undefined
+        )}
+        {/* </ControlGroup> */}
+      </div>
+    );
+  }
 }
