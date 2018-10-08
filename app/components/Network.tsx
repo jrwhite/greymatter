@@ -27,7 +27,7 @@ import { ConfigState } from '../reducers/config';
 const { Menu } = remote;
 const d3 = require('d3');
 
-let styles = require('./Network.scss');
+const styles = require('./Network.scss');
 
 export interface IProps extends RouteComponentProps<any> {
   addNewNeuron(pos: Point): void;
@@ -41,9 +41,9 @@ export interface IProps extends RouteComponentProps<any> {
   resetNetwork: () => void;
   addNewApToSynapse: (id: string) => void;
   ghostSynapse: GhostSynapseState;
-  inputs: Array<InputState>;
-  neurons: Array<NeuronState>;
-  synapses: Array<SynapseState>;
+  inputs: InputState[];
+  neurons: NeuronState[];
+  synapses: SynapseState[];
   config: ConfigState;
 }
 
@@ -63,20 +63,20 @@ const initialState: IState = {
 
 @HotkeysTarget
 export class Network extends React.Component<IProps, IState> {
-  props: IProps;
-  state: IState = initialState;
+  public props: IProps;
+  public state: IState = initialState;
 
-  componentDidMount() {
+  public componentDidMount() {
     this.startRuntime();
   }
 
-  componentDidUpdate(prevProps: IProps, prevState: IState) {
+  public componentDidUpdate(prevProps: IProps, prevState: IState) {
     if (prevProps.config != this.props.config) {
       this.restartRuntime();
     }
   }
 
-  onContextMenu(e: any) {
+  public onContextMenu(e: any) {
     e.preventDefault();
     const { addNewNeuron, addNewInput } = this.props;
     const pos: Point = { x: e.nativeEvent.clientX, y: e.nativeEvent.clientY };
@@ -94,7 +94,7 @@ export class Network extends React.Component<IProps, IState> {
     ]).popup(remote.getCurrentWindow());
   }
 
-  handleMouseMove = (e: React.MouseEvent<SVGElement>) => {
+  public handleMouseMove = (e: React.MouseEvent<SVGElement>) => {
     e.preventDefault();
     const { mouse } = this.state;
 
@@ -102,7 +102,7 @@ export class Network extends React.Component<IProps, IState> {
     this.setState({ mouse: { pos: newPos } });
   };
 
-  render() {
+  public render() {
     const {
       resetNetwork,
       ghostSynapse,
@@ -199,7 +199,7 @@ export class Network extends React.Component<IProps, IState> {
     );
   }
 
-  renderHotkeys() {
+  public renderHotkeys() {
     const { inputs, addNewApToSynapse } = this.props;
 
     return (
@@ -223,20 +223,20 @@ export class Network extends React.Component<IProps, IState> {
     );
   }
 
-  startRuntime() {
+  public startRuntime() {
     const { decayNetwork, stepNetwork, config } = this.props;
     const step = () => {
       // decayNetwork()
       stepNetwork();
     };
     const interval = d3.interval(step, config.stepInterval);
-    this.setState({ interval: interval });
+    this.setState({ interval });
     if (config.isPaused) {
       interval.stop();
     }
   }
 
-  restartRuntime() {
+  public restartRuntime() {
     const { config, stepNetwork } = this.props;
     const { interval } = this.state;
     const step = () => {

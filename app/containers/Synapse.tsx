@@ -1,9 +1,10 @@
-import { connect, Dispatch } from "react-redux";
-import { bindActionCreators } from "redux";
-import * as Actions from "../actions/synapses";
-import { IProps, Synapse } from "../components/Synapse";
-import { IState } from "../reducers";
-import { makeGetSynapseState } from "../selectors/synapse";
+import { connect, Dispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as Actions from '../actions/synapses';
+import { IProps, Synapse } from '../components/Synapse';
+import { IState } from '../reducers';
+import { makeGetSynapseState } from '../selectors/synapse';
+import NetworkActions from '../actions/network';
 
 const makeMapStateToProps = () => {
   const getSynapseState = makeGetSynapseState();
@@ -11,7 +12,7 @@ const makeMapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
-  return bindActionCreators(Actions as any, dispatch);
+  return bindActionCreators(NetworkActions as any, dispatch);
 };
 
 export default (connect(

@@ -1,8 +1,8 @@
-import { AddSynapseAction } from "./synapses";
-import { actionCreator } from "./helpers";
-import { exciteNeuron, addSynapseToAxon, addSynapseToDend } from "./neurons";
-import { IState } from "../reducers";
-const _ = require("lodash");
+import { AddSynapseAction } from './synapses';
+import { actionCreator } from './helpers';
+import { exciteNeuron, addSynapseToAxon, addSynapseToDend } from './neurons';
+import { IState } from '../reducers';
+const _ = require('lodash');
 
 export interface AddSynapseAction {
   id: string;
@@ -42,19 +42,19 @@ export interface AddNewSynapseAction {
 }
 
 export const addApToSynapse = actionCreator<AddApToSynapse>(
-  "ADD_AP_TO_SYNAPSE"
+  'ADD_AP_TO_SYNAPSE'
 );
 export const removeApFromSynapse = actionCreator<RemoveApFromSynapse>(
-  "REMOVE_AP_FROM_SYNAPSE"
+  'REMOVE_AP_FROM_SYNAPSE'
 );
-export const addSynapse = actionCreator<AddSynapseAction>("ADD_SYNAPSE");
+export const addSynapse = actionCreator<AddSynapseAction>('ADD_SYNAPSE');
 export const removeSynapses = actionCreator<RemoveSynapsesAction>(
-  "REMOVE_SYNAPSE"
+  'REMOVE_SYNAPSE'
 );
 
 export function finishFiringApOnSynapse(id: string, synapseId: string) {
   return (dispatch: Function, getState: () => IState) => {
-    dispatch(removeApFromSynapse({ id: id, synapseId: synapseId }));
+    dispatch(removeApFromSynapse({ id, synapseId }));
     const dend: {
       id: string;
       neuronId: string;
@@ -65,19 +65,19 @@ export function finishFiringApOnSynapse(id: string, synapseId: string) {
 
 export function addNewApToSynapse(id: string) {
   return (dispatch: Function) => {
-    dispatch(addApToSynapse({ id: _.uniqueId("ap"), synapseId: id }));
+    dispatch(addApToSynapse({ id: _.uniqueId('ap'), synapseId: id }));
   };
 }
 
 export function addNewSynapse(payload: AddNewSynapseAction) {
   return (dispatch: Function) => {
-    const newId = _.uniqueId("s");
+    const newId = _.uniqueId('s');
 
     dispatch(
       addSynapseToAxon({
         neuronId: payload.axon.neuronId,
         synapseId: newId,
-        axonId: payload.axon.id
+        axonId: payload.axon.id,
       })
     );
 
@@ -85,7 +85,7 @@ export function addNewSynapse(payload: AddNewSynapseAction) {
       addSynapseToDend({
         neuronId: payload.dend.neuronId,
         synapseId: newId,
-        dendId: payload.dend.id
+        dendId: payload.dend.id,
       })
     );
 
