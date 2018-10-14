@@ -1,62 +1,62 @@
-import * as React from "react";
-import { IzhikParams, NeuronState, DendState } from "../reducers/neurons";
-import { ChangeIzhikParamsAction } from "../actions/neurons";
-import { IState } from "../reducers";
-import { createSelector } from "reselect";
-import { Text, Slider, ControlGroup, Divider } from "@blueprintjs/core";
-import { Dispatch, bindActionCreators } from "redux";
-import * as Actions from "../actions/neurons";
-import { connect } from "react-redux";
+import * as React from 'react'
+import { IzhikParams, NeuronState, DendState } from '../reducers/neurons'
+import { ChangeIzhikParamsAction } from '../actions/neurons'
+import { IState } from '../reducers'
+import { createSelector } from 'reselect'
+import { Text, Slider, ControlGroup, Divider } from '@blueprintjs/core'
+import { Dispatch, bindActionCreators, AnyAction } from 'redux'
+import * as Actions from '../actions/neurons'
+import { connect } from 'react-redux'
 
 const getSelectedNeuron = (state: IState, props: IProps) =>
-  state.network.neurons.find((neuron: NeuronState) => neuron.id === props.id);
+  state.network.neurons.find((neuron: NeuronState) => neuron.id === props.id)
 
 const makeGetSelectedNeuronState = () =>
-  createSelector(getSelectedNeuron, selectedNeuron => ({
+  createSelector(getSelectedNeuron, (selectedNeuron) => ({
     izhikParams: selectedNeuron!!.izhik.params,
     dends: selectedNeuron!!.dends
-  }));
+  }))
 
 export interface IProps {
-  changeDendWeighting: (payload: Actions.ChangeDendWeightingAction) => void;
-  changeIzhikParams: (payload: ChangeIzhikParamsAction) => void;
-  id: string;
-  izhikParams: IzhikParams;
-  dends: Array<DendState>;
+  changeDendWeighting: (payload: Actions.ChangeDendWeightingAction) => void
+  changeIzhikParams: (payload: ChangeIzhikParamsAction) => void
+  id: string
+  izhikParams: IzhikParams
+  dends: DendState[]
 }
 
 export class SelectedNeuron extends React.Component<IProps> {
-  props: IProps;
+  props: IProps
 
-  render() {
+  render () {
     const {
       id,
       izhikParams,
       changeIzhikParams,
       changeDendWeighting,
       dends
-    } = this.props;
+    } = this.props
 
     const changeA = (a: number) =>
       changeIzhikParams({
-        id: id,
-        params: { a: a }
-      });
+        id,
+        params: { a }
+      })
     const changeB = (b: number) =>
       changeIzhikParams({
-        id: id,
-        params: { b: b }
-      });
+        id,
+        params: { b }
+      })
     const changeC = (c: number) =>
       changeIzhikParams({
-        id: id,
-        params: { c: c }
-      });
+        id,
+        params: { c }
+      })
     const changeD = (d: number) =>
       changeIzhikParams({
-        id: id,
-        params: { d: d }
-      });
+        id,
+        params: { d }
+      })
 
     return (
       <ControlGroup fill={false} vertical={true}>
@@ -101,7 +101,7 @@ export class SelectedNeuron extends React.Component<IProps> {
         />
         <Divider />
         <Text>Dendrites:</Text>
-        {dends.map(d => (
+        {dends.map((d) => (
           <Slider
             min={0}
             max={100}
@@ -118,20 +118,20 @@ export class SelectedNeuron extends React.Component<IProps> {
           />
         ))}
       </ControlGroup>
-    );
+    )
   }
 }
 
 const makeMapStateToProps = () => {
-  const getSelectedNeuronState = makeGetSelectedNeuronState();
-  return (state: IState, props: IProps) => getSelectedNeuronState(state, props);
-};
+  const getSelectedNeuronState = makeGetSelectedNeuronState()
+  return (state: IState, props: IProps) => getSelectedNeuronState(state, props)
+}
 
-const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
-  return bindActionCreators(Actions as any, dispatch);
-};
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Partial<IProps> => {
+  return bindActionCreators(Actions as any, dispatch)
+}
 
 export default (connect(
   makeMapStateToProps,
   mapDispatchToProps
-)(SelectedNeuron) as any) as React.StatelessComponent<Partial<IProps>>;
+)(SelectedNeuron) as any) as React.StatelessComponent<Partial<IProps>>
