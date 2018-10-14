@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { GymState } from '../reducers/gym'
 import { GraphLine, IProps as GraphLineProps } from './GraphLine'
-
-const d3 = require('d3')
+import d3 = require('d3')
 
 export interface IProps {
   children?:
@@ -39,11 +38,11 @@ export class LineGraph extends React.Component<IProps> {
       children,
       (line: React.ReactElement<GraphLineProps>) =>
         React.cloneElement(line, {
-          color: 'red',
-          deltaX: scaleX,
-          height,
+          color: line.props.color ? line.props.color : 'red',
+          deltaX: line.props.deltaX ? line.props.deltaX : scaleX,
+          height: line.props.height ? line.props.height : height,
           maxN,
-          rangeY
+          rangeY: line.props.rangeY ? line.props.rangeY : rangeY
         })
     )
 

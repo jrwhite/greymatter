@@ -15,47 +15,70 @@ import GymObservationData from '../containers/GymObservationData'
 
 export interface IProps {
   // TODO: only pass gym props that are needed
-  gym: GymState
+  env: GymEnv
+  observationSpace: any
+  actionSpace: any
   setGymEnv: (payload: SetGymEnvAction) => void
 }
 
-export class GymPanel extends React.Component<IProps> {
-  public props: IProps
+export interface IState {
+  selectedObservations: string[]
+  showAction: boolean
+  showReward: boolean
+}
 
-  public render () {
-    const { gym, setGymEnv } = this.props
+export class GymPanel extends React.Component<IProps, IState> {
+  props: IProps
+  state: IState = {
+    selectedObservations: [],
+    showAction: false,
+    showReward: false
+  }
+
+  render () {
+    const { env, setGymEnv } = this.props
 
     const handleEnvChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       setGymEnv({ env: e.currentTarget.value as GymEnv })
     }
 
+    const { selectedObservations, showAction, showReward } = this.state
+
+    const graphLines = {}
+
     return (
       <div>
-        {gym.env ? <GymClient /> : undefined}
+        {env ? <GymClient /> : undefined}
         <HTMLSelect onChange={handleEnvChange}>
           <option selected disabled hidden>
             Choose environment...
           </option>
           <option value={GymEnv.Cartpole}>Cartpole-v1</option>
         </HTMLSelect>
-        {/* <LineGraph>
-          <GraphLine
-            deltaX={1}
-            height={1}
-            maxN={1}
-            rangeY={{ start: 1, stop: 1 }}
-          >
+        <LineGraph
+          scaleX={3}
+          rangeX={50}
+          scaleY={10}
+          rangeY={{ start: -100, stop: 100 }}
+        >
+          <GraphLine>
             <GymObservationData name={'x'} />
           </GraphLine>
-        </LineGraph> */}
+        </LineGraph>
       </div>
     )
+  }
+
+  renderGraph () {
+    const { observationSpace } = this.props
   }
 }
 
 function mapStateToProps (state: IIState): Partial<IProps> {
   return {
-    gym: state.network.gym
+    env: state.network.gym.env,
+    observationSpace: state.network.gym.observationSpace,
+    actionSpace: state.network.gym.actionSpace
   }
 }
 
