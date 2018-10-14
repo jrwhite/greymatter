@@ -1,49 +1,35 @@
-import * as React from "react";
-import * as Actions from "../actions/neurons";
-import { IState } from "../reducers";
-import { Dispatch, connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { RouteComponentProps } from "react-router";
-import { createSelector } from "reselect";
+import * as React from 'react'
+import * as Actions from '../actions/neurons'
+import { IState } from '../reducers'
+import { Dispatch, connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { RouteComponentProps } from 'react-router'
+import { createSelector } from 'reselect'
+import { DataSource, IProps as DataProps } from './DataSource'
 
 // temporarily just putting the selector here
-const getNeuron = (state: IState, props: IProps) => {
-  return state.network.neurons.find(n => n.id === props.id);
-};
-
-const makeGetNeuronPotentialState = () =>
-  createSelector(getNeuron, neuron => ({
-    potential: neuron ? neuron.potential : undefined
-  }));
-export interface IProps {
-  onChange: (potential: number) => void;
-  id: string;
-  potential: number;
+const getNeuronData = (state: IState, props: IProps) => {
+  return state.network.neurons.find((n) => n.id === props.id)
 }
 
-export class NeuronPotentialData extends React.Component<IProps> {
-  props: IProps;
+const makeGetNeuronPotentialState = () =>
+  createSelector(getNeuronData, (neuron) => ({
+    data: neuron ? neuron.potential : undefined
+  }))
 
-  componentDidUpdate() {
-    const { potential, onChange } = this.props;
-    onChange(potential);
-  }
+export interface IProps extends DataProps {
+  id: string
+}
 
-  render() {
-    return null;
-  }
+export class NeuronPotentialData extends DataSource {
+  props: IProps
 }
 
 const makeMapStateToProps = () => {
-  const getPotentialState = makeGetNeuronPotentialState();
-  return (state: IState, props: IProps) => getPotentialState(state, props);
-};
+  const getPotentialState = makeGetNeuronPotentialState()
+  return (state: IState, props: IProps) => getPotentialState(state, props)
+}
 
-const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
-  return bindActionCreators(Actions as any, dispatch);
-};
-
-export default (connect(
-  makeMapStateToProps,
-  mapDispatchToProps
-)(NeuronPotentialData) as any) as React.StatelessComponent<Partial<IProps>>;
+export default (connect(makeMapStateToProps)(
+  NeuronPotentialData
+) as any) as React.StatelessComponent<Partial<IProps>>

@@ -1,10 +1,11 @@
 import * as React from "react";
-const d3 = require("d3");
 import * as _ from "lodash";
 import { CanvasPath_D3Shape, Selection } from "d3";
 import { RouteComponentProps } from "react-router";
 import { Text } from "@blueprintjs/core";
 import NeuronPotentialData from "../containers/NeuronPotentialData";
+
+const d3 = require("d3");
 
 export interface IProps {
   id: string;
@@ -18,7 +19,7 @@ export interface IProps {
 export interface IState {
   // container: Selection<SVGGElement,{},null,null>,
   // path: Selection<SVGPathElement,number,SVGGElement,{}>,
-  pathData: Array<number>;
+  pathData: number[];
   n: number;
 }
 
@@ -26,7 +27,7 @@ export class PotentialGraphLine extends React.Component<IProps, IState> {
   props: IProps;
   state: IState = {
     pathData: [],
-    n: 0
+    n: 0,
   };
 
   // componentWillMount () {
@@ -43,19 +44,19 @@ export class PotentialGraphLine extends React.Component<IProps, IState> {
     const { pathData, n } = this.state;
     this.setState({
       pathData: _.concat(pathData, potential),
-      n: n + 1
+      n: n + 1,
     });
     this.shift();
-  };
+  }
 
   shift = () => {
     if (this.state.n > this.props.maxN) {
       this.setState({
         pathData: _.tail(this.state.pathData),
-        n: this.state.n - 1
+        n: this.state.n - 1,
       });
     }
-  };
+  }
 
   transitionSetter = d3
     .transition()
@@ -89,7 +90,7 @@ export class PotentialGraphLine extends React.Component<IProps, IState> {
           fill="none"
           stroke="red"
           ref={
-            node => d3.select(node).attr("d", lineSetter(pathData))
+            (node) => d3.select(node).attr("d", lineSetter(pathData))
             // .attr('transform', null)
             // .transition(this.transitionSetter)
             // .attr('transform', 'translate(' + deltaX + ')')

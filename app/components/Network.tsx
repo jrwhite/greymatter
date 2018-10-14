@@ -1,108 +1,108 @@
-import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
-import Neuron from '../containers/Neuron';
-import { Point, addPoints } from '../utils/geometry';
-import { remote } from 'electron';
+import * as React from 'react'
+import { RouteComponentProps } from 'react-router'
+import Neuron from '../containers/Neuron'
+import { Point, addPoints } from '../utils/geometry'
+import { remote } from 'electron'
 
-import Synapse from '../containers/Synapse';
-import Input from '../containers/Input';
-import { GhostSynapse } from './GhostSynapse';
-import Sidebar from '../containers/Sidebar';
+import Synapse from '../containers/Synapse'
+import Input from '../containers/Input'
+import { GhostSynapse } from './GhostSynapse'
+import Sidebar from '../containers/Sidebar'
 import {
   Text,
   Button,
   ButtonGroup,
   HotkeysTarget,
   Hotkeys,
-  Hotkey,
-} from '@blueprintjs/core';
+  Hotkey
+} from '@blueprintjs/core'
 
-import GymClient from '../containers/GymClient';
-import { LowerBar } from './LowerBar';
-import { GhostSynapseState } from '../reducers/ghostSynapse';
-import { InputState } from '../reducers/inputs';
-import { NeuronState } from '../reducers/neurons';
-import { SynapseState } from '../reducers/synapses';
-import { ConfigState } from '../reducers/config';
-const { Menu } = remote;
-const d3 = require('d3');
+import GymClient from '../containers/GymClient'
+import { LowerBar } from './LowerBar'
+import { GhostSynapseState } from '../reducers/ghostSynapse'
+import { InputState } from '../reducers/inputs'
+import { NeuronState } from '../reducers/neurons'
+import { SynapseState } from '../reducers/synapses'
+import { ConfigState } from '../reducers/config'
+const { Menu } = remote
+const d3 = require('d3')
 
-const styles = require('./Network.scss');
+const styles = require('./Network.scss')
 
 export interface IProps extends RouteComponentProps<any> {
-  addNewNeuron(pos: Point): void;
-  addNewInput(pos: Point): void;
-  decayNetwork: () => void;
-  stepNetwork: () => void; // izhik step
-  pauseNetwork: () => void;
-  resumeNetwork: () => void;
-  speedUpNetwork: () => void;
-  slowDownNetwork: () => void;
-  resetNetwork: () => void;
-  addNewApToSynapse: (id: string) => void;
-  ghostSynapse: GhostSynapseState;
-  inputs: InputState[];
-  neurons: NeuronState[];
-  synapses: SynapseState[];
-  config: ConfigState;
+  addNewNeuron (pos: Point): void
+  addNewInput (pos: Point): void
+  decayNetwork: () => void
+  stepNetwork: () => void // izhik step
+  pauseNetwork: () => void
+  resumeNetwork: () => void
+  speedUpNetwork: () => void
+  slowDownNetwork: () => void
+  resetNetwork: () => void
+  addNewApToSynapse: (id: string) => void
+  ghostSynapse: GhostSynapseState
+  inputs: InputState[]
+  neurons: NeuronState[]
+  synapses: SynapseState[]
+  config: ConfigState
 }
 
 export interface IState {
   mouse: {
     pos: Point;
-  };
-  interval: any;
+  }
+  interval: any
 }
 
 const initialState: IState = {
   mouse: {
-    pos: { x: 0, y: 0 },
+    pos: { x: 0, y: 0 }
   },
-  interval: Object,
-};
+  interval: Object
+}
 
 @HotkeysTarget
 export class Network extends React.Component<IProps, IState> {
-  public props: IProps;
-  public state: IState = initialState;
+  public props: IProps
+  public state: IState = initialState
 
-  public componentDidMount() {
-    this.startRuntime();
+  public componentDidMount () {
+    this.startRuntime()
   }
 
-  public componentDidUpdate(prevProps: IProps, prevState: IState) {
+  public componentDidUpdate (prevProps: IProps, prevState: IState) {
     if (prevProps.config != this.props.config) {
-      this.restartRuntime();
+      this.restartRuntime()
     }
   }
 
-  public onContextMenu(e: any) {
-    e.preventDefault();
-    const { addNewNeuron, addNewInput } = this.props;
-    const pos: Point = { x: e.nativeEvent.clientX, y: e.nativeEvent.clientY };
+  public onContextMenu (e: any) {
+    e.preventDefault()
+    const { addNewNeuron, addNewInput } = this.props
+    const pos: Point = { x: e.nativeEvent.clientX, y: e.nativeEvent.clientY }
 
     Menu.buildFromTemplate([
       {
         label: 'Add neuron',
         // click: () => addNeuron({key: _.uniqueId('n'), pos: poijknt})
-        click: () => addNewNeuron(pos),
+        click: () => addNewNeuron(pos)
       },
       {
         label: 'Add input',
-        click: () => addNewInput(pos),
-      },
-    ]).popup(remote.getCurrentWindow());
+        click: () => addNewInput(pos)
+      }
+    ]).popup(remote.getCurrentWindow())
   }
 
   public handleMouseMove = (e: React.MouseEvent<SVGElement>) => {
-    e.preventDefault();
-    const { mouse } = this.state;
+    e.preventDefault()
+    const { mouse } = this.state
 
-    const newPos = { x: e.clientX, y: e.clientY };
-    this.setState({ mouse: { pos: newPos } });
-  };
+    const newPos = { x: e.clientX, y: e.clientY }
+    this.setState({ mouse: { pos: newPos } })
+  }
 
-  public render() {
+  public render () {
     const {
       resetNetwork,
       ghostSynapse,
@@ -113,16 +113,16 @@ export class Network extends React.Component<IProps, IState> {
       speedUpNetwork,
       pauseNetwork,
       resumeNetwork,
-      config,
-    } = this.props;
+      config
+    } = this.props
 
     // TODO: refactor ghostSynapse into separate component
     const axonNeuron = ghostSynapse.axon
-      ? neurons.find(n => n.id === ghostSynapse.axon!!.neuronId)
-      : undefined;
+      ? neurons.find((n) => n.id === ghostSynapse.axon!!.neuronId)
+      : undefined
     const dendNeuron = ghostSynapse.dend
-      ? neurons.find(n => n.id === ghostSynapse.dend!!.neuronId)
-      : undefined;
+      ? neurons.find((n) => n.id === ghostSynapse.dend!!.neuronId)
+      : undefined
 
     return (
       <div className={styles['container-top']}>
@@ -143,23 +143,23 @@ export class Network extends React.Component<IProps, IState> {
                     axon={
                       axonNeuron
                         ? {
-                            pos: addPoints(
+                          pos: addPoints(
                               axonNeuron.pos,
                               axonNeuron.axon.cpos
-                            ),
-                          }
+                            )
+                        }
                         : undefined
                     }
                     dend={
                       dendNeuron
                         ? {
-                            pos: addPoints(
+                          pos: addPoints(
                               dendNeuron.pos,
                               dendNeuron.dends.find(
-                                d => d.id === ghostSynapse.dend!!.id
+                                (d) => d.id === ghostSynapse.dend!!.id
                               )!!.baseCpos
-                            ),
-                          }
+                            )
+                        }
                         : undefined
                     }
                     mouse={this.state.mouse}
@@ -180,13 +180,13 @@ export class Network extends React.Component<IProps, IState> {
               {/* <Text className={styles.overlay}>Overlay</Text> */}
               <div className={styles.overlay}>
                 <ButtonGroup minimal={true} className={styles.overlay}>
-                  <Button icon="fast-backward" onClick={slowDownNetwork} />
+                  <Button icon='fast-backward' onClick={slowDownNetwork} />
                   <Button
                     icon={config.isPaused ? 'play' : 'pause'}
                     onClick={config.isPaused ? resumeNetwork : pauseNetwork}
                   />
-                  <Button icon="fast-forward" onClick={speedUpNetwork} />
-                  <Button icon="refresh" onClick={resetNetwork} />
+                  <Button icon='fast-forward' onClick={speedUpNetwork} />
+                  <Button icon='refresh' onClick={resetNetwork} />
                 </ButtonGroup>
               </div>
             </div>
@@ -196,11 +196,11 @@ export class Network extends React.Component<IProps, IState> {
           <LowerBar />
         </div>
       </div>
-    );
+    )
   }
 
-  public renderHotkeys() {
-    const { inputs, addNewApToSynapse } = this.props;
+  public renderHotkeys () {
+    const { inputs, addNewApToSynapse } = this.props
 
     return (
       <Hotkeys>
@@ -212,7 +212,7 @@ export class Network extends React.Component<IProps, IState> {
                 global={false}
                 combo={input.hotkey}
                 onKeyDown={() =>
-                  input.axon.synapses.forEach(s => addNewApToSynapse(s.id))
+                  input.axon.synapses.forEach((s) => addNewApToSynapse(s.id))
                 }
               />
             ) : (
@@ -220,35 +220,35 @@ export class Network extends React.Component<IProps, IState> {
             )
         )}
       </Hotkeys>
-    );
+    )
   }
 
-  public startRuntime() {
-    const { decayNetwork, stepNetwork, config } = this.props;
+  public startRuntime () {
+    const { decayNetwork, stepNetwork, config } = this.props
     const step = () => {
       // decayNetwork()
-      stepNetwork();
-    };
-    const interval = d3.interval(step, config.stepInterval);
-    this.setState({ interval });
+      stepNetwork()
+    }
+    const interval = d3.interval(step, config.stepInterval)
+    this.setState({ interval })
     if (config.isPaused) {
-      interval.stop();
+      interval.stop()
     }
   }
 
-  public restartRuntime() {
-    const { config, stepNetwork } = this.props;
-    const { interval } = this.state;
+  public restartRuntime () {
+    const { config, stepNetwork } = this.props
+    const { interval } = this.state
     const step = () => {
-      stepNetwork();
-    };
+      stepNetwork()
+    }
     if (config.isPaused) {
-      interval.stop();
+      interval.stop()
     } else {
       // interval.restart(step, config.stepInterval)
-      interval.stop();
-      const newInterval = d3.interval(step, config.stepInterval);
-      this.setState({ interval: newInterval });
+      interval.stop()
+      const newInterval = d3.interval(step, config.stepInterval)
+      this.setState({ interval: newInterval })
     }
   }
 }

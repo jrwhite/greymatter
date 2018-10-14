@@ -3,17 +3,18 @@
   "extends": [
     "tslint:recommended",
     "tslint-react",
-    "tslint-config-standard",
-    "tslint-config-prettier"
+    "tslint-config-standard"
+    // "tslint-config-prettier"
   ],
-  "jsRules": {},
+  // "jsRules": {},
   "rules": {
     "ordered-imports": false,
     "object-literal-sort-keys": false,
     "member-ordering": false,
     "jsx-no-lambda": false,
     "jsx-boolean-value": false,
-    "interface-name": false
-  },
-  "rulesDirectory": []
+    "interface-name": false,
+    "member-access": false
+  }
+  // "rulesDirectory": []
 }
