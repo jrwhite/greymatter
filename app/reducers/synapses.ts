@@ -1,44 +1,44 @@
-import { IAction } from "./../actions/helpers";
+import { IAction } from './../actions/helpers'
 import {
   removeSynapses,
   addApToSynapse,
   removeApFromSynapse,
   addSynapse
-} from "../actions/synapses";
-import { ActionPotentialState } from "./network";
-import _ = require("lodash");
+} from '../actions/synapses'
+import { ActionPotentialState } from './network'
+import _ = require('lodash')
 export interface SynapseState {
-  id: string;
+  id: string
   axon: {
     id: string;
     neuronId: string;
-  };
+  }
   dend: {
     id: string;
     neuronId: string;
-  };
-  length: number;
-  width: number;
-  speed: number;
-  isFiring: boolean;
-  actionPotentials: Array<ActionPotentialState>;
+  }
+  length: number
+  width: number
+  speed: number
+  isFiring: boolean
+  actionPotentials: ActionPotentialState[]
 }
 
 const initialSynapseState: SynapseState = {
-  id: "s",
-  axon: { id: "a", neuronId: "n" },
-  dend: { id: "d", neuronId: "n" },
+  id: 's',
+  axon: { id: 'a', neuronId: 'n' },
+  dend: { id: 'd', neuronId: 'n' },
   length: 100,
   width: 2,
   speed: 1,
   isFiring: false,
   actionPotentials: []
-};
+}
 
-export default function synapses(
-  state: Array<SynapseState> = [],
+export default function synapses (
+  state: SynapseState[] = [],
   action: IAction
-): Array<SynapseState> {
+): SynapseState[] {
   if (removeSynapses.test(action)) {
     // inputs: _.map(state.inputs, n => ({
     //   ...n,
@@ -51,10 +51,10 @@ export default function synapses(
     //     )
     //   }
     // })),
-    return _.differenceBy(state, action.payload.synapses, "id");
+    return _.differenceBy(state, action.payload.synapses, 'id')
   } else if (addApToSynapse.test(action)) {
-    return state.map(s => {
-      if (s.id == action.payload.synapseId) {
+    return state.map((s) => {
+      if (s.id === action.payload.synapseId) {
         return {
           ...s,
           actionPotentials: [
@@ -63,24 +63,24 @@ export default function synapses(
               id: action.payload.id
             }
           ]
-        };
+        }
       }
-      return s;
-    });
+      return s
+    })
   } else if (removeApFromSynapse.test(action)) {
-    return state.map(s => {
-      if (s.id == action.payload.synapseId) {
+    return state.map((s) => {
+      if (s.id === action.payload.synapseId) {
         return {
           ...s,
           actionPotentials: _.differenceBy(
             s.actionPotentials,
             [action.payload],
-            "id"
+            'id'
           )
-        };
+        }
       }
-      return s;
-    });
+      return s
+    })
   } else if (addSynapse.test(action)) {
     // split into two reducers (synapse,neuron) with this logic in action
     // to neuron reducer: add addSynapseToDend and addSynapseToAxon
@@ -90,8 +90,8 @@ export default function synapses(
         ...initialSynapseState,
         ...action.payload
       }
-    ];
+    ]
   } else {
-    return state;
+    return state
   }
 }

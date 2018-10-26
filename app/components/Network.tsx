@@ -71,7 +71,7 @@ export class Network extends React.Component<IProps, IState> {
   }
 
   public componentDidUpdate (prevProps: IProps, prevState: IState) {
-    if (prevProps.config != this.props.config) {
+    if (prevProps.config !== this.props.config) {
       this.restartRuntime()
     }
   }
