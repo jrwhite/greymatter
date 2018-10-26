@@ -1,7 +1,9 @@
 import { actionCreator } from './helpers';
 import { Point } from 'electron';
 import _ = require('lodash');
-import { removeSynapses } from './synapses';
+import { removeSynapses, addNewSynapse } from './synapses';
+import { IState } from '../reducers';
+import { resetGhostSynapse, makeGhostSynapseAtAxon } from './ghostSynapse';
 export interface SelectInputAction {
   id: string;
 }
@@ -67,4 +69,22 @@ export function removeInputWithSynapses(
     dispatch(removeSynapses({ synapses }));
     dispatch(removeInput({ id }));
   };
+}
+
+export function tryMakeSynapseAtInputAxon (id: string, neuronId: string) {
+  return (dispatch: Function, getState: () => IState) => {
+    const ghost = getState().network.ghostSynapse
+
+    if (ghost.dend && !ghost.axon) {
+      dispatch(
+        addNewSynapse({
+          axon: { id, neuronId },
+          dend: { id: ghost.dend.id, neuronId: ghost.dend.neuronId }
+        })
+      )
+      dispatch(resetGhostSynapse())
+    } else {
+      dispatch(makeGhostSynapseAtAxon({ id, neuronId }))
+    }
+  }
 }

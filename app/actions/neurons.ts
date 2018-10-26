@@ -16,6 +16,7 @@ import {
 } from './ghostSynapse'
 import { actionCreator, actionCreatorVoid } from './helpers'
 import { addNewSynapse, removeSynapses } from './synapses'
+import { addSynapseToInputAxon } from './inputs';
 const _ = require('lodash')
 
 export interface MoveNeuronAction {

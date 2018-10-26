@@ -12,7 +12,7 @@ export interface IProps extends RouteComponentProps<any> {
   addNewApToSynapse: (id: string) => void
   removeInput: (id: string) => void
   moveInput: (payload: MoveInput) => void
-  tryMakeSynapseAtAxon: (id: string, neuronId: string) => void
+  tryMakeSynapseAtInputAxon: (id: string, neuronId: string) => void
   selectInput: (payload: SelectInputAction) => void
   id: string
   pos: Point
@@ -58,9 +58,9 @@ export class Input extends React.Component<IProps, IState> {
 
   handleAxonClick (e: React.MouseEvent<SVGCircleElement>) {
     e.preventDefault()
-    const { tryMakeSynapseAtAxon, id, pos, axon } = this.props
+    const { tryMakeSynapseAtInputAxon, id, pos, axon } = this.props
 
-    tryMakeSynapseAtAxon(axon.id, id)
+    tryMakeSynapseAtInputAxon(axon.id, id)
   }
 
   handleContextMenu (e: React.MouseEvent<SVGGElement>) {

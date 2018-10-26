@@ -37,7 +37,8 @@ const logger = (createLogger as any)({
   level: 'info',
   collapsed: true,
   predicate: (getState: any, action: any) =>
-    action.type !== 'DECAY_NETWORK' && action.type !== 'MOVE_NEURON'
+    blacklistedActions.reduce((blackAction) => action.type !== blackAction ? action : null)
+    // action.type !== 'DECAY_NETWORK' && action.type !== 'MOVE_NEURON'
 })
 
 const history = createHashHistory()
