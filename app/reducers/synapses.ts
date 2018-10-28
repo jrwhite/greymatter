@@ -17,6 +17,8 @@ export interface SynapseState {
     id: string;
     neuronId: string;
   }
+  current?: number
+  encodedSourceId?: string
   length: number
   width: number
   speed: number

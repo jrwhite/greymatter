@@ -16,7 +16,7 @@ import {
 } from './ghostSynapse'
 import { actionCreator, actionCreatorVoid } from './helpers'
 import { addNewSynapse, removeSynapses } from './synapses'
-import { addSynapseToInputAxon } from './inputs';
+import { addSynapseToInputAxon } from './inputs'
 const _ = require('lodash')
 
 export interface MoveNeuronAction {
@@ -84,13 +84,23 @@ export interface AddSynapseToAxonAction {
   synapseId: string
 }
 
+export interface SetDendSourceAction {
+  dendId: string
+  sourceId: string
+}
+
+export const setDendSource = actionCreator<SetDendSourceAction>(
+  'SET_DEND_SOURCE'
+)
 export const addSynapseToAxon = actionCreator<AddSynapseToAxonAction>(
   'ADD_SYNAPSE_TO_AXON'
 )
 export const addSynapseToDend = actionCreator<AddSynapseToDendAction>(
   'ADD_SYNAPSE_TO_DEND'
 )
-export const removeSynapsesFromNeurons = actionCreator <RemoveSynapsesFromNeuronsAction>('REMOVE_SYNAPSE_FROM_NEURON')
+export const removeSynapsesFromNeurons = actionCreator<
+  RemoveSynapsesFromNeuronsAction
+>('REMOVE_SYNAPSE_FROM_NEURON')
 export const hyperpolarizeNeuron = actionCreator<HyperpolarizeNeuron>(
   'HYPERPOLARIZE_NEURON'
 )
