@@ -42,7 +42,7 @@ const renderDendItem: ItemRenderer<DendItem> = (
   )
 }
 
-const SourceSelect = Select.ofType<SourceItem>()
+export const SourceSelect = Select.ofType<SourceItem>()
 
 export interface SourceItem {
   id: string

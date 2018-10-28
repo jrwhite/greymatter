@@ -22,6 +22,7 @@ import {
 
 export interface NeuronState {
   id: string
+  name?: string
   pos: Point
   theta: number
   potential: number
