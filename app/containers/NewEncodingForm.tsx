@@ -1,6 +1,10 @@
 import * as React from 'react'
-import { NewEncodingForm, IProps } from '../components/NewEncodingForm'
-import { connect } from 'react-redux'
+import {
+  NewEncodingForm,
+  IProps,
+  IState as IIState
+} from '../components/NewEncodingForm'
+import { connect, Dispatch } from 'react-redux'
 import { IState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import NetworkActions from '../actions/network'
@@ -14,4 +18,4 @@ const mapStateToProps = (state: IState, props: IProps) => {
 export default (connect(
   mapStateToProps,
   (dispatch) => bindActionCreators(NetworkActions as any, dispatch)
-)(NewEncodingForm) as any) as React.Component
+)(NewEncodingForm) as any) as React.StatelessComponent

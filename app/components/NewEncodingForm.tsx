@@ -5,7 +5,7 @@ import { MenuItem, FormGroup, InputGroup, Button } from '@blueprintjs/core'
 import { SourceSelect } from './DendInfo'
 
 export interface IProps {
-  addSourceEncoding: AddSourceEncodingAction
+  //   addSourceEncoding: any
   observableItems: ObservableItem[]
 }
 
