@@ -33,3 +33,29 @@ export class LineGraph extends React.Component<IProps> {
       .range([0, height])
     // .clamp(true)
     const axis = d3.axisRight(scale).ticks(5)
+    const lines = React.Children.map(
+      children,
+      (line: React.ReactElement<GraphLineProps>) =>
+        React.cloneElement(line, {
+          color: line.props.color ? line.props.color : 'red',
+          deltaX: line.props.deltaX ? line.props.deltaX : scaleX,
+          height: line.props.height ? line.props.height : height,
+          maxN,
+          rangeY: line.props.rangeY ? line.props.rangeY : rangeY
+        })
+    )
+
+    const axisRef = (node: SVGGElement | null) =>
+      d3
+        .select(node)
+        .attr('transform', 'translate(0,0)')
+        .call(axis)
+
+    return (
+      <svg>
+        <g ref={axisRef} />
+        {lines}
+      </svg>
+    )
+  }
+}

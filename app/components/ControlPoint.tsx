@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { Point } from '../utils/geometry'
+import * as _ from 'lodash'
 
 const d3 = require('d3')
 
 export interface IProps {
-  setControlPointPos: any
-  id: string
+  moveCallback: (newPos: Point) => void
   pos: Point
 }
 
@@ -13,10 +13,13 @@ export class ControlPoint extends React.Component<IProps> {
   props: IProps
 
   render () {
-    const { pos, id } = this.props
+    const { pos } = this.props
 
     return (
-      <g id={id} transform={'translate(' + pos.x + ' ' + pos.y + ')'}>
+      <g
+        transform={'translate(' + pos.x + ' ' + pos.y + ')'}
+        ref={(node: SVGGElement) => this.renderD3(node)}
+      >
         <circle r={5} />
       </g>
     )
@@ -25,18 +28,17 @@ export class ControlPoint extends React.Component<IProps> {
   onDragStarted = () => {}
 
   onDragged = () => {
-    const { id, setControlPointPos } = this.props
+    const { moveCallback } = this.props
 
     const newPos: Point = {
       ...d3.event
     }
 
-    setControlPointPos({ id, newPos })
+    moveCallback(newPos)
   }
-  renderD3 () {
-    const { id } = this.props
 
-    d3.select('#' + id).call(
+  renderD3 (ref: SVGGElement) {
+    d3.select(ref).call(
       d3
         .drag()
         .on('start', this.onDragStarted)

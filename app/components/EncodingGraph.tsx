@@ -2,10 +2,12 @@ import * as React from 'react'
 import { Point } from '../utils/geometry'
 import { ControlPoint } from './ControlPoint'
 import { Line } from './Line'
+import { MoveControlPointAction } from '../actions/encodings'
 
 const d3 = require('d3')
 
 export interface IProps {
+  moveControlPoint: (payload: MoveControlPointAction) => void
   controlPoints: Array<{ pos: Point; index: number }>
   color?: string
   width: number
@@ -51,10 +53,15 @@ export class EncodingGraph extends React.Component<IProps> {
   renderControlPoints () {
     const { controlPoints } = this.props
 
+    const moveCallback = (newPos: Point, index: number) => {}
+
     return (
       <g>
-        {controlPoints.map((ctrl: any) => {
-          <ControlPoint />
+        {controlPoints.map((ctrl: any, i: number) => {
+          <ControlPoint
+            pos={ctrl.pos}
+            moveCallback={(newPos: Point) => moveCallback(newPos, i)}
+          />
         })}
       </g>
     )

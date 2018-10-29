@@ -3,9 +3,10 @@ import { EncodedSourceType } from '../reducers/encodings'
 import { Select, ItemRenderer } from '@blueprintjs/select'
 import { MenuItem, FormGroup, InputGroup, Button } from '@blueprintjs/core'
 import { SourceSelect } from './DendInfo'
+import { AddEncodingAction } from '../actions/encodings'
 
 export interface IProps {
-  //   addSourceEncoding: any
+  addEncoding: (payload: AddEncodingAction) => void
   observableItems: ObservableItem[]
 }
 
