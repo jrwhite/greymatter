@@ -11,6 +11,7 @@ import { Select, ItemRenderer } from '@blueprintjs/select'
 import { LineGraph } from './LineGraph'
 import { SourceItem } from './DendInfo'
 import NewEncodingForm from '../containers/NewEncodingForm'
+import { GraphLine } from './GraphLine'
 
 export interface IProps {
   sourceItems: SourceItem[]
@@ -29,7 +30,9 @@ export class EncodingPanel extends React.Component<IProps> {
           <Text />
         </Popover>
         <NewEncodingForm />
-        <LineGraph />
+        <LineGraph>
+          <GraphLine />
+        </LineGraph>
       </div>
     )
   }

@@ -54,7 +54,7 @@ export class LineGraph extends React.Component<IProps> {
 
     return (
       <svg>
-        ><g ref={axisRef} />
+        <g ref={axisRef} />
         {lines}
       </svg>
     )

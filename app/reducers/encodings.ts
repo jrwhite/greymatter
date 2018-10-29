@@ -1,5 +1,6 @@
 import { Selector } from 'reselect'
-import { IAction } from '../actions/helpers';
+import { IAction } from '../actions/helpers'
+import { Point } from '../utils/geometry'
 
 export enum EncodedSourceType {
   Tonic = 'Tonically active',
@@ -11,7 +12,8 @@ export interface EncodedSourceState {
   name: string
   type: EncodedSourceType
   obsId: string
-  encoding: (input: number) => number
+  encoding?: (input: number) => number // if there is no encdoing, selector will build it from control points
+  controlPoints: Array<{ pos: Point; index: number }>
 }
 
 export default function encodings (
