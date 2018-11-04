@@ -1,13 +1,21 @@
 import * as React from 'react'
 import { IzhikParams, NeuronState, DendState } from '../reducers/neurons'
-import { ChangeIzhikParamsAction } from '../actions/neurons'
+import {
+  ChangeIzhikParamsAction,
+  ChangeDendWeightingAction
+} from '../actions/neurons'
 import { IState } from '../reducers'
 import { createSelector } from 'reselect'
-import { Text, Slider, ControlGroup, Divider } from '@blueprintjs/core'
+import { Text, Slider, ControlGroup, Divider, Button } from '@blueprintjs/core'
 import { Dispatch, bindActionCreators, AnyAction } from 'redux'
+import * as NetworkActions from '../actions/network'
 import * as Actions from '../actions/neurons'
+import * as ObservableActions from '../actions/observables'
 import { connect } from 'react-redux'
 import { DendList } from '../components/DendList'
+import { AddNewObservableAction } from '../actions/observables'
+import { ObservableType } from '../reducers/observables'
+import { makeGetNeuronPotential } from '../selectors/neuron'
 
 const getSelectedNeuron = (state: IState, props: IProps) =>
   state.network.neurons.find((neuron: NeuronState) => neuron.id === props.id)
@@ -19,8 +27,9 @@ const makeGetSelectedNeuronState = () =>
   }))
 
 export interface IProps {
-  changeDendWeighting: (payload: Actions.ChangeDendWeightingAction) => void
+  changeDendWeighting: (payload: ChangeDendWeightingAction) => void
   changeIzhikParams: (payload: ChangeIzhikParamsAction) => void
+  addNewObservable: (payload: AddNewObservableAction) => void
   id: string
   izhikParams: IzhikParams
   dends: DendState[]
@@ -35,8 +44,17 @@ export class SelectedNeuron extends React.Component<IProps> {
       izhikParams,
       changeIzhikParams,
       changeDendWeighting,
-      dends
+      dends,
+      addNewObservable
     } = this.props
+
+    const addPotentialObservable = () => {
+      addNewObservable({
+        name: id.toString(),
+        type: ObservableType.Potential,
+        getValue: (state: any) => makeGetNeuronPotential()(state, id)
+      })
+    }
 
     const changeA = (a: number) =>
       changeIzhikParams({
@@ -65,6 +83,10 @@ export class SelectedNeuron extends React.Component<IProps> {
         <ControlGroup fill={false} vertical={true}>
           <Divider />
           <Text>Selected Neuron</Text>
+          <Button
+            text={'add observable'}
+            onClick={() => addPotentialObservable()}
+          />
           <Divider />
           <Text>Izhik 'a':</Text>
           <Slider
@@ -132,7 +154,10 @@ const makeMapStateToProps = () => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>): Partial<IProps> => {
-  return bindActionCreators(Actions as any, dispatch)
+  return {
+    ...bindActionCreators(Actions as any, dispatch),
+    ...bindActionCreators(ObservableActions as any, dispatch)
+  }
 }
 
 export default (connect(

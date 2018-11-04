@@ -98,9 +98,9 @@ export const addSynapseToAxon = actionCreator<AddSynapseToAxonAction>(
 export const addSynapseToDend = actionCreator<AddSynapseToDendAction>(
   'ADD_SYNAPSE_TO_DEND'
 )
-export const removeSynapsesFromNeurons = actionCreator<
-  RemoveSynapsesFromNeuronsAction
->('REMOVE_SYNAPSE_FROM_NEURON')
+export const removeSynapsesFromNeurons = actionCreator<RemoveSynapsesFromNeuronsAction>(
+  'REMOVE_SYNAPSE_FROM_NEURON'
+  )
 export const hyperpolarizeNeuron = actionCreator<HyperpolarizeNeuron>(
   'HYPERPOLARIZE_NEURON'
 )
