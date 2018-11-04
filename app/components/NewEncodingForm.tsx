@@ -3,17 +3,17 @@ import { EncodedSourceType } from '../reducers/encodings'
 import { Select, ItemRenderer } from '@blueprintjs/select'
 import { MenuItem, FormGroup, InputGroup, Button } from '@blueprintjs/core'
 import { SourceSelect } from './DendInfo'
-import { AddEncodingAction } from '../actions/encodings'
+import { AddEncodingAction, AddNewEncodingAction } from '../actions/encodings'
+import { POPOVER_DISMISS } from '@blueprintjs/core/lib/esm/common/classes'
 
 export interface IProps {
-  addEncoding: (payload: AddEncodingAction) => void
+  addNewEncoding: (payload: AddNewEncodingAction) => void
   observableItems: ObservableItem[]
 }
 
 export interface IState {
-  name: string
-  observable: ObservableItem
-  encodingType: EncodedSourceType
+  observable?: ObservableItem
+  encodingType?: EncodedSourceType
 }
 
 const ObservableSelect = Select.ofType<ObservableItem>()
@@ -69,10 +69,28 @@ const renderEncodingType: ItemRenderer<EncodedSourceType> = (
 
 export class NewEncodingForm extends React.Component<IProps, IState> {
   prop: IProps
-  state: IState
+  state: IState = {
+    observable: undefined,
+    encodingType: undefined
+  }
+
+  isValid = (): boolean => {
+    const { observable, encodingType } = this.state
+    return name && observable && encodingType ? true : false
+  }
 
   handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const { addNewEncoding } = this.props
+    const { observable, encodingType } = this.state
     e.preventDefault()
+    const data: FormData = new FormData(e.currentTarget)
+    if (observable && encodingType) {
+      addNewEncoding({
+        name: data.get('name-input') as string,
+        obsId: observable.id,
+        type: encodingType
+      })
+    }
   }
 
   handleObservableSelect = (item: ObservableItem) => {
@@ -85,10 +103,12 @@ export class NewEncodingForm extends React.Component<IProps, IState> {
 
   render () {
     const { observableItems } = this.props
+    const { observable, encodingType } = this.state
+
     return (
       <form onSubmit={this.handleSubmit}>
         <FormGroup label={'New Encoding'}>
-          <InputGroup placeholder='Name' />
+          <InputGroup id='name-input' placeholder='Name' />
         </FormGroup>
         <FormGroup label='Select Observable'>
           <ObservableSelect
@@ -96,7 +116,9 @@ export class NewEncodingForm extends React.Component<IProps, IState> {
             itemRenderer={renderObservableItem}
             onItemSelect={this.handleObservableSelect}
           >
-            <Button />
+            <Button
+              text={observable ? observable.name : 'Choose Observable...'}
+            />
           </ObservableSelect>
         </FormGroup>
         <FormGroup label='Select Encoding'>
@@ -105,11 +127,15 @@ export class NewEncodingForm extends React.Component<IProps, IState> {
             itemRenderer={renderEncodingType}
             onItemSelect={this.handleEncodingSelect}
           >
-            <Button />
+            <Button text={encodingType ? encodingType : 'Choose Encoding...'} />
           </EncodingSelect>
         </FormGroup>
-        <Button>Cancel</Button>
-        <Button type='submit'>Create</Button>
+        <Button
+          type='submit'
+          className={this.isValid() ? POPOVER_DISMISS : undefined}
+        >
+          Create
+        </Button>
       </form>
     )
   }
