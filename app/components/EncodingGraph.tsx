@@ -3,12 +3,14 @@ import { Point } from '../utils/geometry'
 import { ControlPoint } from './ControlPoint'
 import { Line } from './Line'
 import { MoveControlPointAction } from '../actions/encodings'
+import { ControlPointState } from '../reducers/encodings'
+import { IProps as IIProps } from '../containers/EncodingGraph'
 
 const d3 = require('d3')
 
-export interface IProps {
+export interface IProps extends IIProps {
   moveControlPoint: (payload: MoveControlPointAction) => void
-  controlPoints: Array<{ pos: Point; index: number }>
+  controlPoints: ControlPointState[]
   color?: string
   width: number
   rangeX: { start: number; stop: number }
@@ -46,7 +48,9 @@ export class EncodingGraph extends React.Component<IProps> {
 
   renderLines () {
     const { controlPoints } = this.props
-    const line = { points: controlPoints.map((ctrl) => ctrl.pos) }
+    const line = {
+      points: controlPoints.map((ctrl) => ctrl.pos)
+    }
     return <Line line={line} />
   }
 

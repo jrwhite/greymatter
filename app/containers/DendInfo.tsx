@@ -46,9 +46,9 @@ const getSynapseSourceItem = (
   }
 }
 
-const makeGetSourceItemState = (): Partial<IIProps> =>
+const makeGetSourceItemState = () =>
   createSelector(getSynapseSourceItem, (sourceItem) => ({
-    source: { ...sourceItem }
+    source: sourceItem ? { ...sourceItem } : undefined
   }))
 
 const getDendItem = (state: IState, props: IProps) => ({
@@ -69,7 +69,7 @@ const makeMapStateToProps = () => {
     index: props.index,
     weighting: props.weighting,
     sourceItems: state.network.encodings,
-    ...getSourceItem
+    ...getSourceItem(state, props)
   })
 }
 

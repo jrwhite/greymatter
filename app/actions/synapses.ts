@@ -2,7 +2,7 @@ import { AddSynapseAction } from './synapses'
 import { actionCreator } from './helpers'
 import { exciteNeuron, addSynapseToAxon, addSynapseToDend } from './neurons'
 import { IState } from '../reducers'
-import { addSynapseToInputAxon } from './inputs';
+import { addSynapseToInputAxon } from './inputs'
 const _ = require('lodash')
 
 export interface AddSynapseAction {
@@ -74,20 +74,22 @@ export function addNewSynapse (payload: AddNewSynapseAction) {
   return (dispatch: Function) => {
     const newId = _.uniqueId('s')
 
-      if (payload.axon.neuronId.includes('in')) {
-        dispatch(addSynapseToInputAxon({
+    if (payload.axon.neuronId.includes('in')) {
+      dispatch(
+        addSynapseToInputAxon({
           inputId: payload.axon.neuronId,
           synapseId: newId,
           axonId: payload.axon.id
-        }))
-      } else {
-    dispatch(
-      addSynapseToAxon({
-        neuronId: payload.axon.neuronId,
-        synapseId: newId,
-        axonId: payload.axon.id
-      })
-    )
+        })
+      )
+    } else {
+      dispatch(
+        addSynapseToAxon({
+          neuronId: payload.axon.neuronId,
+          synapseId: newId,
+          axonId: payload.axon.id
+        })
+      )
     }
 
     dispatch(

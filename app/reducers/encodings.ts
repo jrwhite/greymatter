@@ -11,10 +11,10 @@ export enum EncodedSourceType {
 }
 
 export type EncodingFunction = (input: number) => number
-export interface ControlPoint {
+
+export interface ControlPointState {
   pos: Point
   index: number
-  id: string
 }
 
 export interface EncodedSourceState {
@@ -23,7 +23,7 @@ export interface EncodedSourceState {
   type: EncodedSourceType
   obsId: string
   encoding?: EncodingFunction // if there is no encdoing, selector will build it from control points
-  controlPoints: Point[]
+  controlPoints: ControlPointState[]
 }
 
 const changeEncodingWithId = (
@@ -58,9 +58,9 @@ export default function encodings (
             ...enc,
             controlPoints: _.map(
               enc.controlPoints,
-              (ctrl: Point, i: number): Point => {
+              (ctrl: ControlPointState, i: number): ControlPointState => {
                 if (i === action.payload.index) {
-                  return action.payload.newPos
+                  return { ...ctrl, pos: action.payload.newPos }
                 } else {
                   return ctrl
                 }

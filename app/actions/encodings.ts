@@ -2,7 +2,7 @@ import {
   EncodedSourceState,
   EncodedSourceType,
   EncodingFunction,
-  ControlPoint
+  ControlPointState
 } from '../reducers/encodings'
 import { Point } from '../utils/geometry'
 import * as _ from 'lodash'
@@ -14,7 +14,7 @@ export interface AddEncodingAction {
   type: EncodedSourceType
   obsId: string
   encoding?: EncodingFunction
-  controlPoints: Point[]
+  controlPoints: ControlPointState[]
 }
 
 export const addEncoding = actionCreator<AddEncodingAction>('ADD_ENCODING')
@@ -40,7 +40,7 @@ const initialEncodingState: EncodedSourceState = {
   name: 'UNINITIALIZED',
   type: EncodedSourceType.Tonic,
   obsId: 'obs',
-  controlPoints: [{ x: 0, y: 0 }]
+  controlPoints: [{ pos: { x: 0, y: 0 }, index: 0 }]
 }
 
 export function addNewEncoding (payload: AddNewEncodingAction) {

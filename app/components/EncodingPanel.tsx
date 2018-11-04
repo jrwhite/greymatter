@@ -12,6 +12,7 @@ import { LineGraph } from './LineGraph'
 import { SourceItem } from './DendInfo'
 import NewEncodingForm from '../containers/NewEncodingForm'
 import { GraphLine } from './GraphLine'
+import EncodingGraph from '../containers/EncodingGraph'
 
 export interface IProps {
   sourceItems: SourceItem[]
@@ -30,9 +31,14 @@ export class EncodingPanel extends React.Component<IProps> {
           <Text />
         </Popover>
         <NewEncodingForm />
-        <LineGraph>
-          <GraphLine />
-        </LineGraph>
+        <EncodingGraph
+          id={'enc'}
+          color={'blue'}
+          rangeX={{ start: 0, stop: 1 }}
+          rangeY={{ start: 0, stop: 1 }}
+          width={50}
+          height={50}
+        />
       </div>
     )
   }
