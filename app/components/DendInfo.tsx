@@ -4,6 +4,7 @@ import { Select, ItemRenderer, ItemPredicate } from '@blueprintjs/select'
 import { EncodedSourceType } from '../reducers/encodings'
 import { SetDendSourceAction } from '../actions/neurons'
 import { IProps as IIProps } from '../containers/DendInfo'
+import { SourceItem, renderSourceItem } from '../items/source';
 
 export interface IProps extends IIProps {
   setDendSource: (payload: SetDendSourceAction) => void
@@ -43,33 +44,6 @@ const renderDendItem: ItemRenderer<DendItem> = (
 }
 
 export const SourceSelect = Select.ofType<SourceItem>()
-
-export interface SourceItem {
-  id: string
-  name: string
-  type: EncodedSourceType
-}
-
-const renderSourceItem: ItemRenderer<SourceItem> = (
-  source,
-  { handleClick, modifiers, query }
-) => {
-  if (!modifiers.matchesPredicate) {
-    return null
-  }
-
-  const text = '${source.name}'
-  return (
-    <MenuItem
-      active={modifiers.active}
-      disabled={modifiers.disabled}
-      label={source.type}
-      key={source.id}
-      onClick={handleClick}
-      text={text}
-    />
-  )
-}
 
 export const DendInfo: React.SFC<IProps> = (props) => {
   const handleItemSelect = (item: SourceItem) => {

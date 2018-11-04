@@ -6,11 +6,11 @@ import NetworkActions from '../actions/network'
 import {
   DendInfo,
   IProps as IIProps,
-  SourceItem
 } from '../components/DendInfo'
 import { EncodedSourceState } from '../reducers/encodings'
 import { getSynapse } from '../selectors/synapse'
 import { SynapseState } from '../reducers/synapses'
+import { SourceItem } from '../items/source';
 
 export interface IProps {
   id: string

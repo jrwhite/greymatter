@@ -9,28 +9,46 @@ import {
 } from '@blueprintjs/core'
 import { Select, ItemRenderer } from '@blueprintjs/select'
 import { LineGraph } from './LineGraph'
-import { SourceItem } from './DendInfo'
 import NewEncodingForm from '../containers/NewEncodingForm'
 import { GraphLine } from './GraphLine'
 import EncodingGraph from '../containers/EncodingGraph'
+import { SourceItem, renderSourceItem } from '../items/source'
 
 export interface IProps {
   sourceItems: SourceItem[]
 }
 
-export class EncodingPanel extends React.Component<IProps> {
+export const SourceSelect = Select.ofType<SourceItem>()
+
+export interface IState {
+  source?: SourceItem
+}
+
+export class EncodingPanel extends React.Component<IProps, IState> {
   props: IProps
+  state: IState = {}
+
+  handleItemSelect = (item: SourceItem) => {
+    this.setState({ source: item })
+  }
 
   render () {
-    const {} = this.props
+    const { sourceItems } = this.props
+    const { source } = this.state
 
     return (
       <div>
         <Popover>
           <Button icon='plus' />
-          <Text />
+          <NewEncodingForm />
         </Popover>
-        <NewEncodingForm />
+        <SourceSelect
+          items={sourceItems}
+          itemRenderer={renderSourceItem}
+          onItemSelect={this.handleItemSelect}
+        >
+          <Button text={source ? source.name : ''} rightIcon='caret-down' />
+        </SourceSelect>
         <EncodingGraph
           id={'enc'}
           color={'blue'}

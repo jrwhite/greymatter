@@ -5,6 +5,7 @@ import { Line } from './Line'
 import { MoveControlPointAction } from '../actions/encodings'
 import { ControlPointState } from '../reducers/encodings'
 import { IProps as IIProps } from '../containers/EncodingGraph'
+import * as _ from 'lodash'
 
 const d3 = require('d3')
 
@@ -49,7 +50,7 @@ export class EncodingGraph extends React.Component<IProps> {
   renderLines () {
     const { controlPoints } = this.props
     const line = {
-      points: controlPoints.map((ctrl) => ctrl.pos)
+      points: _.map(controlPoints, (ctrl) => ctrl.pos)
     }
     return <Line line={line} />
   }
@@ -61,12 +62,14 @@ export class EncodingGraph extends React.Component<IProps> {
 
     return (
       <g>
-        {controlPoints.map((ctrl: any, i: number) => {
-          <ControlPoint
-            pos={ctrl.pos}
-            moveCallback={(newPos: Point) => moveCallback(newPos, i)}
-          />
-        })}
+        {controlPoints !== undefined
+          ? _.map(controlPoints, (ctrl: ControlPointState, i: number) => {
+            <ControlPoint
+                pos={ctrl.pos}
+                moveCallback={(newPos: Point) => moveCallback(newPos, i)}
+              />
+          })
+          : undefined}
       </g>
     )
   }
