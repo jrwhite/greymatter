@@ -19,7 +19,7 @@ export const renderSourceItem: ItemRenderer<SourceItem> = (
     return null
   }
 
-  const text = '${source.name}'
+  const text = source.name
   return (
     <MenuItem
       active={modifiers.active}

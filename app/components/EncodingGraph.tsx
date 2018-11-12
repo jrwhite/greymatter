@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Point } from '../utils/geometry'
+import { Point, Curve } from '../utils/geometry'
 import { ControlPoint } from './ControlPoint'
 import { Line } from './Line'
 import { MoveControlPointAction } from '../actions/encodings'
@@ -46,30 +46,77 @@ export class EncodingGraph extends React.Component<IProps> {
       </svg>
     )
   }
+  scaleX = (x: number) => {
+    const { rangeX, width } = this.props
+    return ((x - rangeX.start) / (rangeX.stop - rangeX.start)) * width
+  }
+  scaleY = (y: number) => {
+    const { rangeY, height } = this.props
+    return ((y - rangeY.start) / (rangeY.stop - rangeY.start)) * height
+  }
 
   renderLines () {
-    const { controlPoints } = this.props
-    const line = {
+    const { controlPoints, rangeX, rangeY, width, height } = this.props
+
+    const line: Curve = {
       points: _.map(controlPoints, (ctrl) => ctrl.pos)
     }
-    return <Line line={line} />
+    // return <Line line={line} />
+
+    const lineSetter = d3
+      .line()
+      .x((d: ControlPointState) => this.scaleX(d.pos.x))
+      .y((d: ControlPointState) => this.scaleY(d.pos.y))
+    if (controlPoints === undefined) return null
+    return (
+      <g>
+        <path
+          fill='none'
+          stroke='red'
+          ref={(node) => d3.select(node).attr('d', lineSetter(controlPoints))}
+        />
+      </g>
+    )
   }
 
   renderControlPoints () {
-    const { controlPoints } = this.props
+    const {
+      id,
+      controlPoints,
+      moveControlPoint,
+      rangeX,
+      rangeY,
+      height,
+      width
+    } = this.props
 
-    const moveCallback = (newPos: Point, index: number) => {}
+    const invScaleX = (x: number) => {
+      return rangeX.start + (x / width) * (rangeX.stop - rangeX.start)
+    }
+    const invScaleY = (y: number) => {
+      return rangeY.start + (y / height) * (rangeY.stop - rangeY.start)
+    }
+
+    const moveCallback = (newPos: Point, index: number) => {
+      moveControlPoint({
+        index,
+        encodingId: id,
+        newPos: { x: invScaleX(newPos.x), y: invScaleY(newPos.y) }
+      })
+    }
+
+    if (controlPoints === undefined) return null
 
     return (
       <g>
-        {controlPoints !== undefined
-          ? _.map(controlPoints, (ctrl: ControlPointState, i: number) => {
-            <ControlPoint
-                pos={ctrl.pos}
-                moveCallback={(newPos: Point) => moveCallback(newPos, i)}
-              />
-          })
-          : undefined}
+        {controlPoints.map((ctrl: ControlPointState, i: number) => (
+          <ControlPoint
+            scaleX={this.scaleX}
+            scaleY={this.scaleY}
+            pos={{ x: this.scaleX(ctrl.pos.x), y: this.scaleY(ctrl.pos.y) }}
+            moveCallback={(newPos: Point) => moveCallback(newPos, i)}
+          />
+        ))}
       </g>
     )
   }

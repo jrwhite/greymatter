@@ -50,7 +50,7 @@ export class EncodingPanel extends React.Component<IProps, IState> {
           <Button text={source ? source.name : ''} rightIcon='caret-down' />
         </SourceSelect>
         <EncodingGraph
-          id={'enc'}
+          id={source ? source.id : 'enc'}
           color={'blue'}
           rangeX={{ start: 0, stop: 1 }}
           rangeY={{ start: 0, stop: 1 }}

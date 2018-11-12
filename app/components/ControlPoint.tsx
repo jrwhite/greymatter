@@ -6,6 +6,8 @@ const d3 = require('d3')
 
 export interface IProps {
   moveCallback: (newPos: Point) => void
+  scaleX: (x: number) => number
+  scaleY: (y: number) => number
   pos: Point
 }
 
@@ -20,7 +22,7 @@ export class ControlPoint extends React.Component<IProps> {
         transform={'translate(' + pos.x + ' ' + pos.y + ')'}
         ref={(node: SVGGElement) => this.renderD3(node)}
       >
-        <circle r={5} />
+        <circle r={10} fill='red' />
       </g>
     )
   }

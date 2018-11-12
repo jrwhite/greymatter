@@ -40,7 +40,10 @@ const initialEncodingState: EncodedSourceState = {
   name: 'UNINITIALIZED',
   type: EncodedSourceType.Tonic,
   obsId: 'obs',
-  controlPoints: [{ pos: { x: 0, y: 0 }, index: 0 }]
+  controlPoints: [
+    { pos: { x: 0, y: 0 }, index: 0 },
+    { pos: { x: 1, y: 1 }, index: 1 }
+  ]
 }
 
 export function addNewEncoding (payload: AddNewEncodingAction) {

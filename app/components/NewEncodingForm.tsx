@@ -85,6 +85,7 @@ export class NewEncodingForm extends React.Component<IProps, IState> {
     e.preventDefault()
     const data: FormData = new FormData(e.currentTarget)
     if (observable && encodingType) {
+      for (const key in data.keys()) console.log(key)
       addNewEncoding({
         name: data.get('name-input') as string,
         obsId: observable.id,
@@ -107,8 +108,13 @@ export class NewEncodingForm extends React.Component<IProps, IState> {
 
     return (
       <form onSubmit={this.handleSubmit}>
-        <FormGroup label={'New Encoding'}>
-          <InputGroup id='name-input' placeholder='Name' />
+        <FormGroup label='New Encoding'>
+          <InputGroup
+            type='text'
+            id='name-input'
+            name='name-input'
+            placeholder='Name'
+          />
         </FormGroup>
         <FormGroup label='Select Observable'>
           <ObservableSelect
