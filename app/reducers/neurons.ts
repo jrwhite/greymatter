@@ -2,7 +2,8 @@ import _ = require('lodash')
 import { IAction } from '../actions/helpers'
 import {
   addSynapseToAxon,
-  removeSynapsesFromNeurons
+  removeSynapsesFromNeurons,
+  setDendSource
 } from '../actions/neurons'
 import { Arc, Point } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
@@ -274,6 +275,26 @@ export default function neurons (
               }
             }
             return d
+          })
+        }
+      } else {
+        return n
+      }
+    })
+  } else if (setDendSource.test(action)) {
+    return state.map((n) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          dends: n.dends.map((d: DendState) => {
+            if (d.id === action.payload.dendId) {
+              return {
+                ...d,
+                sourceId: action.payload.sourceId
+              }
+            } else {
+              return d
+            }
           })
         }
       } else {

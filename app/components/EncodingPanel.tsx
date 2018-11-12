@@ -52,10 +52,10 @@ export class EncodingPanel extends React.Component<IProps, IState> {
         <EncodingGraph
           id={source ? source.id : 'enc'}
           color={'blue'}
-          rangeX={{ start: 0, stop: 1 }}
+          rangeX={{ start: -200, stop: 30 }}
           rangeY={{ start: 0, stop: 1 }}
-          width={50}
-          height={50}
+          width={100}
+          height={100}
         />
       </div>
     )

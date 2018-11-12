@@ -4,11 +4,12 @@ import { Select, ItemRenderer, ItemPredicate } from '@blueprintjs/select'
 import { EncodedSourceType } from '../reducers/encodings'
 import { SetDendSourceAction } from '../actions/neurons'
 import { IProps as IIProps } from '../containers/DendInfo'
-import { SourceItem, renderSourceItem } from '../items/source';
+import { SourceItem, renderSourceItem } from '../items/source'
 
 export interface IProps extends IIProps {
   setDendSource: (payload: SetDendSourceAction) => void
   id: string
+  neuronId: string
   index: number
   weighting: number
   source?: SourceItem
@@ -48,6 +49,7 @@ export const SourceSelect = Select.ofType<SourceItem>()
 export const DendInfo: React.SFC<IProps> = (props) => {
   const handleItemSelect = (item: SourceItem) => {
     props.setDendSource({
+      neuronId: props.neuronId,
       dendId: props.id,
       sourceId: item.id
     })

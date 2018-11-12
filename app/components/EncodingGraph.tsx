@@ -30,7 +30,7 @@ export class EncodingGraph extends React.Component<IProps> {
       .domain([rangeY.stop - rangeY.start])
       .range([0, height])
 
-    const axis = d3.axisRight(scale).ticks(10)
+    const axis = d3.axisRight(scale).ticks(1)
 
     const axisRef = (node: SVGGElement | null) =>
       d3
@@ -40,7 +40,7 @@ export class EncodingGraph extends React.Component<IProps> {
 
     return (
       <svg>
-        {/* <g ref={axisRef} /> */}
+        <g ref={axisRef} />
         {this.renderControlPoints()}
         {this.renderLines()}
       </svg>
@@ -111,8 +111,8 @@ export class EncodingGraph extends React.Component<IProps> {
       <g>
         {controlPoints.map((ctrl: ControlPointState, i: number) => (
           <ControlPoint
-            scaleX={this.scaleX}
-            scaleY={this.scaleY}
+            // scaleX={this.scaleX}
+            // scaleY={this.scaleY}
             pos={{ x: this.scaleX(ctrl.pos.x), y: this.scaleY(ctrl.pos.y) }}
             moveCallback={(newPos: Point) => moveCallback(newPos, i)}
           />

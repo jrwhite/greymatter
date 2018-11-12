@@ -6,8 +6,8 @@ const d3 = require('d3')
 
 export interface IProps {
   moveCallback: (newPos: Point) => void
-  scaleX: (x: number) => number
-  scaleY: (y: number) => number
+  // scaleX: (x: number) => number
+  // scaleY: (y: number) => number
   pos: Point
 }
 

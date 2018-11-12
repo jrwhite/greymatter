@@ -3,17 +3,15 @@ import { IState } from '../reducers'
 import { Dispatch, connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import NetworkActions from '../actions/network'
-import {
-  DendInfo,
-  IProps as IIProps,
-} from '../components/DendInfo'
+import { DendInfo, IProps as IIProps } from '../components/DendInfo'
 import { EncodedSourceState } from '../reducers/encodings'
 import { getSynapse } from '../selectors/synapse'
 import { SynapseState } from '../reducers/synapses'
-import { SourceItem } from '../items/source';
+import { SourceItem } from '../items/source'
 
 export interface IProps {
   id: string
+  neuronId: string
   index: number
   weighting: number
   synapseId: string

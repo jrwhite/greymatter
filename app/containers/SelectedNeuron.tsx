@@ -79,7 +79,7 @@ export class SelectedNeuron extends React.Component<IProps> {
 
     return (
       <div>
-        <DendList dends={dends} />
+        <DendList dends={dends} neuronId={id}/>
         <ControlGroup fill={false} vertical={true}>
           <Divider />
           <Text>Selected Neuron</Text>
