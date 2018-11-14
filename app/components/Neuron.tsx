@@ -15,11 +15,12 @@ import { PotentialGraphLine } from './PotentialGraphLine'
 import { MoveNeuronAction, RotateNeuronAction } from '../actions/neurons'
 import { SelectNeuronAction } from '../actions/config'
 import { AxonState, DendState } from '../reducers/neurons'
+import { IIProps } from '../containers/Neuron'
 // import { PotentialGraphLine } from "./PotentialGraphLine"
 const { Menu } = remote
 const d3 = require('d3')
 
-export interface IProps extends RouteComponentProps<any> {
+export interface IProps extends IIProps {
   fireNeuron: (id: string) => void
   addNewApToSynapse: (id: string) => void
   removeNeuron: (id: string) => void
@@ -37,39 +38,45 @@ export interface IProps extends RouteComponentProps<any> {
 }
 
 export interface IState {
-  selected: boolean
+  dragging: boolean
+  pos: Point
 }
 
 export class Neuron extends React.Component<IProps, IState> {
-  public props: IProps
-  public state: IState = { selected: false }
+  props: IProps
+  state: IState = { dragging: false, pos: { x: 100, y: 100 } }
 
-  public componentDidUpdate (prevProps: IProps, prevState: IState) {
-    if (this.state.selected !== prevState.selected) {
+  componentDidUpdate (prevProps: IProps, prevState: IState) {
+    if (this.state.dragging !== prevState.dragging) {
       this.renderD3()
     }
   }
 
-  public componentDidMount () {
+  componentDidMount () {
     this.renderD3()
   }
 
-  public handleNeuronClick (e: React.MouseEvent<SVGGElement>) {
+  shouldComponentUpdate (nextProps: IProps, nextState: IState) {
+    return !nextState.dragging
+  }
+
+  handleNeuronClick (e: React.MouseEvent<SVGGElement>) {
     e.preventDefault()
-    const { tryMakeSynapseAtNewDend, id, pos, selectNeuron } = this.props
+    const { tryMakeSynapseAtNewDend, id, selectNeuron } = this.props
+    const { pos } = this.state
 
     tryMakeSynapseAtNewDend(id, pos)
     selectNeuron({ id })
   }
 
-  public handleAxonClick (e: React.MouseEvent<SVGCircleElement>) {
+  handleAxonClick (e: React.MouseEvent<SVGCircleElement>) {
     e.preventDefault()
-    const { tryMakeSynapseAtAxon, id, pos, axon } = this.props
+    const { tryMakeSynapseAtAxon, id, axon } = this.props
 
     tryMakeSynapseAtAxon(axon.id, id)
   }
 
-  public handleContextMenu (e: React.MouseEvent<SVGGElement>) {
+  handleContextMenu (e: React.MouseEvent<SVGGElement>) {
     e.stopPropagation()
     e.preventDefault()
     const { removeNeuron, id } = this.props
@@ -82,18 +89,22 @@ export class Neuron extends React.Component<IProps, IState> {
     ]).popup(remote.getCurrentWindow())
   }
 
-  public render () {
+  ref: React.RefObject<SVGGElement> = React.createRef()
+
+  render () {
     const {
       fireNeuron,
       addNewApToSynapse,
       rotateNeuron,
-      pos,
       theta,
       id,
+      pos,
       axon,
       dends,
       potential
     } = this.props
+
+    // const { pos } = this.state
 
     const graphPopover: JSX.Element = (
       <Popover>
@@ -106,14 +117,17 @@ export class Neuron extends React.Component<IProps, IState> {
       axon.synapses.forEach((s) => addNewApToSynapse(s.id))
     }
 
+    console.log('neuron rerender')
+
     return (
       <g
         id={id}
         transform={'translate(' + pos.x + ' ' + pos.y + ')'}
         onContextMenu={this.handleContextMenu.bind(this)}
+        ref={this.ref}
       >
         <g onClick={this.handleNeuronClick.bind(this)}>
-          <NeuronBody dends={dends} theta={theta} />
+          <NeuronBody id={id} dends={dends} theta={theta} />
           <Soma potential={potential} id={id} theta={theta} />
         </g>
         <circle
@@ -131,39 +145,55 @@ export class Neuron extends React.Component<IProps, IState> {
     )
   }
 
-  public setSelected = (val: boolean) => {
-    this.setState({ selected: val })
+  onDragStarted = () => {
+    this.setState({ dragging: true })
   }
 
-  public onDragStarted = () => {
-    this.setSelected(true)
-  }
-
-  public onDragged = () => {
-    const { id, pos, moveNeuron } = this.props
+  onDragged = () => {
+    const { id, moveNeuron } = this.props
 
     const newPos: Point = {
       ...d3.event
     }
 
+    d3.select(this.ref.current)
+      // .transition()
+      // .duration(10)
+      .attr('transform', 'translate(' + newPos.x + ',' + newPos.y + ')')
+    // .on('end', () => moveNeuron({ id, pos: newPos }))
+    moveNeuron({
+      id,
+      pos: newPos
+    })
+    // this.setState({ pos: newPos })
+  }
+
+  onDragEnded = () => {
+    const { id, moveNeuron } = this.props
+    const { pos } = this.state
+    this.setState({ dragging: false })
+    const newPos: Point = {
+      ...d3.event
+    }
     moveNeuron({
       id,
       pos: newPos
     })
   }
 
-  public renderD3 () {
+  renderD3 () {
     const { id } = this.props
 
-    const { selected } = this.state
+    const { dragging } = this.state
 
-    d3.select('#' + id)
-      .classed('selected', selected)
+    d3.select(this.ref.current)
+      .classed('dragging', dragging)
       .call(
         d3
           .drag()
           .on('start', this.onDragStarted)
           .on('drag', this.onDragged)
+          .on('end', this.onDragEnded)
       )
   }
 }

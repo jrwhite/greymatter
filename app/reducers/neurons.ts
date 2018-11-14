@@ -3,7 +3,9 @@ import { IAction } from '../actions/helpers'
 import {
   addSynapseToAxon,
   removeSynapsesFromNeurons,
-  setDendSource
+  setDendSource,
+  decayNeurons,
+  potentiateNeuron
 } from '../actions/neurons'
 import { Arc, Point } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
@@ -17,8 +19,7 @@ import {
   hyperpolarizeNeuron,
   moveNeuron,
   removeNeurons,
-  rotateNeuron,
-  stepNetwork
+  rotateNeuron
 } from './../actions/neurons'
 
 export interface NeuronState {
@@ -49,6 +50,7 @@ export interface DendState {
   synapseId: string
   incomingAngle: number
   length: number // derived from short-term plast
+  sourceId: string
 }
 
 export interface PlastState {
@@ -108,7 +110,8 @@ const initialDendState: DendState = {
   arc: { start: 1, stop: 1 },
   synapseId: 's',
   incomingAngle: 1,
-  length: 2
+  length: 2,
+  sourceId: 'src'
 }
 
 export default function neurons (
@@ -301,8 +304,19 @@ export default function neurons (
         return n
       }
     })
+  } else if (potentiateNeuron.test(action)) {
+    return state.map((n) => {
+      if (n.id === action.payload.id) {
+        return {
+          ...n,
+          potential: n.potential + action.payload.change
+        }
+      } else {
+        return n
+      }
+    })
     // begin void actions
-  } else if (stepNetwork.test(action)) {
+  } else if (decayNeurons.test(action)) {
     return state.map((n: NeuronState) => {
       const v = n.izhik.potToMv(n.potential)
       return {

@@ -24,6 +24,9 @@ import { InputState } from '../reducers/inputs'
 import { NeuronState } from '../reducers/neurons'
 import { SynapseState } from '../reducers/synapses'
 import { ConfigState } from '../reducers/config'
+import { NeuronPotentialData } from '../containers/NeuronPotentialData'
+import { PotentiateNeuronAction } from '../actions/neurons'
+import { SourcedDendValue } from '../selectors/neuron'
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -31,8 +34,10 @@ const styles = require('./Network.scss')
 
 export interface IProps extends RouteComponentProps<any> {
   addNewNeuron (pos: Point): void
+  potentiateNeuron: (payload: PotentiateNeuronAction) => void
   addNewInput (pos: Point): void
   decayNetwork: () => void
+  decayNeurons: () => void
   stepNetwork: () => void // izhik step
   pauseNetwork: () => void
   resumeNetwork: () => void
@@ -45,6 +50,7 @@ export interface IProps extends RouteComponentProps<any> {
   neurons: NeuronState[]
   synapses: SynapseState[]
   config: ConfigState
+  sourcedDends: SourcedDendValue[]
 }
 
 export interface IState {
@@ -124,6 +130,8 @@ export class Network extends React.Component<IProps, IState> {
       ? neurons.find((n) => n.id === ghostSynapse.dend!!.neuronId)
       : undefined
 
+    console.log('network rerender')
+
     return (
       <div className={styles['container-top']}>
         <div className={styles['wrapper-upper']}>
@@ -171,7 +179,7 @@ export class Network extends React.Component<IProps, IState> {
                   <Input key={input.id} {...input} />
                 ))}
                 {neurons.map((neuron: NeuronState) => (
-                  <Neuron key={neuron.id} {...neuron} />
+                  <Neuron key={neuron.id} id={neuron.id} />
                 ))}
                 {synapses.map((synapse: SynapseState) => (
                   <Synapse key={synapse.id} {...synapse} />
@@ -204,30 +212,39 @@ export class Network extends React.Component<IProps, IState> {
 
     return (
       <Hotkeys>
-        {inputs.map(
-          (input: InputState) =>
-            input.hotkey ? (
-              <Hotkey
-                label={'fire input ' + input.id}
-                global={false}
-                combo={input.hotkey}
-                onKeyDown={() =>
-                  input.axon.synapses.forEach((s) => addNewApToSynapse(s.id))
-                }
-              />
-            ) : (
-              undefined
-            )
+        {inputs.map((input: InputState) =>
+          input.hotkey ? (
+            <Hotkey
+              label={'fire input ' + input.id}
+              global={false}
+              combo={input.hotkey}
+              onKeyDown={() =>
+                input.axon.synapses.forEach((s) => addNewApToSynapse(s.id))
+              }
+            />
+          ) : (
+            undefined
+          )
         )}
       </Hotkeys>
     )
   }
 
+  // TODO: refactor this into a runtime container. also maybe put runtime controls in runtime component
+  stepSourcedDends () {
+    const { potentiateNeuron, sourcedDends } = this.props
+    if (sourcedDends === undefined) return
+    sourcedDends.forEach((d) =>
+      potentiateNeuron({ id: d.neuronId, change: d.value })
+    )
+  }
+
   public startRuntime () {
-    const { decayNetwork, stepNetwork, config } = this.props
+    const { decayNeurons, config } = this.props
     const step = () => {
       // decayNetwork()
-      stepNetwork()
+      // decayNeurons()
+      // this.stepSourcedDends()
     }
     const interval = d3.interval(step, config.stepInterval)
     this.setState({ interval })
@@ -237,10 +254,11 @@ export class Network extends React.Component<IProps, IState> {
   }
 
   public restartRuntime () {
-    const { config, stepNetwork } = this.props
+    const { config, decayNeurons } = this.props
     const { interval } = this.state
     const step = () => {
-      stepNetwork()
+      // decayNeurons()
+      // this.stepSourcedDends()
     }
     if (config.isPaused) {
       interval.stop()

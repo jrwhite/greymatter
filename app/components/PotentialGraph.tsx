@@ -39,7 +39,7 @@ export class PotentialGraph extends React.Component<IProps> {
           ref={(node) =>
             d3
               .select(node)
-              .attr('transform', 'translate(0,0)')
+              // .attr('transform', 'translate(0,0)')
               .call(axis)
           }
         />

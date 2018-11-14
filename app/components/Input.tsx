@@ -95,10 +95,14 @@ export class Input extends React.Component<IProps, IState> {
   render () {
     const { pos, id, axon, rate } = this.props
 
+    console.log('input rerender')
+
     return (
       <g
         id={id}
-        transform={'translate(' + pos.x + ' ' + pos.y + ')'}
+        transform={
+          'translate(' + pos.x.toString() + ',' + pos.y.toString() + ')'
+        }
         onContextMenu={this.handleContextMenu.bind(this)}
       >
         <g onClick={this.handleInputClick.bind(this)}>

@@ -35,7 +35,7 @@ export class EncodingGraph extends React.Component<IProps> {
     const axisRef = (node: SVGGElement | null) =>
       d3
         .select(node)
-        // .attr('transform', 'translate(0,0)')
+        .attr('transform', 'translate(0,0)')
         .call(axis)
 
     return (

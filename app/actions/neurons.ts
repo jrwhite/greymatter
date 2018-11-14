@@ -90,6 +90,15 @@ export interface SetDendSourceAction {
   sourceId: string
 }
 
+export interface PotentiateNeuronAction {
+  id: string
+  change: number
+}
+
+export const potentiateNeuron = actionCreator<PotentiateNeuronAction>(
+  'POTENTIATE_NEURON'
+)
+
 export const setDendSource = actionCreator<SetDendSourceAction>(
   'SET_DEND_SOURCE'
 )
@@ -99,7 +108,8 @@ export const addSynapseToAxon = actionCreator<AddSynapseToAxonAction>(
 export const addSynapseToDend = actionCreator<AddSynapseToDendAction>(
   'ADD_SYNAPSE_TO_DEND'
 )
-export const removeSynapsesFromNeurons = actionCreator <RemoveSynapsesFromNeuronsAction>('REMOVE_SYNAPSE_FROM_NEURON')
+export const removeSynapsesFromNeurons = actionCreator <
+  RemoveSynapsesFromNeuronsAction>('REMOVE_SYNAPSE_FROM_NEURON')
 export const hyperpolarizeNeuron = actionCreator<HyperpolarizeNeuron>(
   'HYPERPOLARIZE_NEURON'
 )
@@ -118,8 +128,7 @@ export const addDend = actionCreator<AddDendAction>('ADD_DEND')
 export const changeIzhikParams = actionCreator<ChangeIzhikParamsAction>(
   'CHANGE_IZHIK_PARAMS'
 )
-// TODO: change stepNetwork to stepNeurons to make room for more step logic
-export const stepNetwork = actionCreatorVoid('STEP_NETWORK')
+export const decayNeurons = actionCreatorVoid('DECAY_NEURONS')
 
 export function fireNeuron (id: string) {
   return (dispatch: Function, getState: () => IState) => {
@@ -234,5 +243,12 @@ export function tryMakeSynapseAtAxon (id: string, neuronId: string) {
     } else {
       dispatch(makeGhostSynapseAtAxon({ id, neuronId }))
     }
+  }
+}
+
+export function stepEncodedDends () {
+  return (dispatch: Function, getState: () => IState) => {
+    // TODO: check if this get properly memoized by reselect
+
   }
 }

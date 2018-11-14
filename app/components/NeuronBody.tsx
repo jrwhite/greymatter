@@ -1,24 +1,25 @@
-import * as React from "react";
-import { Ellipse } from "./Ellipse";
-import { Dendrite } from "./Dendrite";
-import { Arc, Ellipse as EllipseGeo } from "../utils/geometry";
-import * as _ from "lodash";
-import { DendState } from "../reducers/neurons";
+import * as React from 'react'
+import { Ellipse } from './Ellipse'
+import { Arc, Ellipse as EllipseGeo } from '../utils/geometry'
+import * as _ from 'lodash'
+import { DendState } from '../reducers/neurons'
+import Dendrite from '../containers/Dendrite'
 
 export interface IProps {
-  dends: Array<DendState>;
-  theta: number;
+  id: string
+  dends: DendState[]
+  theta: number
 }
 
 export class NeuronBody extends React.Component<IProps> {
-  props: IProps;
+  props: IProps
 
-  render() {
-    const { dends, theta } = this.props;
+  render () {
+    const { dends, theta, id } = this.props
 
-    const bodyArcs: Array<Arc> = _.reduce(
+    const bodyArcs: Arc[] = _.reduce(
       dends,
-      (body, d): Array<Arc> => {
+      (body, d): Arc[] => {
         return _.concat(_.initial(body), [
           {
             start: _.last(body)!!.start,
@@ -28,32 +29,33 @@ export class NeuronBody extends React.Component<IProps> {
             start: d.arc.stop,
             stop: _.last(body)!!.stop
           }
-        ]);
+        ])
       },
       [{ start: 1 / 4, stop: 7 / 4 }]
-    );
+    )
 
     const defaultEllipseGeo: EllipseGeo = {
       major: 50,
       minor: 30,
       theta: 0,
       ecc: 5 / 3
-    };
+    }
 
     return (
       <g>
         <Ellipse {...defaultEllipseGeo} theta={theta} arcs={bodyArcs} />
-        {dends.map(d => (
+        {dends.map((d) => (
           <Dendrite
             key={d.id}
-            dend={d}
+            id={d.id}
+            neuronId={id}
             bodyEllipse={{
               ...defaultEllipseGeo,
-              theta: theta
+              theta
             }}
           />
         ))}
       </g>
-    );
+    )
   }
 }

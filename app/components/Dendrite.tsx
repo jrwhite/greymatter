@@ -12,23 +12,27 @@ import { CurveNatural } from './CurveNatural'
 const d3 = require('d3')
 import * as _ from 'lodash'
 import { DendState } from '../reducers/neurons'
+import { changeDendWeighting } from '../actions/neurons'
+import { IIProps } from '../containers/Dendrite'
 
-export interface IProps {
-  dend: DendState
+export interface IProps extends IIProps {
+  synCpos: Point
+  weighting: number
+  arc: Arc
   bodyEllipse: Ellipse
+  // sourceVal: number
 }
 
 export class Dendrite extends React.Component<IProps> {
   props: IProps
 
   render () {
-    const { dend, bodyEllipse } = this.props
-
+    const { synCpos, weighting, arc, bodyEllipse } = this.props
     const curves: Curve[] = calcDendCurves(
-      dend.synCpos,
-      dend.weighting / 12, // ctrlWidth
-      dend.weighting / 5, // ctrlHeight
-      dend.arc,
+      synCpos,
+      weighting / 12, // ctrlWidth
+      weighting / 5, // ctrlHeight
+      arc,
       bodyEllipse
     )
 

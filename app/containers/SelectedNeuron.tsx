@@ -15,16 +15,19 @@ import { connect } from 'react-redux'
 import { DendList } from '../components/DendList'
 import { AddNewObservableAction } from '../actions/observables'
 import { ObservableType } from '../reducers/observables'
-import { makeGetNeuronPotential } from '../selectors/neuron'
+import { makeGetNeuronPotential, getNeuronFromId } from '../selectors/neuron'
 
 const getSelectedNeuron = (state: IState, props: IProps) =>
   state.network.neurons.find((neuron: NeuronState) => neuron.id === props.id)
 
 const makeGetSelectedNeuronState = () =>
-  createSelector(getSelectedNeuron, (selectedNeuron) => ({
-    izhikParams: selectedNeuron!!.izhik.params,
-    dends: selectedNeuron!!.dends
-  }))
+  createSelector(
+    getSelectedNeuron,
+    (selectedNeuron) => ({
+      izhikParams: selectedNeuron!!.izhik.params,
+      dends: selectedNeuron!!.dends
+    })
+  )
 
 export interface IProps {
   changeDendWeighting: (payload: ChangeDendWeightingAction) => void
@@ -37,6 +40,10 @@ export interface IProps {
 
 export class SelectedNeuron extends React.Component<IProps> {
   props: IProps
+
+  makeGetSelf (id: string) {
+    return (state: IState) => getNeuronFromId(state, id)!!.potential
+  }
 
   render () {
     const {
@@ -52,7 +59,7 @@ export class SelectedNeuron extends React.Component<IProps> {
       addNewObservable({
         name: id.toString(),
         type: ObservableType.Potential,
-        getValue: (state: any) => makeGetNeuronPotential()(state, id)
+        getValue: this.makeGetSelf(id)
       })
     }
 
@@ -79,7 +86,7 @@ export class SelectedNeuron extends React.Component<IProps> {
 
     return (
       <div>
-        <DendList dends={dends} neuronId={id}/>
+        <DendList dends={dends} neuronId={id} />
         <ControlGroup fill={false} vertical={true}>
           <Divider />
           <Text>Selected Neuron</Text>
