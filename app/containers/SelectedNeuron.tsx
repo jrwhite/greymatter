@@ -63,24 +63,26 @@ export class SelectedNeuron extends React.Component<IProps> {
       })
     }
 
+    // TODO: use IzhikParamsSliders instead
+
     const changeA = (a: number) =>
       changeIzhikParams({
-        id,
+        neuronId: id,
         params: { a }
       })
     const changeB = (b: number) =>
       changeIzhikParams({
-        id,
+        neuronId: id,
         params: { b }
       })
     const changeC = (c: number) =>
       changeIzhikParams({
-        id,
+        neuronId: id,
         params: { c }
       })
     const changeD = (d: number) =>
       changeIzhikParams({
-        id,
+        neuronId: id,
         params: { d }
       })
 

@@ -1,27 +1,30 @@
-import { IAction } from '../actions/helpers';
-import { selectNeuron } from '../actions/neurons';
-import { selectInput } from '../actions/inputs';
+import { IAction } from '../actions/helpers'
+import { selectNeuron } from '../actions/neurons'
+import { selectInput } from '../actions/inputs'
 import {
   pauseNetwork,
   resumeNetwork,
   speedUpNetwork,
   slowDownNetwork,
-} from '../actions/config';
+  setDefaultIzhikParams
+} from '../actions/config'
+import { IzhikParams } from './neurons'
 
 export interface ConfigState {
-  selectedNeurons: Array<SelectedNeuronState>;
-  selectedInputs: Array<SelectedInputState>;
-  stepSize: number; // in ms,
-  stepInterval: number;
-  isPaused: boolean;
+  selectedNeurons: SelectedNeuronState[]
+  selectedInputs: SelectedInputState[]
+  stepSize: number // in ms,
+  stepInterval: number
+  isPaused: boolean
+  defaultIzhikParams: IzhikParams
 }
 
 export interface SelectedNeuronState {
-  id: string;
+  id: string
 }
 
 export interface SelectedInputState {
-  id: string;
+  id: string
 }
 
 const initialConfigState = {
@@ -30,9 +33,15 @@ const initialConfigState = {
   stepSize: 1,
   stepInterval: 50,
   isPaused: true,
-};
+  defaultIzhikParams: {
+    a: 0.02,
+    b: 0.2,
+    c: -65,
+    d: 2
+  }
+}
 
-export default function config(
+export default function config (
   state: ConfigState = initialConfigState,
   action: IAction
 ): ConfigState {
@@ -41,41 +50,48 @@ export default function config(
       ...state,
       selectedNeurons: [
         {
-          id: action.payload.id,
-        },
-      ],
-    };
+          id: action.payload.id
+        }
+      ]
+    }
   } else if (selectInput.test(action)) {
     return {
       ...state,
       selectedInputs: [
         {
-          id: action.payload.id,
-        },
-      ],
-    };
+          id: action.payload.id
+        }
+      ]
+    }
+  } else if (setDefaultIzhikParams.test(action)) {
+    return {
+      ...state,
+      defaultIzhikParams: {
+        ...action.payload
+      }
+    }
     // BEGIN VOID ACTIONS
   } else if (pauseNetwork.test(action)) {
     return {
       ...state,
-      isPaused: true,
-    };
+      isPaused: true
+    }
   } else if (resumeNetwork.test(action)) {
     return {
       ...state,
-      isPaused: false,
-    };
+      isPaused: false
+    }
   } else if (speedUpNetwork.test(action)) {
     return {
       ...state,
-      stepInterval: state.stepInterval >= 20 ? state.stepInterval - 10 : 10,
-    };
+      stepInterval: state.stepInterval >= 20 ? state.stepInterval - 10 : 10
+    }
   } else if (slowDownNetwork.test(action)) {
     return {
       ...state,
-      stepInterval: state.stepInterval + 10,
-    };
+      stepInterval: state.stepInterval + 10
+    }
   } else {
-    return state;
+    return state
   }
 }

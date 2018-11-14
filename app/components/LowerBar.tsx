@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Tabs, TabId, Tab } from '@blueprintjs/core'
 import GymPanel from '../containers/GymPanel'
 import EncodingPanel from '../containers/EncodingPanel';
+import ConfigPanel from '../containers/ConfigPanel';
 
 export interface IProps {}
 
@@ -23,6 +24,7 @@ export class LowerBar extends React.Component<IProps, IState> {
         <Tab id='gym' title='Gym' panel={<GymPanel />} />
         {/* <Tab id="plas" title="Plasticity" panel={} /> */}
         <Tab id='coding' title='Coding' panel={<EncodingPanel />} />
+        <Tab id='config' title='Config' panel={<ConfigPanel />} />
       </Tabs>
     )
   }

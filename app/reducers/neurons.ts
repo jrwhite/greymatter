@@ -5,7 +5,8 @@ import {
   removeSynapsesFromNeurons,
   setDendSource,
   decayNeurons,
-  potentiateNeuron
+  potentiateNeuron,
+  setUseDefaultConfig
 } from '../actions/neurons'
 import { Arc, Point } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
@@ -21,6 +22,7 @@ import {
   removeNeurons,
   rotateNeuron
 } from './../actions/neurons'
+import { setDefaultIzhikParams } from '../actions/config'
 
 export interface NeuronState {
   id: string
@@ -28,6 +30,7 @@ export interface NeuronState {
   pos: Point
   theta: number
   potential: number
+  useDefaultConfig: boolean
   izhik: IzhikState
   axon: AxonState
   dends: DendState[]
@@ -95,6 +98,7 @@ const initialNeuronState: NeuronState = {
   pos: { x: 0, y: 0 },
   theta: 0,
   potential: 0,
+  useDefaultConfig: true,
   izhik: initialIzhikState,
   axon: { id: 'a', cpos: { x: 50, y: 0 }, synapses: [] },
   dends: []
@@ -189,7 +193,7 @@ export default function neurons (
     })
   } else if (changeIzhikParams.test(action)) {
     return state.map((n: NeuronState) => {
-      if (n.id === action.payload.id) {
+      if (n.id === action.payload.neuronId) {
         return {
           ...n,
           izhik: {
@@ -310,6 +314,17 @@ export default function neurons (
         return {
           ...n,
           potential: n.potential + action.payload.change
+        }
+      } else {
+        return n
+      }
+    })
+  } else if (setUseDefaultConfig.test(action)) {
+    return state.map((n) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          useDefaultConfig: action.payload.useDefaultConfig
         }
       } else {
         return n

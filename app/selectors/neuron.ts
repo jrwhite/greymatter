@@ -1,7 +1,11 @@
 import { createSelector, Selector } from 'reselect'
 import { IState } from '../reducers'
 import { IProps } from '../components/Neuron'
-import neurons, { NeuronState, DendState } from '../reducers/neurons'
+import neurons, {
+  NeuronState,
+  DendState,
+  IzhikParams
+} from '../reducers/neurons'
 import * as _ from 'lodash'
 import { getEncodedValueById } from './encoding'
 
@@ -20,9 +24,16 @@ export const makeGetNeuronState = () =>
     (neuron) => ({ ...neuron })
   )
 
-const getDendsFromNeuron = (state: NeuronState) => {
-  return
-}
+const getIzhikParamsFromId = (
+  state: IState,
+  props: { id: string }
+): IzhikParams => getNeuron(state, props)!!.izhik.params
+
+export const makeGetNeuronIzhikParams = () =>
+  createSelector(
+    getIzhikParamsFromId,
+    (params) => params
+  )
 
 export interface SourcedDendValue {
   id: string

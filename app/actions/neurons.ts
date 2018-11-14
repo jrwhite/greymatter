@@ -46,7 +46,7 @@ export interface ChangeDendWeightingAction {
 }
 
 export interface ChangeIzhikParamsAction {
-  id: string
+  neuronId: string
   params: Partial<IzhikParams>
 }
 
@@ -89,6 +89,15 @@ export interface SetDendSourceAction {
   dendId: string
   sourceId: string
 }
+
+export interface SetUseDefaultConfigAction {
+  neuronId: string
+  useDefaultConfig: boolean
+}
+
+export const setUseDefaultConfig = actionCreator<SetUseDefaultConfigAction>(
+  'SET_USE_DEFAULT_CONFIG'
+)
 
 export interface PotentiateNeuronAction {
   id: string
@@ -249,6 +258,5 @@ export function tryMakeSynapseAtAxon (id: string, neuronId: string) {
 export function stepEncodedDends () {
   return (dispatch: Function, getState: () => IState) => {
     // TODO: check if this get properly memoized by reselect
-
   }
 }
