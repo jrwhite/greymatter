@@ -38,7 +38,12 @@ export class EncodingPanel extends React.Component<IProps, IState> {
 
     return (
       <div>
-        <Popover>
+        <Popover
+          enforceFocus={false}
+          canEscapeKeyClose={true}
+          captureDismiss={false}
+          usePortal={true}
+        >
           <Button icon='plus' />
           <NewEncodingForm />
         </Popover>

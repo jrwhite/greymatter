@@ -118,6 +118,7 @@ export class NewEncodingForm extends React.Component<IProps, IState> {
         </FormGroup>
         <FormGroup label='Select Observable'>
           <ObservableSelect
+            popoverProps={{ usePortal: false }}
             items={observableItems}
             itemRenderer={renderObservableItem}
             onItemSelect={this.handleObservableSelect}
@@ -129,6 +130,7 @@ export class NewEncodingForm extends React.Component<IProps, IState> {
         </FormGroup>
         <FormGroup label='Select Encoding'>
           <EncodingSelect
+            popoverProps={{ usePortal: false, captureDismiss: true }}
             items={[EncodedSourceType.GymAction, EncodedSourceType.Tonic]}
             itemRenderer={renderEncodingType}
             onItemSelect={this.handleEncodingSelect}
