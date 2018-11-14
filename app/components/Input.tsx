@@ -95,7 +95,7 @@ export class Input extends React.Component<IProps, IState> {
   render () {
     const { pos, id, axon, rate } = this.props
 
-    console.log('input rerender')
+    // console.log('input rerender')
 
     return (
       <g

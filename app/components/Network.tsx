@@ -130,7 +130,7 @@ export class Network extends React.Component<IProps, IState> {
       ? neurons.find((n) => n.id === ghostSynapse.dend!!.neuronId)
       : undefined
 
-    console.log('network rerender')
+    // console.log('network rerender')
 
     return (
       <div className={styles['container-top']}>
@@ -243,8 +243,8 @@ export class Network extends React.Component<IProps, IState> {
     const { decayNeurons, config } = this.props
     const step = () => {
       // decayNetwork()
-      // decayNeurons()
-      // this.stepSourcedDends()
+      decayNeurons()
+      this.stepSourcedDends()
     }
     const interval = d3.interval(step, config.stepInterval)
     this.setState({ interval })
@@ -257,8 +257,8 @@ export class Network extends React.Component<IProps, IState> {
     const { config, decayNeurons } = this.props
     const { interval } = this.state
     const step = () => {
-      // decayNeurons()
-      // this.stepSourcedDends()
+      decayNeurons()
+      this.stepSourcedDends()
     }
     if (config.isPaused) {
       interval.stop()

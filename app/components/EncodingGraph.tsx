@@ -23,36 +23,71 @@ export class EncodingGraph extends React.Component<IProps> {
   props: IProps
 
   render () {
-    const { rangeY, width, height } = this.props
+    const { rangeX, rangeY, width, height } = this.props
 
-    const scale = d3
+    const yAxisScale = d3
       .scaleLinear()
-      .domain([rangeY.stop - rangeY.start])
+      .domain([rangeY.stop, rangeY.start])
       .range([0, height])
 
-    const axis = d3.axisRight(scale).ticks(1)
+    const xAxisScale = d3
+      .scaleLinear()
+      .domain([rangeX.start, rangeX.stop])
+      .range([0, width])
+
+    const yAxis = d3.axisLeft(yAxisScale).ticks(5)
+    const xAxis = d3.axisBottom(xAxisScale).ticks(8)
 
     const axisRef = (node: SVGGElement | null) =>
       d3
         .select(node)
-        .attr('transform', 'translate(0,0)')
-        .call(axis)
+        // .attr('transform', 'translate(' + width + ',' + height + ')')
+        .call(yAxis)
+        .call(xAxis)
+
+    const xAxisRef = (node: SVGGElement | null) =>
+      d3
+        .select(node)
+        .attr('transform', 'translate(' + '0' + ',' + height + ')')
+        .call(xAxis)
+
+    const yAxisRef = (node: SVGGElement | null) =>
+      d3
+        .select(node)
+        // .attr('transform', 'translate(' + '10' + ',' + '0' + ')')
+        .call(yAxis)
+
+    const padding = 30
 
     return (
-      <svg>
-        <g ref={axisRef} />
-        {this.renderControlPoints()}
-        {this.renderLines()}
+      <svg width={width + padding * 2} height={height + padding * 2}>
+        <g transform={'translate(' + padding + ',' + padding + ')'}>
+          {/* <g ref={axisRef} /> */}
+          <g ref={yAxisRef} />
+          <g ref={xAxisRef} />
+          {/* <g
+          ref={(node) =>
+            d3
+              .select(node)
+              .call(yAxis)
+              .call(xAxis)
+          }
+        /> */}
+          {this.renderControlPoints()}
+          {this.renderLines()}
+        </g>
       </svg>
     )
   }
   scaleX = (x: number) => {
     const { rangeX, width } = this.props
-    return ((x - rangeX.start) / (rangeX.stop - rangeX.start)) * width
+    return width - ((x - rangeX.start) / (rangeX.stop - rangeX.start)) * width
   }
   scaleY = (y: number) => {
     const { rangeY, height } = this.props
-    return ((y - rangeY.start) / (rangeY.stop - rangeY.start)) * height
+    return (
+      height - ((y - rangeY.start) / (rangeY.stop - rangeY.start)) * height
+    )
   }
 
   renderLines () {
@@ -91,10 +126,14 @@ export class EncodingGraph extends React.Component<IProps> {
     } = this.props
 
     const invScaleX = (x: number) => {
-      return rangeX.start + (x / width) * (rangeX.stop - rangeX.start)
+      return (
+        rangeX.start + ((width - x) / width) * (rangeX.stop - rangeX.start)
+      )
     }
     const invScaleY = (y: number) => {
-      return rangeY.start + (y / height) * (rangeY.stop - rangeY.start)
+      return (
+        rangeY.start + ((height - y) / height) * (rangeY.stop - rangeY.start)
+      )
     }
 
     const moveCallback = (newPos: Point, index: number) => {
