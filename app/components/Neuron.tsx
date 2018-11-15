@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { RouteComponentProps, StaticRouter } from 'react-router'
 import { Ellipse } from './Ellipse'
-import { Point } from '../utils/geometry'
+import { Point, calcAxonPos } from '../utils/geometry'
 import { Rotate } from './Rotate'
 
 import Draggable from 'react-draggable'
@@ -119,6 +119,13 @@ export class Neuron extends React.Component<IProps, IState> {
 
     // console.log('neuron rerender')
 
+    const axonPos: Point = calcAxonPos({
+      major: 50,
+      minor: 30,
+      theta,
+      ecc: 5 / 3
+    })
+
     return (
       <g
         id={id}
@@ -131,8 +138,8 @@ export class Neuron extends React.Component<IProps, IState> {
           {/* <Soma potential={potential} id={id} theta={theta} /> */}
         </g>
         <circle
-          cx={50}
-          cy={0}
+          cx={axonPos.x}
+          cy={axonPos.y}
           r={5}
           onClick={this.handleAxonClick.bind(this)}
         />

@@ -59,6 +59,13 @@ export const calc = (to: Point, from: Point, ellipse: Ellipse) => {
   const thetaIn = Math.atan((point.y - from.y) / (point.x - from.x))
 }
 
+export const calcAxonPos = (ellipse: Ellipse): Point => {
+  return {
+    x: ellipse.major * Math.cos(ellipse.theta),
+    y: ellipse.major * Math.sin(ellipse.theta)
+  }
+}
+
 export const calcClosestDend = (
   to: Point,
   from: Point,
