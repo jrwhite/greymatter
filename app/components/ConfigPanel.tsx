@@ -6,6 +6,8 @@ import {
   setDefaultIzhikParams
 } from '../actions/config'
 
+const styles = require('./ConfigPanel.scss')
+
 export interface IProps {
   setDefaultIzhikParams: (payload: SetDefaultIzhikParamsAction) => void
   izhikParams: IzhikParams
@@ -14,17 +16,19 @@ export interface IProps {
 export class ConfigPanel extends React.Component<IProps> {
   props: IProps
 
-  onIzhikParamsChange (params: IzhikParams) {
-    setDefaultIzhikParams(params)
-  }
-
   render () {
-    const { izhikParams } = this.props
+    const { izhikParams, setDefaultIzhikParams } = this.props
+    const onIzhikParamsChange = (params: IzhikParams) => {
+      setDefaultIzhikParams(params)
+    }
     return (
-      <IzhikParamsControls
-        onChange={this.onIzhikParamsChange}
-        izhikParams={izhikParams}
-      />
+      <div className={styles.container}>
+        {/* <div> */}
+        <IzhikParamsControls
+          onChange={onIzhikParamsChange}
+          izhikParams={izhikParams}
+        />
+      </div>
     )
   }
 }

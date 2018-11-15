@@ -53,6 +53,11 @@
     // height: 100%;
 }
 
+.lowerbar {
+    flex: 0 1 auto;
+    background-color: $gray3
+}
+
 .overlay {
     position: absolute;
     // top: 0;

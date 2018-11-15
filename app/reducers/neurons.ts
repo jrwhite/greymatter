@@ -330,6 +330,20 @@ export default function neurons (
         return n
       }
     })
+  } else if (setDefaultIzhikParams.test(action)) {
+    return state.map((n) => {
+      if (n.useDefaultConfig) {
+        return {
+          ...n,
+          izhik: {
+            ...n.izhik,
+            params: { ...action.payload }
+          }
+        }
+      } else {
+        return n
+      }
+    })
     // begin void actions
   } else if (decayNeurons.test(action)) {
     return state.map((n: NeuronState) => {

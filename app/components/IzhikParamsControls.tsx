@@ -3,6 +3,8 @@ import { IzhikParams } from '../reducers/neurons'
 import { ChangeIzhikParamsAction } from '../actions/neurons'
 import { ControlGroup, Slider, Text } from '@blueprintjs/core'
 
+const styles = require('./IzhikParamsControls.scss')
+
 export interface IProps {
   onChange: (params: IzhikParams) => void
   izhikParams: IzhikParams

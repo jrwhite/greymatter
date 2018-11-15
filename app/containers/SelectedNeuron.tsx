@@ -2,11 +2,20 @@ import * as React from 'react'
 import { IzhikParams, NeuronState, DendState } from '../reducers/neurons'
 import {
   ChangeIzhikParamsAction,
-  ChangeDendWeightingAction
+  ChangeDendWeightingAction,
+  SetUseDefaultConfigAction
 } from '../actions/neurons'
 import { IState } from '../reducers'
 import { createSelector } from 'reselect'
-import { Text, Slider, ControlGroup, Divider, Button } from '@blueprintjs/core'
+import {
+  Text,
+  Slider,
+  ControlGroup,
+  Divider,
+  Button,
+  Checkbox,
+  Switch
+} from '@blueprintjs/core'
 import { Dispatch, bindActionCreators, AnyAction } from 'redux'
 import * as NetworkActions from '../actions/network'
 import * as Actions from '../actions/neurons'
@@ -25,7 +34,8 @@ const makeGetSelectedNeuronState = () =>
     getSelectedNeuron,
     (selectedNeuron) => ({
       izhikParams: selectedNeuron!!.izhik.params,
-      dends: selectedNeuron!!.dends
+      dends: selectedNeuron!!.dends,
+      ...selectedNeuron
     })
   )
 
@@ -33,9 +43,11 @@ export interface IProps {
   changeDendWeighting: (payload: ChangeDendWeightingAction) => void
   changeIzhikParams: (payload: ChangeIzhikParamsAction) => void
   addNewObservable: (payload: AddNewObservableAction) => void
+  setUseDefaultConfig: (payload: SetUseDefaultConfigAction) => void
   id: string
   izhikParams: IzhikParams
   dends: DendState[]
+  useDefaultConfig: boolean
 }
 
 export class SelectedNeuron extends React.Component<IProps> {
@@ -47,12 +59,14 @@ export class SelectedNeuron extends React.Component<IProps> {
 
   render () {
     const {
+      setUseDefaultConfig,
       id,
       izhikParams,
       changeIzhikParams,
       changeDendWeighting,
       dends,
-      addNewObservable
+      addNewObservable,
+      useDefaultConfig
     } = this.props
 
     const addPotentialObservable = () => {
@@ -86,6 +100,8 @@ export class SelectedNeuron extends React.Component<IProps> {
         params: { d }
       })
 
+    console.log(this.props)
+
     return (
       <div>
         <DendList dends={dends} neuronId={id} />
@@ -95,6 +111,17 @@ export class SelectedNeuron extends React.Component<IProps> {
           <Button
             text={'add observable'}
             onClick={() => addPotentialObservable()}
+          />
+          <Divider />
+          <Checkbox
+            checked={useDefaultConfig}
+            label='Use default'
+            onChange={(e: React.FormEvent<HTMLInputElement>) =>
+              setUseDefaultConfig({
+                neuronId: id,
+                useDefaultConfig: e.currentTarget.checked
+              })
+            }
           />
           <Divider />
           <Text>Izhik 'a':</Text>

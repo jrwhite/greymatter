@@ -201,7 +201,9 @@ export class Network extends React.Component<IProps, IState> {
           </div>
         </div>
         <div className={styles['wrapper-lower']}>
-          <LowerBar />
+          <div className={styles.lowerbar}>
+            <LowerBar />
+          </div>
         </div>
       </div>
     )
