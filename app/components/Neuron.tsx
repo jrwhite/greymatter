@@ -126,6 +126,11 @@ export class Neuron extends React.Component<IProps, IState> {
       ecc: 5 / 3
     })
 
+    const potGreyScale = d3
+      .scaleLinear()
+      .domain([-300, 100])
+      .range([1, 0.5])
+
     return (
       <g
         id={id}
@@ -133,7 +138,10 @@ export class Neuron extends React.Component<IProps, IState> {
         onContextMenu={this.handleContextMenu.bind(this)}
         ref={this.ref}
       >
-        <g onClick={this.handleNeuronClick.bind(this)}>
+        <g
+          onClick={this.handleNeuronClick.bind(this)}
+          fill={d3.interpolateGreys(potGreyScale(potential))}
+        >
           <NeuronBody id={id} dends={dends} theta={theta} />
           {/* <Soma potential={potential} id={id} theta={theta} /> */}
         </g>
