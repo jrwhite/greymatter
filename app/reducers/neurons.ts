@@ -80,7 +80,7 @@ export interface IzhikState {
  * Initial states
  */
 
-const initialIzhikState: IzhikState = {
+export const initialIzhikState: IzhikState = {
   params: {
     a: 0.02,
     b: 0.2,
@@ -139,6 +139,7 @@ export default function neurons (
         ...initialNeuronState,
         id: action.payload.id,
         pos: action.payload.pos,
+        izhik: action.payload.izhik,
         axon: {
           ...initialNeuronState.axon,
           id: action.payload.axonId

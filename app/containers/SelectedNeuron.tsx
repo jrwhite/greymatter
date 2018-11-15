@@ -100,8 +100,6 @@ export class SelectedNeuron extends React.Component<IProps> {
         params: { d }
       })
 
-    console.log(this.props)
-
     return (
       <div>
         <DendList dends={dends} neuronId={id} />

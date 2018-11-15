@@ -62,8 +62,8 @@ export class Neuron extends React.Component<IProps, IState> {
 
   handleNeuronClick (e: React.MouseEvent<SVGGElement>) {
     e.preventDefault()
-    const { tryMakeSynapseAtNewDend, id, selectNeuron } = this.props
-    const { pos } = this.state
+    const { tryMakeSynapseAtNewDend, id, selectNeuron, pos } = this.props
+    // const { pos } = this.state
 
     tryMakeSynapseAtNewDend(id, pos)
     selectNeuron({ id })
@@ -128,7 +128,7 @@ export class Neuron extends React.Component<IProps, IState> {
       >
         <g onClick={this.handleNeuronClick.bind(this)}>
           <NeuronBody id={id} dends={dends} theta={theta} />
-          <Soma potential={potential} id={id} theta={theta} />
+          {/* <Soma potential={potential} id={id} theta={theta} /> */}
         </g>
         <circle
           cx={50}
@@ -163,7 +163,7 @@ export class Neuron extends React.Component<IProps, IState> {
     // .on('end', () => moveNeuron({ id, pos: newPos }))
     moveNeuron({
       id,
-      pos: newPos
+      pos: { x: newPos.x, y: newPos.y }
     })
     // this.setState({ pos: newPos })
   }
@@ -177,7 +177,7 @@ export class Neuron extends React.Component<IProps, IState> {
     }
     moveNeuron({
       id,
-      pos: newPos
+      pos: { x: newPos.x, y: newPos.y }
     })
   }
 

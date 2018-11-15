@@ -1,5 +1,10 @@
 import { IState } from '../reducers'
-import { IzhikParams, NeuronState } from '../reducers/neurons'
+import {
+  IzhikParams,
+  NeuronState,
+  IzhikState,
+  initialIzhikState
+} from '../reducers/neurons'
 import { getAxonAbsPos } from '../selectors/synapse'
 import {
   addPoints,
@@ -37,6 +42,7 @@ export interface AddNeuronAction {
   id: string
   axonId: string
   pos: Point
+  izhik: IzhikState
 }
 
 export interface ChangeDendWeightingAction {
@@ -68,7 +74,7 @@ export interface AddDendAction {
   incomingAngle: number
 }
 
-export interface RemoveSynapsesFromNeuronsAction {
+export interface RemoveSynapsesAction {
   synapses: Array<{ id: string }>
 }
 
@@ -117,8 +123,11 @@ export const addSynapseToAxon = actionCreator<AddSynapseToAxonAction>(
 export const addSynapseToDend = actionCreator<AddSynapseToDendAction>(
   'ADD_SYNAPSE_TO_DEND'
 )
-export const removeSynapsesFromNeurons = actionCreator <
-  RemoveSynapsesFromNeuronsAction>('REMOVE_SYNAPSE_FROM_NEURON')
+
+export const removeSynapsesFromNeurons = actionCreator<RemoveSynapsesAction>(
+  'REMOVE_SYNAPSES'
+)
+
 export const hyperpolarizeNeuron = actionCreator<HyperpolarizeNeuron>(
   'HYPERPOLARIZE_NEURON'
 )
@@ -146,8 +155,16 @@ export function fireNeuron (id: string) {
 }
 
 export function addNewNeuron (pos: Point) {
-  return (dispatch: Function) => {
-    dispatch(addNeuron({ id: _.uniqueId('n'), pos, axonId: _.uniqueId('a') }))
+  return (dispatch: Function, getState: () => IState) => {
+    const initialIzhikParams = getState().network.config.defaultIzhikParams
+    dispatch(
+      addNeuron({
+        id: _.uniqueId('n'),
+        pos,
+        axonId: _.uniqueId('a'),
+        izhik: { ...initialIzhikState, params: initialIzhikParams }
+      })
+    )
   }
 }
 
