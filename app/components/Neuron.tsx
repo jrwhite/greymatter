@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { RouteComponentProps, StaticRouter } from 'react-router'
 import { Ellipse } from './Ellipse'
-import { Point, calcAxonPos } from '../utils/geometry'
+import { Point, calcAxonPos, Ellipse as EllipseGeo } from '../utils/geometry'
 import { Rotate } from './Rotate'
 
 import Draggable from 'react-draggable'
@@ -26,7 +26,11 @@ export interface IProps extends IIProps {
   removeNeuron: (id: string) => void
   moveNeuron: (payload: MoveNeuronAction) => void
   tryMakeSynapseAtAxon: (id: string, neuronId: string) => void
-  tryMakeSynapseAtNewDend: (neuronId: string, neuronPos: Point) => void
+  tryMakeSynapseAtNewDend: (
+    neuronId: string,
+    neuronPos: Point,
+    bodyEllipse: EllipseGeo
+  ) => void
   selectNeuron: (payload: SelectNeuronAction) => void
   rotateNeuron: (payload: RotateNeuronAction) => void
   id: string
@@ -62,10 +66,21 @@ export class Neuron extends React.Component<IProps, IState> {
 
   handleNeuronClick (e: React.MouseEvent<SVGGElement>) {
     e.preventDefault()
-    const { tryMakeSynapseAtNewDend, id, selectNeuron, pos } = this.props
+    const {
+      tryMakeSynapseAtNewDend,
+      id,
+      selectNeuron,
+      pos,
+      theta
+    } = this.props
     // const { pos } = this.state
 
-    tryMakeSynapseAtNewDend(id, pos)
+    tryMakeSynapseAtNewDend(id, pos, {
+      major: 50,
+      minor: 30,
+      theta,
+      ecc: 5 / 3
+    })
     selectNeuron({ id })
   }
 

@@ -72,7 +72,8 @@ export const calcClosestDend = (
   ellipse: Ellipse
 ): DendGeo => {
   const mCircleIn = (from.y - to.y) / (from.x - to.x)
-  const nu = Math.PI + Math.atan(mCircleIn)
+  console.log(ellipse.theta)
+  const nu = Math.PI + Math.atan(mCircleIn) - ellipse.theta
   const cpos = el(ellipse, nu)
 
   const point = addPoints(cpos, to)

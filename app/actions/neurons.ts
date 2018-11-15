@@ -232,7 +232,11 @@ export function tryMakeSynapseAtDend (id: string, neuronId: string) {
   }
 }
 
-export function tryMakeSynapseAtNewDend (neuronId: string, neuronPos: Point) {
+export function tryMakeSynapseAtNewDend (
+  neuronId: string,
+  neuronPos: Point,
+  bodyEllipse: Ellipse
+) {
   // using ghost synapse axon
   // this likely replaces tryMakeSynapseAtDend
   return (dispatch: Function, getState: () => IState) => {
@@ -246,7 +250,7 @@ export function tryMakeSynapseAtNewDend (neuronId: string, neuronPos: Point) {
           neuronId,
           neuronPos,
           getAxonAbsPos(getState(), ghost),
-          { major: 50, minor: 30, theta: 0, ecc: 50 / 20 }
+          bodyEllipse
         )
       )
       dispatch(tryMakeSynapseAtDend(newId, neuronId))
