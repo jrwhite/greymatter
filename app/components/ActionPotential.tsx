@@ -1,69 +1,113 @@
-import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import { Point } from "../utils/geometry";
-import * as _ from "lodash";
-import Axios from "axios";
-const d3 = require("d3");
+import * as React from 'react'
+import { RouteComponentProps } from 'react-router'
+import { Point } from '../utils/geometry'
+import * as _ from 'lodash'
+import Axios from 'axios'
+import { IIProps } from '../containers/ActionPotential'
+const d3 = require('d3')
 
-export interface IProps {
-  id: string;
-  callback: Function;
-  type: string; // inhib / excit
-  start: Point;
-  stop: Point;
-  speed: number;
-  length: number;
+export interface IProps extends IIProps {
+  id: string
+  synapseId: string
+  finishFiringApOnSynapse: Function
+  type: string // inhib / excit
+  start: Point
+  stop: Point
+  speed: number
+  length: number
 }
 
 export interface IState {
-  startAnimation: boolean;
+  startAnimation: boolean
 }
-11;
-export class ActionPotential extends React.Component<IProps, IState> {
-  props: IProps;
-  state: IState = { startAnimation: false };
 
-  componentDidMount() {
-    this.setState({ startAnimation: true });
+export class ActionPotential extends React.Component<IProps, IState> {
+  props: IProps
+  state: IState = { startAnimation: false }
+
+  componentDidMount () {
+    // this.setState({ startAnimation: true })
+    this.renderD3()
   }
 
-  componentDidUpdate() {
-    if (this.state.startAnimation) {
-      this.renderD3();
+  componentDidUpdate (prevProps: IProps, prevState: IState) {
+    if (this.state.startAnimation && !prevState.startAnimation) {
+      this.renderD3()
     }
   }
 
-  // componentDidMount () {
-  //     this.renderD3()
+  // shouldComponentUpdate (prevProps: IProps, prevState: IState) {
+  //   // if (this.state.startAnimation) {
+  //   //   return false
+  //   // }
+  //   // return true
+  //   return false
   // }
 
-  render() {
-    const { id, type, start } = this.props;
-
-    return (
-      <g>
-        <circle id={id} cx={start.x} cy={start.y} r={5} fill="white" />
-      </g>
-    );
+  componentWillUnmount () {
+    const { finishFiringApOnSynapse, id, synapseId } = this.props
+    console.log('unmount')
+    // finishFiringApOnSynapse(id, synapseId)
   }
 
-  renderD3() {
-    const { callback, stop, speed, length, id } = this.props;
+  // componentDidMount () {
+  //   this.renderD3()
+  // }
+
+  // ref = React.createRef<SVGCircleElement>()
+
+  render () {
+    const { id, type, start, finishFiringApOnSynapse, synapseId } = this.props
+    console.log('render')
+    return (
+      <g>
+        <circle
+          // ref={this.ref}
+          id={id}
+          cx={start.x}
+          cy={start.y}
+          r={5}
+          fill='white'
+        />
+        {/* {this.renderD3()} */}
+      </g>
+    )
+  }
+
+  renderD3 () {
+    console.log('renderD3')
+    const {
+      finishFiringApOnSynapse,
+      stop,
+      speed,
+      length,
+      id,
+      synapseId
+    } = this.props
+
+    const { startAnimation } = this.state
+    // console.log(startAnimation)
 
     const transitionSetter = d3
       .transition()
-      .duration(length / speed)
-      .ease(d3.easeLinear)
+      // .duration(length / speed)
+      .duration(3000)
+      // .ease(d3.easeLinear)
       // DONT DELETE THIS
       // might be useful
       // .attrTween("transform", translateAlong(linePath.node()))
-      .on("end", callback);
+      .on('end', () => finishFiringApOnSynapse(id, synapseId))
+      .on('interrupt', () => finishFiringApOnSynapse(id, synapseId))
+    // .on('end', () => console.log('finish'))
 
-    const transition = d3
-      .select("#" + id)
+    d3.select('#' + id)
+      // .select(this.ref)
       .transition(transitionSetter)
-      .attr("cx", stop.x)
-      .attr("cy", stop.y)
-      .remove();
+      .attr('cx', stop.x)
+      .attr('cy', stop.y)
+      .call(() => console.log('call'))
+    // .remove()
+
+    return null
   }
 }

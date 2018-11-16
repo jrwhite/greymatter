@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { ActionPotential } from './ActionPotential'
 import { RouteComponentProps } from 'react-router'
 import { Point } from '../utils/geometry'
 import { Line } from './Line'
 import { ActionPotentialState } from '../reducers/network'
+import ActionPotential from '../containers/ActionPotential'
 
 export interface IProps extends RouteComponentProps<any> {
   finishFiringApOnSynapse (id: string, synapseId: string): void
@@ -46,11 +46,20 @@ export class Synapse extends React.Component<IProps> {
         prtty much never allow it to rerender //TODO: refactor into
         ActionPotential container w/ selector. NEVER RERENDER
         {actionPotentials.map((ap) => (
+          // <ActionPotential
+          //   key={ap.id}
+          //   id={ap.id}
+          //   callback={() => apCallback(ap.id)}
+          //   type={'EXCIT'}
+          //   start={axonPos}
+          //   stop={dendPos}
+          //   speed={speed}
+          //   length={length}
+          // />
           <ActionPotential
             key={ap.id}
             id={ap.id}
-            callback={() => apCallback(ap.id)}
-            type={'EXCIT'}
+            synapseId={id}
             start={axonPos}
             stop={dendPos}
             speed={speed}

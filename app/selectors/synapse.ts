@@ -4,12 +4,13 @@ import { createSelector } from 'reselect'
 import { addPoints, calcAxonPos, Point } from '../utils/geometry'
 import * as _ from 'lodash'
 import { getNeuronFromId } from './neuron'
+import { ActionPotentialState } from '../reducers/network'
 
 export const getSynapse = (state: IState, props: { id: string }) =>
   state.network.synapses.find((s) => s.id === props.id)
 
 export const getAxonAbsPos = (state: IState, props: Partial<IProps>): Point => {
-  if (_.includes(props.axon!!.neuronId, 'in')) {
+  if (props.axon && _.includes(props.axon!!.neuronId, 'in')) {
     return state.network.inputs.find((n) => n.id === props.axon!!.neuronId)!!.pos
   } else {
     const neuronState = state.network.neurons.find(
@@ -25,7 +26,7 @@ export const getAxonAbsPos = (state: IState, props: Partial<IProps>): Point => {
   }
 }
 
-const getDendNeuronPos = (state: IState, props: IProps) =>
+export const getDendNeuronPos = (state: IState, props: IProps) =>
   state.network.neurons.find((n) => n.id === props.dend.neuronId)!!.pos
 
 // DEPRECATED
@@ -38,7 +39,7 @@ export const getAxonPos = (state: IState, props: Partial<IProps>) =>
 // export const getAxonAbsPos = (state: IState, props: Partial<IProps>) =>
 //   addPoints(getAxonPos(state, props), getAxonNeuronPos(state, props))
 
-const getDendPos = (state: IState, props: IProps) =>
+export const getDendPos = (state: IState, props: IProps) =>
   state.network.neurons
     .find((n) => n.id === props.dend.neuronId)!!
     .dends.find((d) => d.id === props.dend.id)!!.synCpos
@@ -49,6 +50,21 @@ export const makeGetSynapse = () =>
     (synapse) => ({
       ...synapse
     })
+  )
+
+export const getAp = (
+  state: IState,
+  props: { id: string; synapseId: string }
+): ActionPotentialState => {
+  return getSynapse(state, { id: props.synapseId })!!.actionPotentials.find(
+    (ap) => ap.id === props.id
+  )!!
+}
+
+export const makeGetAp = () =>
+  createSelector(
+    getAp,
+    (ap) => ap
   )
 
 export const makeGetSynapseState = () =>
