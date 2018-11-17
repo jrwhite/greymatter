@@ -127,7 +127,7 @@ export const getUnitLine = (line: Line): Line => {
   }
 }
 
-const getLineVector = (line: Line): Point => {
+export const getLineVector = (line: Line): Point => {
   return {
     x: line.stop.x - line.start.x,
     y: line.stop.y - line.start.y
@@ -141,7 +141,7 @@ const vectorMultiply = (l1: Point, l2: Point): Point => {
   }
 }
 
-const vectorScalarMultiply = (vec: Point, scal: number): Point => {
+export const vectorScalarMultiply = (vec: Point, scal: number): Point => {
   return {
     x: vec.x * scal,
     y: vec.y * scal

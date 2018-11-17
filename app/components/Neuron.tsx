@@ -119,6 +119,7 @@ export class Neuron extends React.Component<IProps, IState> {
       potential
     } = this.props
 
+
     // const { pos } = this.state
 
     const graphPopover: JSX.Element = (

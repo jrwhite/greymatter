@@ -1,6 +1,11 @@
 import * as React from 'react'
 import { RouteComponentProps } from 'react-router'
-import { Point } from '../utils/geometry'
+import {
+  Point,
+  getLineVector,
+  vectorScalarMultiply,
+  addPoints
+} from '../utils/geometry'
 import * as _ from 'lodash'
 import Axios from 'axios'
 import { IIProps } from '../containers/ActionPotential'
@@ -18,22 +23,29 @@ export interface IProps extends IIProps {
 }
 
 export interface IState {
-  startAnimation: boolean
+  started: boolean
+  progress: number
 }
 
 export class ActionPotential extends React.Component<IProps, IState> {
   props: IProps
-  state: IState = { startAnimation: false }
+  state: IState = { progress: 0, started: false }
 
   componentDidMount () {
-    // this.setState({ startAnimation: true })
+    // this.setState({ started: true })
     this.renderD3()
   }
 
   componentDidUpdate (prevProps: IProps, prevState: IState) {
-    if (this.state.startAnimation && !prevState.startAnimation) {
-      this.renderD3()
-    }
+    // if (!this.state.started && prevState.started) {
+    // this.renderD3()
+    // }
+  }
+
+  componentWillUpdate () {
+    const { id } = this.props
+    d3.select('#' + id).interrupt()
+    console.log(this.state.progress)
   }
 
   // shouldComponentUpdate (prevProps: IProps, prevState: IState) {
@@ -57,19 +69,30 @@ export class ActionPotential extends React.Component<IProps, IState> {
   // ref = React.createRef<SVGCircleElement>()
 
   render () {
-    const { id, type, start, finishFiringApOnSynapse, synapseId } = this.props
+    const {
+      id,
+      type,
+      start,
+      stop,
+      finishFiringApOnSynapse,
+      synapseId
+    } = this.props
+    const { progress, started } = this.state
     console.log('render')
+    const pos: Point = addPoints(
+      start,
+      vectorScalarMultiply(getLineVector({ start, stop }), progress)
+    )
     return (
       <g>
         <circle
           // ref={this.ref}
           id={id}
-          cx={start.x}
-          cy={start.y}
+          cx={pos.x}
+          cy={pos.y}
           r={5}
           fill='white'
         />
-        {/* {this.renderD3()} */}
       </g>
     )
   }
@@ -85,8 +108,10 @@ export class ActionPotential extends React.Component<IProps, IState> {
       synapseId
     } = this.props
 
-    const { startAnimation } = this.state
+    const { started, progress } = this.state
     // console.log(startAnimation)
+
+    let prog = 0
 
     const transitionSetter = d3
       .transition()
@@ -96,9 +121,22 @@ export class ActionPotential extends React.Component<IProps, IState> {
       // DONT DELETE THIS
       // might be useful
       // .attrTween("transform", translateAlong(linePath.node()))
+      .attrTween('fire', (d: any) => {
+        return (t: number) => {
+          // console.log(t)
+          prog = t
+          // this.setState({ progress: t })
+        }
+      })
       .on('end', () => finishFiringApOnSynapse(id, synapseId))
-      .on('interrupt', () => finishFiringApOnSynapse(id, synapseId))
-    // .on('end', () => console.log('finish'))
+      // .on('interrupt', () => finishFiringApOnSynapse(id, synapseId))
+      .on('interrupt', (d: any) => {
+        console.log('interrupted')
+        // set cx, cy to current position from progress?
+        this.setState({ started: false, progress: prog })
+        // restart the renderD3
+        // this.renderD3()
+      })
 
     d3.select('#' + id)
       // .select(this.ref)
@@ -106,8 +144,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
       .attr('cx', stop.x)
       .attr('cy', stop.y)
       .call(() => console.log('call'))
+    // .call(() => this.setState({ started: true }))
     // .remove()
-
-    return null
   }
 }
