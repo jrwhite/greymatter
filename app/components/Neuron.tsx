@@ -127,7 +127,7 @@ export class Neuron extends React.Component<IProps, IState> {
       </Popover>
     )
 
-    if (potential > 100) {
+    if (potential >= 100) {
       fireNeuron(id)
       axon.synapses.forEach((s) => addNewApToSynapse(s.id))
     }

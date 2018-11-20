@@ -73,7 +73,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
 
   componentWillUnmount () {
     const { finishFiringApOnSynapse, id, synapseId } = this.props
-    console.log('unmount')
+    // console.log('unmount')
     // finishFiringApOnSynapse(id, synapseId)
   }
 
@@ -93,7 +93,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
       synapseId,
       progress
     } = this.props
-    console.log('render')
+    // console.log('render')
 
     const pos: Point = addPoints(
       start,
@@ -122,8 +122,9 @@ export class ActionPotential extends React.Component<IProps, IState> {
   }
 
   renderD3 (depth: number) {
-    console.log('renderD3')
-    console.log(depth)
+    const steps = 50
+    // console.log('renderD3')
+    // console.log(depth)
     const {
       finishFiringApOnSynapse,
       removeApFromSynapse,
@@ -139,18 +140,20 @@ export class ActionPotential extends React.Component<IProps, IState> {
     } = this.props
 
     const { isAnimating, animationProgress } = this.state
-    console.log(isAnimating)
+    // console.log(isAnimating)
 
     const nextPos: Point = addPoints(
       start,
       vectorScalarMultiply(getLineVector({ start, stop }), progress + 0.1)
     )
 
+    // console.log(length / speed)
+    const duration = length / speed
     const transitionSetter = d3
       .transition(id)
-      // .duration(length / speed)
+      .duration(duration / steps)
       // .duration(3000 - progress * 3000)
-      .duration(3000 / 10)
+      // .duration(1000 / steps)
       .ease(d3.easeLinear)
       // .ease(d3.easeLinear)
       // DONT DELETE THIS
@@ -168,15 +171,15 @@ export class ActionPotential extends React.Component<IProps, IState> {
       // })
       // .on('end', () => finishFiringApOnSynapse(id, synapseId))
       .on('end', () => {
-        if (progress >= 0.9) {
+        if (progress >= 1 - 1 / steps) {
           finishFiringApOnSynapse(id, synapseId)
         } else {
-          setApProgress({ id, synapseId, progress: progress + 0.1 })
+          setApProgress({ id, synapseId, progress: progress + 1 / steps })
         }
       })
       .on('interrupt', () => {
         // finishFiringApOnSynapse(id, synapseId)
-        console.log('interrupt')
+        // console.log('interrupt')
         // removeApFromSynapse({ id, synapseId })
         // addNewApToSynapse({ id, synapseId, progress })
         // console.log(animationProgress)

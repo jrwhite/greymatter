@@ -81,7 +81,7 @@ export function addNewApToSynapse (id: string, progress?: number) {
       addApToSynapse({
         id: _.uniqueId('ap'),
         synapseId: id,
-        progress: progress ? progress : 0.1
+        progress: progress ? progress : 0
       })
     )
   }
