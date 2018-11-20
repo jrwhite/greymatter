@@ -102,30 +102,30 @@ export class ActionPotential extends React.Component<IProps, IState> {
     } = this.props
     // console.log('render')
 
-    const startPos: Point = addPoints(
+    const pos: Point = addPoints(
       start,
       vectorScalarMultiply(getLineVector({ start, stop }), progress)
     )
 
-    const stopPos: Point = addPoints(
-      startPos,
-      vectorScalarMultiply(getLineVector(getUnitLine({ start, stop })), 50)
-    )
+    // const stopPos: Point = addPoints(
+    //   startPos,
+    //   vectorScalarMultiply(getLineVector(getUnitLine({ start, stop })), 50)
+    // )
 
-    const line = {
-      start: startPos,
-      stop: stopPos
-    }
+    // const line = {
+    //   start: startPos,
+    //   stop: stopPos
+    // }
 
     // d3.select('#' + id).interrupt()
     return (
       <g>
         <defs>
-          <linearGradient id='apGradient'>
-            <stop offset='0' stopColor='white' stopOpacity='0.2' />
-            <stop offset='0.5' stopColor='white' stopOpacity='1' />
-            <stop offset='1' stopColor='white' stopOpacity='0.2' />
-          </linearGradient>
+          <radialGradient id={'apGradient' + id}>
+            <stop offset='0%' stopColor='white' stopOpacity='1' />
+            <stop offset='50%' stopColor='white' stopOpacity='0.6' />
+            <stop offset='90%' stopColor='white' stopOpacity='0' />
+          </radialGradient>
           {/* <mask id='apMask'>
             <Line
               line={{ points: [startPos, stopPos] }}
@@ -139,12 +139,12 @@ export class ActionPotential extends React.Component<IProps, IState> {
           // ref={this.ref}
           onClick={() => this.renderD3(0)}
           id={id}
-          cx={getMidPoint(line).x}
-          cy={getMidPoint(line).y}
+          cx={pos.x}
+          cy={pos.y}
           r={10}
-          fill={fill}
-          mask={'url(#apMask)'}
-          // fill={'url(#apGradient)'}
+          // fill={fill}
+          mask={'url(#apMask' + synapseId + ')'}
+          fill={'url(#apGradient' + id + ')'}
         />
         {/* {this.renderD3()} */}
       </g>
