@@ -16,6 +16,7 @@ import { MoveNeuronAction, RotateNeuronAction } from '../actions/neurons'
 import { SelectNeuronAction } from '../actions/config'
 import { AxonState, DendState } from '../reducers/neurons'
 import { IIProps } from '../containers/Neuron'
+import NeuronOverlay from '../containers/NeuronOverlay';
 // import { PotentialGraphLine } from "./PotentialGraphLine"
 const { Menu } = remote
 const d3 = require('d3')
@@ -121,12 +122,6 @@ export class Neuron extends React.Component<IProps, IState> {
 
     // const { pos } = this.state
 
-    const graphPopover: JSX.Element = (
-      <Popover>
-        <strong>test</strong>
-      </Popover>
-    )
-
     if (potential >= 100) {
       fireNeuron(id)
       axon.synapses.forEach((s) => addNewApToSynapse(s.id))
@@ -166,11 +161,7 @@ export class Neuron extends React.Component<IProps, IState> {
           r={5}
           onClick={this.handleAxonClick.bind(this)}
         />
-        <Rotate
-          onRotate={(newTheta: number) => rotateNeuron({ id, theta: newTheta })}
-          sensitivity={0.01}
-          pivot={{ x: 0, y: 0 }}
-        />
+        <NeuronOverlay id={id} />
       </g>
     )
   }

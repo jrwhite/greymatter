@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { render } from 'react-dom'
 import { GymState } from '../reducers/gym'
-import { HTMLSelect } from '@blueprintjs/core'
+import { HTMLSelect, Icon } from '@blueprintjs/core'
 import GymClient from './GymClient'
 import { GymEnv } from './GymClient'
 import { setGymEnv, SetGymEnvAction } from '../actions/gym'
