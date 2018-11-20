@@ -16,7 +16,7 @@ import { MoveNeuronAction, RotateNeuronAction } from '../actions/neurons'
 import { SelectNeuronAction } from '../actions/config'
 import { AxonState, DendState } from '../reducers/neurons'
 import { IIProps } from '../containers/Neuron'
-import NeuronOverlay from '../containers/NeuronOverlay';
+import NeuronOverlay from '../containers/NeuronOverlay'
 // import { PotentialGraphLine } from "./PotentialGraphLine"
 const { Menu } = remote
 const d3 = require('d3')
@@ -161,7 +161,7 @@ export class Neuron extends React.Component<IProps, IState> {
           r={5}
           onClick={this.handleAxonClick.bind(this)}
         />
-        <NeuronOverlay id={id} />
+        <NeuronOverlay id={id} axonId={axon.id} />
       </g>
     )
   }

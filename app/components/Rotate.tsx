@@ -74,6 +74,7 @@ export class Rotate extends React.Component<IProps, IState> {
       >
         {/* <svg width={20} height={20} viewBox='0 0 20 20'> */}
         {/* <circle r={5} fill='red' /> */}
+        <rect width='15' height='15' stroke='black' fill='none' />
         <Icon
           // cx={10}
           // cy={10}

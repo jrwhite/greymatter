@@ -7,6 +7,7 @@ import NetworkActions from '../actions/network'
 
 export interface IIProps {
   id: string
+  axonId: string
 }
 
 const mapStateToProps = (state: IState, props: IIProps): Partial<IProps> => {
