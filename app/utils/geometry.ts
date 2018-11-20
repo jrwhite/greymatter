@@ -101,7 +101,7 @@ const getThetaQuadrant = (theta: number): Quadrant => {
   }
 }
 
-const getMidPoint = (line: Line): Point => {
+export const getMidPoint = (line: Line): Point => {
   return {
     x: (line.start.x + line.stop.x) / 2,
     y: (line.start.y + line.stop.y) / 2

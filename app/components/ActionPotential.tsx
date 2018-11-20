@@ -4,12 +4,15 @@ import {
   Point,
   addPoints,
   vectorScalarMultiply,
-  getLineVector
+  getLineVector,
+  getUnitLine,
+  getMidPoint
 } from '../utils/geometry'
 import * as _ from 'lodash'
 import Axios from 'axios'
 import { IIProps } from '../containers/ActionPotential'
 import { SetApProgressAction } from '../actions/synapses'
+import { Line } from './Line'
 const d3 = require('d3')
 
 export interface IProps extends IIProps {
@@ -25,6 +28,8 @@ export interface IProps extends IIProps {
   progress: number
   speed: number
   length: number
+  fill: string
+  // mask: string
 }
 
 export interface IState {
@@ -91,26 +96,55 @@ export class ActionPotential extends React.Component<IProps, IState> {
       stop,
       finishFiringApOnSynapse,
       synapseId,
-      progress
+      progress,
+      fill
+      // mask
     } = this.props
     // console.log('render')
 
-    const pos: Point = addPoints(
+    const startPos: Point = addPoints(
       start,
       vectorScalarMultiply(getLineVector({ start, stop }), progress)
     )
 
+    const stopPos: Point = addPoints(
+      startPos,
+      vectorScalarMultiply(getLineVector(getUnitLine({ start, stop })), 50)
+    )
+
+    const line = {
+      start: startPos,
+      stop: stopPos
+    }
+
     // d3.select('#' + id).interrupt()
     return (
       <g>
+        <defs>
+          <linearGradient id='apGradient'>
+            <stop offset='0' stopColor='white' stopOpacity='0.2' />
+            <stop offset='0.5' stopColor='white' stopOpacity='1' />
+            <stop offset='1' stopColor='white' stopOpacity='0.2' />
+          </linearGradient>
+          {/* <mask id='apMask'>
+            <Line
+              line={{ points: [startPos, stopPos] }}
+              width={3}
+              stroke={'url(#apGradient)'}
+            />
+          </mask> */}
+        </defs>
+        {/* <Line line={{ points: [startPos, stopPos] }} width={3} stroke={'red'} /> */}
         <circle
           // ref={this.ref}
           onClick={() => this.renderD3(0)}
           id={id}
-          cx={pos.x}
-          cy={pos.y}
-          r={5}
-          fill='white'
+          cx={getMidPoint(line).x}
+          cy={getMidPoint(line).y}
+          r={10}
+          fill={fill}
+          mask={'url(#apMask)'}
+          // fill={'url(#apGradient)'}
         />
         {/* {this.renderD3()} */}
       </g>

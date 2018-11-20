@@ -40,7 +40,10 @@ export class Synapse extends React.Component<IProps> {
 
     return (
       <g id={id}>
-        <Line line={line} />
+        <mask id='apMask'>
+          <Line line={line} width={3} />
+        </mask>
+        <Line line={line} stroke='black' width={3} />
         //TODO: refactor AP animation into synapse component // actually. i
         think that we just need to take the ActionPotential out of synapse and
         prtty much never allow it to rerender //TODO: refactor into
@@ -64,6 +67,8 @@ export class Synapse extends React.Component<IProps> {
             stop={dendPos}
             speed={speed}
             length={length}
+            // mask={'url(#apMask)'}
+            fill='white'
           />
         ))}
       </g>
