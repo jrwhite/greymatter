@@ -125,8 +125,11 @@ export class ActionPotential extends React.Component<IProps, IState> {
             <stop offset='0%' stopColor='white' stopOpacity='1' />
             <stop offset='20%' stopColor='white' stopOpacity='1' />
             <stop offset='50%' stopColor='white' stopOpacity='0.6' />
-            <stop offset='90%' stopColor='white' stopOpacity='0' />
+            <stop offset='100%' stopColor='white' stopOpacity='0' />
           </radialGradient>
+          {/* <clipPath id={'clipPath'}>
+            <rect width={500} height={500} />
+          </clipPath> */}
           {/* <mask id='apMask'>
             <Line
               line={{ points: [startPos, stopPos] }}
@@ -143,8 +146,9 @@ export class ActionPotential extends React.Component<IProps, IState> {
           cx={pos.x}
           cy={pos.y}
           r={10}
+          clipPath='url(#clipPath)'
           // fill={fill}
-          mask={'url(#apMask' + synapseId + ')'}
+          // clipPath={'url(#clipPath' + synapseId + ')'}
           fill={'url(#apGradient' + id + ')'}
         />
         {/* {this.renderD3()} */}

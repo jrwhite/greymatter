@@ -112,6 +112,10 @@ const getVectorMag = (vector: Point): number => {
   return Math.hypot(vector.x, vector.y)
 }
 
+export const getUnitVector = (vector: Point): Point => {
+  return vectorScalarMultiply(vector, 1 / getVectorMag(vector))
+}
+
 export const getLineMag = (line: Line): number => {
   return getVectorMag(getLineVector(line))
 }
@@ -131,6 +135,13 @@ export const getLineVector = (line: Line): Point => {
   return {
     x: line.stop.x - line.start.x,
     y: line.stop.y - line.start.y
+  }
+}
+
+export const getPerpVector = (vector: Point): Point => {
+  return {
+    x: -vector.y,
+    y: vector.x
   }
 }
 
