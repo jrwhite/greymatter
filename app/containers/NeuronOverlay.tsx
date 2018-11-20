@@ -4,10 +4,11 @@ import { IProps, NeuronOverlay } from '../components/NeuronOverlay'
 import { bindActionCreators } from 'redux'
 import { Dispatch, connect } from 'react-redux'
 import NetworkActions from '../actions/network'
+import { AxonState } from '../reducers/neurons'
 
 export interface IIProps {
   id: string
-  axonId: string
+  axon: AxonState
 }
 
 const mapStateToProps = (state: IState, props: IIProps): Partial<IProps> => {

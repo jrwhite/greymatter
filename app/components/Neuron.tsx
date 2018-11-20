@@ -40,16 +40,22 @@ export interface IProps extends IIProps {
   axon: AxonState
   dends: DendState[]
   potential: number
+  isSelected: boolean
 }
 
 export interface IState {
   dragging: boolean
   pos: Point
+  offset: Point
 }
 
 export class Neuron extends React.Component<IProps, IState> {
   props: IProps
-  state: IState = { dragging: false, pos: { x: 100, y: 100 } }
+  state: IState = {
+    dragging: false,
+    pos: { x: 100, y: 100 },
+    offset: { x: 0, y: 0 }
+  }
 
   componentDidUpdate (prevProps: IProps, prevState: IState) {
     if (this.state.dragging !== prevState.dragging) {
@@ -117,10 +123,11 @@ export class Neuron extends React.Component<IProps, IState> {
       pos,
       axon,
       dends,
-      potential
+      potential,
+      isSelected
     } = this.props
 
-    // const { pos } = this.state
+    const { dragging } = this.state
 
     if (potential >= 100) {
       fireNeuron(id)
@@ -144,9 +151,9 @@ export class Neuron extends React.Component<IProps, IState> {
     return (
       <g
         id={id}
+        ref={this.ref}
         transform={'translate(' + pos.x + ' ' + pos.y + ')'}
         onContextMenu={this.handleContextMenu.bind(this)}
-        ref={this.ref}
       >
         <g
           onClick={this.handleNeuronClick.bind(this)}
@@ -161,17 +168,27 @@ export class Neuron extends React.Component<IProps, IState> {
           r={5}
           onClick={this.handleAxonClick.bind(this)}
         />
-        <NeuronOverlay id={id} axonId={axon.id} />
+        {isSelected ? <NeuronOverlay id={id} axon={axon} /> : undefined}
       </g>
     )
   }
 
   onDragStarted = () => {
-    this.setState({ dragging: true })
+    const { pos } = this.props
+    const { offset } = this.state
+    const mousePos: Point = {
+      ...d3.event
+    }
+    this.setState({
+      dragging: true,
+      offset: { x: pos.x - mousePos.x, y: pos.y - mousePos.y }
+    })
   }
 
   onDragged = () => {
     const { id, moveNeuron } = this.props
+
+    const { offset } = this.state
 
     const newPos: Point = {
       ...d3.event
@@ -180,25 +197,28 @@ export class Neuron extends React.Component<IProps, IState> {
     d3.select(this.ref.current)
       // .transition()
       // .duration(10)
-      .attr('transform', 'translate(' + newPos.x + ',' + newPos.y + ')')
+      .attr(
+        'transform',
+        'translate(' + (newPos.x + offset.x) + ',' + (newPos.y + offset.y) + ')'
+      )
     // .on('end', () => moveNeuron({ id, pos: newPos }))
     moveNeuron({
       id,
-      pos: { x: newPos.x, y: newPos.y }
+      pos: { x: newPos.x + offset.x, y: newPos.y + offset.y }
     })
     // this.setState({ pos: newPos })
   }
 
   onDragEnded = () => {
     const { id, moveNeuron } = this.props
-    const { pos } = this.state
+    const { pos, offset } = this.state
     this.setState({ dragging: false })
     const newPos: Point = {
       ...d3.event
     }
     moveNeuron({
       id,
-      pos: { x: newPos.x, y: newPos.y }
+      pos: { x: newPos.x + offset.x, y: newPos.y + offset.y }
     })
   }
 

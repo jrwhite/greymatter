@@ -146,9 +146,9 @@ export class ActionPotential extends React.Component<IProps, IState> {
           cx={pos.x}
           cy={pos.y}
           r={10}
-          clipPath='url(#clipPath)'
+          // clipPath='url(#clipPath)'
           // fill={fill}
-          // clipPath={'url(#clipPath' + synapseId + ')'}
+          clipPath={'url(#clipPath' + synapseId + ')'}
           fill={'url(#apGradient' + id + ')'}
         />
         {/* {this.renderD3()} */}

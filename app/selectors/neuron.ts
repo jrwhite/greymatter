@@ -18,10 +18,16 @@ export const getDendFromId = (state: NeuronState, id: string): DendState =>
 const getNeuron = (state: IState, props: { id: string }) =>
   state.network.neurons.find((n) => n.id === props.id)
 
+const getIsNeuronSelected = (state: IState, props: { id: string }): boolean =>
+  state.network.config.selectedNeurons.find((s) => s.id === props.id)
+    ? true
+    : false
+
 export const makeGetNeuronState = () =>
   createSelector(
     getNeuron,
-    (neuron) => ({ ...neuron })
+    getIsNeuronSelected,
+    (neuron, isSelected) => ({ ...neuron, isSelected })
   )
 
 const getIzhikParamsFromId = (

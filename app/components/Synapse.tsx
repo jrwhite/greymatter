@@ -54,8 +54,7 @@ export class Synapse extends React.Component<IProps> {
 
     return (
       <g id={id}>
-        {/* <clipPath id={'clipPath' + id}> */}
-        <clipPath id={'clipPath'}>
+        <clipPath id={'clipPath' + id}>
           {/* <Line line={line} width={200} stroke='none' /> */}
           {/* <path d={lineSetter(line.points)} stoke-width={20} /> */}
           <FilledLineSeg
@@ -63,33 +62,18 @@ export class Synapse extends React.Component<IProps> {
             fill='none'
             line={{ start: axonPos, stop: dendPos }}
           />
-          {/* <line
-            x1={axonPos.x}
-            y1={axonPos.y}
-            x2={dendPos.x}
-            y2={dendPos.y}
-            strokeWidth={10}
-          /> */}
-          {/* <rect width={500} height={500} /> */}
         </clipPath>
-        {/* <path d={lineSetter(line.points)} fill='black' stroke-width={10} /> */}
-        <FilledLineSeg width={5} fill='grey' line={{start: axonPos, stop: dendPos}} />
+        <FilledLineSeg
+          width={5}
+          fill='grey'
+          line={{ start: axonPos, stop: dendPos }}
+        />
         {/* <Line line={line} stroke='black' width={3} /> */}
         //TODO: refactor AP animation into synapse component // actually. i
         think that we just need to take the ActionPotential out of synapse and
         prtty much never allow it to rerender //TODO: refactor into
         ActionPotential container w/ selector. NEVER RERENDER
         {actionPotentials.map((ap) => (
-          // <ActionPotential
-          //   key={ap.id}
-          //   id={ap.id}
-          //   callback={() => apCallback(ap.id)}
-          //   type={'EXCIT'}
-          //   start={axonPos}
-          //   stop={dendPos}
-          //   speed={speed}
-          //   length={length}
-          // />
           <ActionPotential
             key={ap.id}
             id={ap.id}
