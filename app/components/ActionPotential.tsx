@@ -147,7 +147,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
     )
 
     const transitionSetter = d3
-      .transition()
+      .transition(id)
       // .duration(length / speed)
       // .duration(3000 - progress * 3000)
       .duration(3000 / 10)
