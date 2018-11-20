@@ -4,6 +4,7 @@ import { Arc, Ellipse as EllipseGeo } from '../utils/geometry'
 import * as _ from 'lodash'
 import { DendState } from '../reducers/neurons'
 import Dendrite from '../containers/Dendrite'
+const d3 = require('d3')
 
 export interface IProps {
   id: string

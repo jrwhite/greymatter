@@ -36,10 +36,37 @@ export class Dendrite extends React.Component<IProps> {
       bodyEllipse
     )
 
+    // const lineSetter = d3
+    //   .line()
+    //   .x((d: Point) => d.x)
+    //   .y((d: Point) => d.y)
+    // .curve(d3.curveNatural)
+
+    const baseLeft = curves[0].points[0]
+    const ctrlLeft = curves[0].points[1]
+    const baseRight = curves[1].points[0]
+    const ctrlRight = curves[1].points[1]
+
+    const pathSetter = d3.path()
+
+    pathSetter.moveTo(baseLeft.x, baseLeft.y)
+    pathSetter.quadraticCurveTo(ctrlLeft.x, ctrlLeft.y, synCpos.x, synCpos.y)
+    pathSetter.quadraticCurveTo(
+      ctrlRight.x,
+      ctrlRight.y,
+      baseRight.x,
+      baseRight.y
+    )
+    pathSetter.closePath()
+
     return (
       <g>
         {curves.map((curve: Curve) => (
-          <CurveNatural key={_.uniqueId('dl')} curve={curve} />
+          <path
+            // d={lineSetter(_.concat(curve.points, _.first(curve.points)!!))}
+            d={pathSetter.toString()}
+            stroke='purple'
+          />
         ))}
       </g>
     )

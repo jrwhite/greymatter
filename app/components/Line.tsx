@@ -18,12 +18,10 @@ export const Line: React.SFC<IProps> = (props) => {
     .y((d: Point) => d.y)
 
   return (
-    <g>
-      <path
-        stroke={props.stroke ? props.stroke : 'red'}
-        d={lineSetter(line.points)}
-        stroke-width={width ? width : 5}
-      />
-    </g>
+    <path
+      stroke={props.stroke ? props.stroke : 'red'}
+      d={lineSetter(line.points)}
+      stroke-width={width ? width : 5}
+    />
   )
 }
