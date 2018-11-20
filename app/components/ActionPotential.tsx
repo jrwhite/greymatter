@@ -123,6 +123,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
         <defs>
           <radialGradient id={'apGradient' + id}>
             <stop offset='0%' stopColor='white' stopOpacity='1' />
+            <stop offset='20%' stopColor='white' stopOpacity='1' />
             <stop offset='50%' stopColor='white' stopOpacity='0.6' />
             <stop offset='90%' stopColor='white' stopOpacity='0' />
           </radialGradient>
