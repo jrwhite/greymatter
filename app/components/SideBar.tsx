@@ -9,6 +9,7 @@ import { SelectedNeuronState, SelectedInputState } from '../reducers/config'
 import { LineGraph } from './LineGraph'
 import { GraphLine } from './GraphLine'
 import NeuronPotentialData from '../containers/NeuronPotentialData'
+import { NeuronRecoveryData } from '../containers/NeuronRecoveryData'
 const d3 = require('d3')
 
 const styles = require('./SideBar.scss')
@@ -62,7 +63,7 @@ export class SideBar extends React.Component<IProps, IState> {
   renderGraph () {
     const { selectedNeurons } = this.props
 
-    const lines = selectedNeurons.map((n) => {
+    const potLines = selectedNeurons.map((n) => {
       return (
         <GraphLine key={n.id}>
           <NeuronPotentialData id={n.id} />
@@ -70,6 +71,13 @@ export class SideBar extends React.Component<IProps, IState> {
       )
     })
 
+    // const recLines = selectedNeurons.map((n) => {
+    //   return (
+    //     <GraphLine key={n.id}>
+    //       <NeuronRecoveryData id={n.id} />
+    //     </GraphLine>
+    //   )
+    // })
     return (
       <LineGraph
         scaleX={3}
@@ -77,7 +85,8 @@ export class SideBar extends React.Component<IProps, IState> {
         scaleY={0.4}
         rangeY={{ start: -300, stop: 100 }}
       >
-        {lines}
+        {potLines}
+        {/* {recLines} */}
       </LineGraph>
     )
   }
