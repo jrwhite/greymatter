@@ -61,13 +61,11 @@ export class Dendrite extends React.Component<IProps> {
 
     return (
       <g>
-        {curves.map((curve: Curve) => (
-          <path
-            // d={lineSetter(_.concat(curve.points, _.first(curve.points)!!))}
-            d={pathSetter.toString()}
-            stroke='purple'
-          />
-        ))}
+        <path d={pathSetter.toString()} stroke='purple' />
+        <circle cx={baseLeft.x} cy={baseLeft.y} r={2} fill='purple' />
+        <circle cx={baseRight.x} cy={baseRight.y} r={2} fill='purple' />
+        <circle cx={ctrlLeft.x} cy={ctrlLeft.y} r={2} fill='purple' />
+        <circle cx={ctrlRight.x} cy={ctrlRight.y} r={2} fill='purple' />
       </g>
     )
   }

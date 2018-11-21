@@ -76,6 +76,7 @@ export const calcClosestDend = (
   from: Point,
   ellipse: Ellipse
 ): DendGeo => {
+  // this calculates line-ellipse intercept
   const mCircleIn = (from.y - to.y) / (from.x - to.x)
   const nu =
     Math.atan(mCircleIn) - ellipse.theta + (to.x > from.x ? Math.PI : 0)
