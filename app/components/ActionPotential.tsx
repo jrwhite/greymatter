@@ -117,7 +117,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
     //   stop: stopPos
     // }
 
-    // d3.select('#' + id).interrupt()
+    d3.select('#' + id).interrupt()
     return (
       <g>
         <defs>
@@ -160,7 +160,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
   }
 
   renderD3 (depth: number) {
-    const steps = 50
+    const steps = 10
     // console.log('renderD3')
     // console.log(depth)
     const {

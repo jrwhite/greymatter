@@ -44,7 +44,7 @@ export class PhaseGraph extends React.Component<IProps, IState> {
     const { maxN } = this.props
     const { pathData, n, newU, newV } = this.state
     if (newU && newV) {
-      console.log(newU)
+      // console.log(newU)
       this.setState({
         pathData: _.tail(_.concat(pathData, { x: newU, y: newV })),
         n: n >= maxN ? n + 1 : n,
