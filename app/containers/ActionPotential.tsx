@@ -58,4 +58,4 @@ const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
 export default connect(
   makeMapStateToProps,
   mapDispatchToProps
-)(ActionPotential as any) as any
+)(ActionPotential) as any
