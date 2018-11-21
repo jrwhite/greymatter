@@ -29,8 +29,8 @@ export class NeuronRecoveryData extends DataSource {
 }
 
 const makeMapStateToProps = () => {
-  const getPotentialState = makeGetNeuronRecoveryState()
-  return (state: IState, props: IProps) => getPotentialState(state, props)
+  const getRecoveryState = makeGetNeuronRecoveryState()
+  return (state: IState, props: IProps) => getRecoveryState(state, props)
 }
 
 export default (connect(makeMapStateToProps)(

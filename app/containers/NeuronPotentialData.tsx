@@ -13,9 +13,12 @@ const getNeuronData = (state: IState, props: IProps) => {
 }
 
 const makeGetNeuronPotentialState = () =>
-  createSelector(getNeuronData, (neuron) => ({
-    data: neuron ? neuron.potential : undefined
-  }))
+  createSelector(
+    getNeuronData,
+    (neuron) => ({
+      data: neuron ? neuron.potential : undefined
+    })
+  )
 
 export interface IProps extends DataProps {
   id: string
