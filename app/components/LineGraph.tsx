@@ -32,7 +32,10 @@ export class LineGraph extends React.Component<IProps> {
       .domain([rangeY.stop, rangeY.start])
       .range([0, height])
     // .clamp(true)
-    const axis = d3.axisRight(scale).ticks(5)
+    const axis = d3
+      .axisLeft(scale)
+      .ticks(5)
+      .tickPadding(20) // have to add tick padding the left-oriented axis to work for some reason
     const lines = React.Children.map(
       children,
       (line: React.ReactElement<GraphLineProps>) =>
@@ -48,13 +51,19 @@ export class LineGraph extends React.Component<IProps> {
     const axisRef = (node: SVGGElement | null) =>
       d3
         .select(node)
-        .attr('transform', 'translate(0,0)')
+        // .attr('transform', 'translate(0,0)')
         .call(axis)
+
+    const padding = 5
+    const paddingLeft = 40
+    const paddingTop = 5
 
     return (
       <svg>
-        <g ref={axisRef} />
-        {lines}
+        <g transform={'translate(' + paddingLeft + ',' + paddingTop + ')'}>
+          <g ref={axisRef} />
+          {lines}
+        </g>
       </svg>
     )
   }

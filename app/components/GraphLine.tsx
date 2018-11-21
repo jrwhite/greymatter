@@ -75,7 +75,10 @@ export class GraphLine extends React.Component<Partial<IProps>, IState> {
       .x((d: number, i: number) => i * deltaX)
       .y((d: number) => y(d))
 
+    const padding = 20
+
     return (
+      // <g transform={'translate(' + padding + ',' + padding + ')'}>
       <g>
         <path
           fill='none'
