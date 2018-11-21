@@ -1,13 +1,14 @@
 import { IState } from '../reducers'
 import { IProps } from '../components/Synapse'
 import { createSelector } from 'reselect'
-import { addPoints, calcAxonPos, Point } from '../utils/geometry'
+import { addPoints, calcAxonPos, Point, subtractPoints } from '../utils/geometry'
 import * as _ from 'lodash'
 import { getNeuronFromId } from './neuron'
 import { ActionPotentialState } from '../reducers/network'
+import { SynapseState } from '../reducers/synapses';
 
-export const getSynapse = (state: IState, props: { id: string }) =>
-  state.network.synapses.find((s) => s.id === props.id)
+export const getSynapse = (state: IState, props: { id: string }): SynapseState =>
+  state.network.synapses.find((s) => s.id === props.id)!!
 
 export const getAxonAbsPos = (state: IState, props: Partial<IProps>): Point => {
   if (props.axon && _.includes(props.axon!!.neuronId, 'in')) {
@@ -83,7 +84,8 @@ export const makeGetSynapseState = () =>
       // width: synapse!!.width,
       // speed: synapse!!.speed,
       axonPos: axonAbsPos,
-      dendPos: addPoints(dendNeuronPos, dendPos)
+      dendPos: addPoints(dendNeuronPos, dendPos),
+      length: subtractPoints(dendPos, axonPos)
     })
   )
 
