@@ -24,6 +24,7 @@ export interface RemoveSynapsesAction {
 export interface AddApToSynapse {
   id: string
   synapseId: string
+  progress: number
 }
 
 export interface RemoveApFromSynapse {
@@ -41,6 +42,16 @@ export interface AddNewSynapseAction {
     neuronId: string;
   }
 }
+
+export interface SetApProgressAction {
+  id: string
+  synapseId: string
+  progress: number
+}
+
+export const setApProgress = actionCreator<SetApProgressAction>(
+  'SET_AP_PROGRESS'
+)
 
 export const addApToSynapse = actionCreator<AddApToSynapse>(
   'ADD_AP_TO_SYNAPSE'
@@ -64,9 +75,15 @@ export function finishFiringApOnSynapse (id: string, synapseId: string) {
   }
 }
 
-export function addNewApToSynapse (id: string) {
+export function addNewApToSynapse (id: string, progress?: number) {
   return (dispatch: Function) => {
-    dispatch(addApToSynapse({ id: _.uniqueId('ap'), synapseId: id }))
+    dispatch(
+      addApToSynapse({
+        id: _.uniqueId('ap'),
+        synapseId: id,
+        progress: progress ? progress : 0
+      })
+    )
   }
 }
 

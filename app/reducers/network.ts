@@ -11,6 +11,7 @@ import observables, { ObservableState } from './observables'
 
 export interface ActionPotentialState {
   id: string
+  progress: number
 }
 
 export interface NetworkState {

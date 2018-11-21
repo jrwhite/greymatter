@@ -12,11 +12,11 @@ const getNeuronData = (state: IState, props: IProps) => {
   return state.network.neurons.find((n) => n.id === props.id)
 }
 
-const makeGetNeuronPotentialState = () =>
+const makeGetNeuronRecoveryState = () =>
   createSelector(
     getNeuronData,
     (neuron) => ({
-      data: neuron ? neuron.potential : undefined
+      data: neuron ? neuron.izhik.u : undefined
     })
   )
 
@@ -24,15 +24,15 @@ export interface IProps extends DataProps {
   id: string
 }
 
-export class NeuronPotentialData extends DataSource {
+export class NeuronRecoveryData extends DataSource {
   props: IProps
 }
 
 const makeMapStateToProps = () => {
-  const getPotentialState = makeGetNeuronPotentialState()
-  return (state: IState, props: IProps) => getPotentialState(state, props)
+  const getRecoveryState = makeGetNeuronRecoveryState()
+  return (state: IState, props: IProps) => getRecoveryState(state, props)
 }
 
 export default (connect(makeMapStateToProps)(
-  NeuronPotentialData
+  NeuronRecoveryData
 ) as any) as React.StatelessComponent<Partial<IProps>>

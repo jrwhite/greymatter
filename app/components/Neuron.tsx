@@ -16,6 +16,7 @@ import { MoveNeuronAction, RotateNeuronAction } from '../actions/neurons'
 import { SelectNeuronAction } from '../actions/config'
 import { AxonState, DendState } from '../reducers/neurons'
 import { IIProps } from '../containers/Neuron'
+import NeuronOverlay from '../containers/NeuronOverlay'
 // import { PotentialGraphLine } from "./PotentialGraphLine"
 const { Menu } = remote
 const d3 = require('d3')
@@ -39,16 +40,22 @@ export interface IProps extends IIProps {
   axon: AxonState
   dends: DendState[]
   potential: number
+  isSelected: boolean
 }
 
 export interface IState {
   dragging: boolean
   pos: Point
+  offset: Point
 }
 
 export class Neuron extends React.Component<IProps, IState> {
   props: IProps
-  state: IState = { dragging: false, pos: { x: 100, y: 100 } }
+  state: IState = {
+    dragging: false,
+    pos: { x: 100, y: 100 },
+    offset: { x: 0, y: 0 }
+  }
 
   componentDidUpdate (prevProps: IProps, prevState: IState) {
     if (this.state.dragging !== prevState.dragging) {
@@ -116,19 +123,13 @@ export class Neuron extends React.Component<IProps, IState> {
       pos,
       axon,
       dends,
-      potential
+      potential,
+      isSelected
     } = this.props
 
+    const { dragging } = this.state
 
-    // const { pos } = this.state
-
-    const graphPopover: JSX.Element = (
-      <Popover>
-        <strong>test</strong>
-      </Popover>
-    )
-
-    if (potential > 100) {
+    if (potential >= 100) {
       fireNeuron(id)
       axon.synapses.forEach((s) => addNewApToSynapse(s.id))
     }
@@ -150,9 +151,9 @@ export class Neuron extends React.Component<IProps, IState> {
     return (
       <g
         id={id}
+        ref={this.ref}
         transform={'translate(' + pos.x + ' ' + pos.y + ')'}
         onContextMenu={this.handleContextMenu.bind(this)}
-        ref={this.ref}
       >
         <g
           onClick={this.handleNeuronClick.bind(this)}
@@ -167,21 +168,27 @@ export class Neuron extends React.Component<IProps, IState> {
           r={5}
           onClick={this.handleAxonClick.bind(this)}
         />
-        <Rotate
-          onRotate={(newTheta: number) => rotateNeuron({ id, theta: newTheta })}
-          sensitivity={0.01}
-          pivot={{ x: 0, y: 0 }}
-        />
+        {isSelected ? <NeuronOverlay id={id} axon={axon} /> : undefined}
       </g>
     )
   }
 
   onDragStarted = () => {
-    this.setState({ dragging: true })
+    const { pos } = this.props
+    const { offset } = this.state
+    const mousePos: Point = {
+      ...d3.event
+    }
+    this.setState({
+      dragging: true,
+      offset: { x: pos.x - mousePos.x, y: pos.y - mousePos.y }
+    })
   }
 
   onDragged = () => {
     const { id, moveNeuron } = this.props
+
+    const { offset } = this.state
 
     const newPos: Point = {
       ...d3.event
@@ -190,25 +197,28 @@ export class Neuron extends React.Component<IProps, IState> {
     d3.select(this.ref.current)
       // .transition()
       // .duration(10)
-      .attr('transform', 'translate(' + newPos.x + ',' + newPos.y + ')')
+      .attr(
+        'transform',
+        'translate(' + (newPos.x + offset.x) + ',' + (newPos.y + offset.y) + ')'
+      )
     // .on('end', () => moveNeuron({ id, pos: newPos }))
     moveNeuron({
       id,
-      pos: { x: newPos.x, y: newPos.y }
+      pos: { x: newPos.x + offset.x, y: newPos.y + offset.y }
     })
     // this.setState({ pos: newPos })
   }
 
   onDragEnded = () => {
     const { id, moveNeuron } = this.props
-    const { pos } = this.state
+    const { pos, offset } = this.state
     this.setState({ dragging: false })
     const newPos: Point = {
       ...d3.event
     }
     moveNeuron({
       id,
-      pos: { x: newPos.x, y: newPos.y }
+      pos: { x: newPos.x + offset.x, y: newPos.y + offset.y }
     })
   }
 

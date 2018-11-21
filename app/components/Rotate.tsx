@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { Point } from '../utils/geometry'
+import { Icon } from '@blueprintjs/core'
 const d3 = require('d3')
 
 export interface IProps {
@@ -56,11 +57,9 @@ export class Rotate extends React.Component<IProps, IState> {
     const { selected } = this.state
 
     return (
-      <circle
-        cx={10}
-        cy={10}
-        r={10}
-        fill='red'
+      <g
+        // id='rotate'
+        // fill='black'
         ref={(node) =>
           d3
             .select(node)
@@ -72,7 +71,21 @@ export class Rotate extends React.Component<IProps, IState> {
                 .on('drag', this.onDragged)
             )
         }
-      />
+      >
+        {/* <svg width={20} height={20} viewBox='0 0 20 20'> */}
+        {/* <circle r={5} fill='red' /> */}
+        <rect width='15' height='15' stroke='black' fill='none' />
+        <Icon
+          // cx={10}
+          // cy={10}
+          // r={10}
+          // fill='red'
+          tagName='g'
+          icon='hand'
+          // iconSize={20}
+        />
+        {/* </svg> */}
+      </g>
     )
   }
 

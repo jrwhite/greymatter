@@ -3,7 +3,8 @@ import {
   removeSynapses,
   addApToSynapse,
   removeApFromSynapse,
-  addSynapse
+  addSynapse,
+  setApProgress
 } from '../actions/synapses'
 import { ActionPotentialState } from './network'
 import _ = require('lodash')
@@ -32,7 +33,7 @@ const initialSynapseState: SynapseState = {
   dend: { id: 'd', neuronId: 'n' },
   length: 100,
   width: 2,
-  speed: 1,
+  speed: 0.5,
   isFiring: false,
   actionPotentials: []
 }
@@ -62,7 +63,8 @@ export default function synapses (
           actionPotentials: [
             ...s.actionPotentials,
             {
-              id: action.payload.id
+              id: action.payload.id,
+              progress: action.payload.progress
             }
           ]
         }
@@ -82,6 +84,28 @@ export default function synapses (
         }
       }
       return s
+    })
+  } else if (setApProgress.test(action)) {
+    return state.map((s) => {
+      if (s.id === action.payload.synapseId) {
+        return {
+          ...s,
+          actionPotentials: s.actionPotentials.map(
+            (ap: ActionPotentialState) => {
+              if (ap.id === action.payload.id) {
+                return {
+                  ...ap,
+                  progress: action.payload.progress
+                }
+              } else {
+                return ap
+              }
+            }
+          )
+        }
+      } else {
+        return s
+      }
     })
   } else if (addSynapse.test(action)) {
     // split into two reducers (synapse,neuron) with this logic in action

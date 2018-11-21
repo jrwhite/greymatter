@@ -47,6 +47,11 @@ export const addPoints = (p1: Point, p2: Point): Point => ({
   y: p1.y + p2.y
 })
 
+export const subtractPoints = (p1: Point, p2: Point): Point => ({
+  x: p1.x - p2.x,
+  y: p1.y - p2.y
+})
+
 export const lineSlope = (line: Line) => {
   return (line.stop.y - line.start.y) / (line.stop.x - line.start.x)
 }
@@ -71,6 +76,7 @@ export const calcClosestDend = (
   from: Point,
   ellipse: Ellipse
 ): DendGeo => {
+  // this calculates line-ellipse intercept
   const mCircleIn = (from.y - to.y) / (from.x - to.x)
   console.log(ellipse.theta)
   const nu =
@@ -102,7 +108,7 @@ const getThetaQuadrant = (theta: number): Quadrant => {
   }
 }
 
-const getMidPoint = (line: Line): Point => {
+export const getMidPoint = (line: Line): Point => {
   return {
     x: (line.start.x + line.stop.x) / 2,
     y: (line.start.y + line.stop.y) / 2
@@ -113,7 +119,11 @@ const getVectorMag = (vector: Point): number => {
   return Math.hypot(vector.x, vector.y)
 }
 
-const getLineMag = (line: Line): number => {
+export const getUnitVector = (vector: Point): Point => {
+  return vectorScalarMultiply(vector, 1 / getVectorMag(vector))
+}
+
+export const getLineMag = (line: Line): number => {
   return getVectorMag(getLineVector(line))
 }
 
@@ -132,6 +142,13 @@ export const getLineVector = (line: Line): Point => {
   return {
     x: line.stop.x - line.start.x,
     y: line.stop.y - line.start.y
+  }
+}
+
+export const getPerpVector = (vector: Point): Point => {
+  return {
+    x: -vector.y,
+    y: vector.x
   }
 }
 
