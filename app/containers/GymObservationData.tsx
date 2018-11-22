@@ -10,9 +10,12 @@ const getObservationState = (state: IState, props: IProps) => {
 }
 
 const makeGetObservationState = () =>
-  createSelector(getObservationState, (observation) => ({
-    data: observation ? observation : undefined
-  }))
+  createSelector(
+    getObservationState,
+    (observation) => ({
+      data: observation ? observation : undefined
+    })
+  )
 
 const makeMapStateToProps = () => {
   const getObservationState = makeGetObservationState()

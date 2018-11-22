@@ -44,8 +44,6 @@ export class GymPanel extends React.Component<IProps, IState> {
 
     const { selectedObservations, showAction, showReward } = this.state
 
-    const graphLines = {}
-
     return (
       <div>
         {env ? <GymClient /> : undefined}
@@ -59,7 +57,7 @@ export class GymPanel extends React.Component<IProps, IState> {
           scaleX={3}
           rangeX={50}
           scaleY={10}
-          rangeY={{ start: -100, stop: 100 }}
+          rangeY={{ start: -5, stop: 5 }}
         >
           <GraphLine>
             <GymObservationData name={'x'} />

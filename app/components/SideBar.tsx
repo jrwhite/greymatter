@@ -105,7 +105,7 @@ export class SideBar extends React.Component<IProps, IState> {
         width={100}
         height={100}
         maxN={50}
-        rangeX={{ start: -20, stop: 0 }}
+        rangeX={{ start: -20, stop: -10 }}
         rangeY={{ start: -300, stop: 100 }}
       >
         <NeuronPotentialData id={n.id} />

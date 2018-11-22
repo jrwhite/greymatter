@@ -45,9 +45,10 @@ export class PhaseGraph extends React.Component<IProps, IState> {
     const { pathData, n, newU, newV } = this.state
     if (newU && newV) {
       // console.log(newU)
+      const newPathData = _.concat(pathData, { x: newU, y: newV })
       this.setState({
-        pathData: _.tail(_.concat(pathData, { x: newU, y: newV })),
-        n: n >= maxN ? n + 1 : n,
+        pathData: n === maxN ? _.tail(newPathData) : newPathData,
+        n: n < maxN ? n + 1 : n,
         newU: undefined,
         newV: undefined
       })
@@ -86,8 +87,8 @@ export class PhaseGraph extends React.Component<IProps, IState> {
       .domain([rangeX.start, rangeX.stop])
       .range([0, width])
 
-    const yAxis = d3.axisLeft(yScale).ticks(10)
-    const xAxis = d3.axisBottom(xScale).ticks(10)
+    const yAxis = d3.axisLeft(yScale).ticks(5)
+    const xAxis = d3.axisTop(xScale).ticks(5)
 
     const deltaX = width / (rangeX.stop - rangeX.start)
 
@@ -96,7 +97,7 @@ export class PhaseGraph extends React.Component<IProps, IState> {
       .x((d: Point, i: number) => xScale(d.x))
       .y((d: Point) => yScale(d.y))
 
-    const padding = 20
+    const padding = 30
 
     if (this.props.children.length < 2) return undefined
 
@@ -108,17 +109,20 @@ export class PhaseGraph extends React.Component<IProps, IState> {
       onChange: this.onRecChange
     })
 
+    // console.log(pathData)
     return (
-      // <g transform={'translate(' + padding + ',' + padding + ')'}>
       <svg>
-        <g>
+        <g transform={'translate(' + padding + ',' + padding + ')'}>
+          {/* <g> */}
           <g ref={(node) => d3.select(node).call(xAxis)} />
           <g ref={(node) => d3.select(node).call(yAxis)} />
         </g>
         <g>
           <path
+            // fill='red'
             fill='none'
             stroke='red'
+            strokeWidth={2}
             ref={(node) => d3.select(node).attr('d', lineSetter(pathData))}
           />
           {potentialData}

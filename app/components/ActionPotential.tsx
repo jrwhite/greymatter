@@ -164,7 +164,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
   }
 
   renderD3 (depth: number) {
-    const steps = 2
+    const steps = 3
     // console.log('renderD3')
     // console.log(depth)
     const {
