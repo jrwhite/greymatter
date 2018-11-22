@@ -4,7 +4,8 @@ import {
   addApToSynapse,
   removeApFromSynapse,
   addSynapse,
-  setApProgress
+  setApProgress,
+  setApShouldAnimate
 } from '../actions/synapses'
 import { ActionPotentialState } from './network'
 import _ = require('lodash')
@@ -64,7 +65,8 @@ export default function synapses (
             ...s.actionPotentials,
             {
               id: action.payload.id,
-              progress: action.payload.progress
+              progress: action.payload.progress,
+              shouldAnimate: action.payload.shouldAnimate
             }
           ]
         }
@@ -84,6 +86,28 @@ export default function synapses (
         }
       }
       return s
+    })
+  } else if (setApShouldAnimate.test(action)) {
+    return state.map((s) => {
+      if (s.id === action.payload.synapseId) {
+        return {
+          ...s,
+          actionPotentials: s.actionPotentials.map(
+            (ap: ActionPotentialState) => {
+              if (ap.id === action.payload.id) {
+                return {
+                  ...ap,
+                  shouldAnimate: action.payload.shouldAnimate
+                }
+              } else {
+                return ap
+              }
+            }
+          )
+        }
+      } else {
+        return s
+      }
     })
   } else if (setApProgress.test(action)) {
     return state.map((s) => {

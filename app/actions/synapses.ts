@@ -25,6 +25,7 @@ export interface AddApToSynapse {
   id: string
   synapseId: string
   progress: number
+  shouldAnimate: boolean
 }
 
 export interface RemoveApFromSynapse {
@@ -48,6 +49,16 @@ export interface SetApProgressAction {
   synapseId: string
   progress: number
 }
+
+export interface SetApShouldAnimateAction {
+  id: string
+  synapseId: string
+  shouldAnimate: boolean
+}
+
+export const setApShouldAnimate = actionCreator<SetApShouldAnimateAction>(
+  'SET_AP_SHOULD_ANIMATE'
+)
 
 export const setApProgress = actionCreator<SetApProgressAction>(
   'SET_AP_PROGRESS'
@@ -81,7 +92,8 @@ export function addNewApToSynapse (id: string, progress?: number) {
       addApToSynapse({
         id: _.uniqueId('ap'),
         synapseId: id,
-        progress: progress ? progress : 0
+        progress: progress ? progress : 0,
+        shouldAnimate: true
       })
     )
   }

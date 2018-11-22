@@ -11,7 +11,10 @@ import {
 import * as _ from 'lodash'
 import Axios from 'axios'
 import { IIProps } from '../containers/ActionPotential'
-import { SetApProgressAction } from '../actions/synapses'
+import {
+  SetApProgressAction,
+  SetApShouldAnimateAction
+} from '../actions/synapses'
 import { Line } from './Line'
 const d3 = require('d3')
 
@@ -20,6 +23,7 @@ export interface IProps extends IIProps {
   removeApFromSynapse: Function
   addNewApToSynapse: Function
   setApProgress: (payload: SetApProgressAction) => void
+  setApShouldAnimate: (payload: SetApShouldAnimateAction) => void
   id: string
   synapseId: string
   type: string // inhib / excit
@@ -29,6 +33,7 @@ export interface IProps extends IIProps {
   speed: number
   length: number
   fill: string
+  shouldAnimate: boolean
   // mask: string
 }
 
@@ -53,7 +58,10 @@ export class ActionPotential extends React.Component<IProps, IState> {
     // if (!this.state.isAnimating) {
     // this.renderD3(0)
     // }
-    this.renderD3(0)
+    if (!prevProps.shouldAnimate && this.props.shouldAnimate) {
+      this.renderD3(0)
+    }
+    // this.renderD3(0)
   }
 
   // shouldComponentUpdate (nextProps: IProps, nextState: IState) {
@@ -108,7 +116,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
     )
 
     // const stopPos: Point = addPoints(
-    //   startPos,
+    // startPos,
     //   vectorScalarMultiply(getLineVector(getUnitLine({ start, stop })), 50)
     // )
 
@@ -117,7 +125,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
     //   stop: stopPos
     // }
 
-    d3.select('#' + id).interrupt()
+    // d3.select('#' + id).interrupt()
     return (
       <g>
         <defs>
@@ -155,12 +163,8 @@ export class ActionPotential extends React.Component<IProps, IState> {
     )
   }
 
-  getProgress () {
-    return this.state.animationProgress
-  }
-
   renderD3 (depth: number) {
-    const steps = 10
+    const steps = 2
     // console.log('renderD3')
     // console.log(depth)
     const {
@@ -174,7 +178,8 @@ export class ActionPotential extends React.Component<IProps, IState> {
       length,
       id,
       synapseId,
-      progress
+      progress,
+      setApShouldAnimate
     } = this.props
 
     const { isAnimating, animationProgress } = this.state
@@ -213,6 +218,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
           finishFiringApOnSynapse(id, synapseId)
         } else {
           setApProgress({ id, synapseId, progress: progress + 1 / steps })
+          setApShouldAnimate({ id, synapseId, shouldAnimate: true })
         }
       })
       .on('interrupt', () => {
@@ -240,6 +246,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
 
     // this.setState({ isAnimating: true })
 
+    setApShouldAnimate({ id, synapseId, shouldAnimate: false })
     return null
   }
 }
