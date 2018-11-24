@@ -77,15 +77,15 @@ export class GymPanel extends React.Component<IProps, IState> {
           'Restart
         </Button>
         <Text>'Observations'</Text>
-        {observations.map((obs) => {
-          <Text>{obs}</Text>
-        })}
-        <Text>'Is Done'</Text>
-        <Text>{isDone}</Text>
+        <Text> {'obs 0: ' + observations[0]}</Text>
+        <Text> {'obs 1: ' + observations[1]}</Text>
+        <Text> {'obs 2: ' + observations[2]}</Text>
+        <Text> {'obs 3: ' + observations[3]}</Text>
+        <Text>{'is done: ' + isDone}</Text>
         <Text>'Reward'</Text>
         <Text>{reward}</Text>
         <GymGraph />
-        <LineGraph
+        {/* <LineGraph
           scaleX={3}
           rangeX={50}
           scaleY={10}
@@ -97,7 +97,7 @@ export class GymPanel extends React.Component<IProps, IState> {
           <GraphLine>
             <GymObservationData index={1} />
           </GraphLine>
-        </LineGraph>
+        </LineGraph> */}
       </div>
     )
   }

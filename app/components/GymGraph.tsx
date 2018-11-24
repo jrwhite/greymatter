@@ -18,8 +18,8 @@ export class GymGraph extends React.Component<IProps, IState> {
   render () {
     const lineProps = {
       color: 'blue',
-      width: 100,
-      height: 100,
+      width: 200,
+      height: 400,
       maxN: 50
     }
     return (
@@ -34,9 +34,23 @@ export class GymGraph extends React.Component<IProps, IState> {
         <ScaledLine
           {...lineProps}
           color={'green'}
-          range={{ start: -1, stop: 1 }}
+          range={{ start: -5, stop: 5 }}
         >
           <GymObservationData index={1} />
+        </ScaledLine>
+        <ScaledLine
+          {...lineProps}
+          color={'purple'}
+          range={{ start: -1, stop: 1 }}
+        >
+          <GymObservationData index={2} />
+        </ScaledLine>
+        <ScaledLine
+          {...lineProps}
+          color={'orange'}
+          range={{ start: -5, stop: 5 }}
+        >
+          <GymObservationData index={3} />
         </ScaledLine>
       </svg>
     )

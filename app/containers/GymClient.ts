@@ -36,6 +36,7 @@ export interface CartpoleOutputs {
 }
 
 export interface IProps {
+  pauseNetwork: () => void
   changeGymActionSpace: (payload: ChangeGymSpace) => void
   changeGymObsSpace: (payload: ChangeGymSpace) => void
   resetGym: (payload: ResetGymAction) => void
@@ -46,7 +47,6 @@ export interface IProps {
   changeGymDone: (payload: ChangeGymDoneAction) => void
   receiveGymStepReply: (payload: ReceiveGymStepReplyAction) => void
   gymStopped: () => void
-  pauseNetwork: () => void
   gym: GymState
 }
 
