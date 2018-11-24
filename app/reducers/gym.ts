@@ -8,7 +8,8 @@ import {
   stepGym,
   monitorGym,
   changeGymActionSpace,
-  changeGymObsSpace
+  changeGymObsSpace,
+  setGymAction
 } from '../actions/gym'
 import { GymEnv } from '../containers/GymClient'
 
@@ -36,7 +37,8 @@ export interface GymState {
 
 const initialGymState = {
   observation: {},
-  action: undefined,
+  // action: undefined,
+  action: 0,
   reward: 0,
   isDone: true
 }
@@ -69,6 +71,11 @@ export function gym (
     return {
       ...state,
       ...action.payload
+    }
+  } else if (setGymAction.test(action)) {
+    return {
+      ...state,
+      action: action.payload.action
     }
   } else if (stepGym.test(action)) {
     return {

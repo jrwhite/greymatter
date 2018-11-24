@@ -60,7 +60,7 @@ export class GymPanel extends React.Component<IProps, IState> {
           rangeY={{ start: -5, stop: 5 }}
         >
           <GraphLine>
-            <GymObservationData name={'x'} />
+            <GymObservationData name={'0'} />
           </GraphLine>
         </LineGraph>
       </div>

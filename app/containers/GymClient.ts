@@ -108,7 +108,7 @@ export class GymClient extends React.Component<IProps, IState> {
   componentDidUpdate (prevProps: IProps, prevState: IState) {
     const { gym: prevGym } = prevProps
     const { gym, pauseNetwork } = this.props
-    console.log(gym)
+    // console.log(gym)
     // if gym is now done, send a pause command
     if (!prevGym.isDone && gym.isDone) {
       pauseNetwork()
@@ -158,25 +158,32 @@ export class GymClient extends React.Component<IProps, IState> {
 
     const { client, instance } = this.state
 
-    if (client && instance && gym.action) {
+    console.log(gym.action)
+    console.log(client)
+    console.log(instance)
+
+    if (client && instance && gym.action !== undefined) {
+      console.log('gym step much success')
       client
         .envStep(instance, gym.action)
         .then((reply: any) => {
+          console.log(reply)
           receiveGymStepReply({
             observation: reply.observation,
             isDone: reply.done,
             reward: reply.reward,
             info: reply.info ? reply.info : undefined
           })
-          stepGym({ shouldStep: false })
         })
         .catch((error) => {
           console.error('Gym step failed!')
           console.error(error)
+          this.gymReset()
         })
     } else {
       console.error('No gym client to step!')
     }
+    stepGym({ shouldStep: false })
   }
 
   render () {

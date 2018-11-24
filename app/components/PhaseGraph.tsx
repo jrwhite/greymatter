@@ -119,7 +119,6 @@ export class PhaseGraph extends React.Component<IProps, IState> {
         </g>
         <g>
           <path
-            // fill='red'
             fill='none'
             stroke='red'
             strokeWidth={2}

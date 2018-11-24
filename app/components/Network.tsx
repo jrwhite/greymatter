@@ -27,6 +27,7 @@ import { ConfigState } from '../reducers/config'
 import { NeuronPotentialData } from '../containers/NeuronPotentialData'
 import { PotentiateNeuronAction } from '../actions/neurons'
 import { SourcedDendValue } from '../selectors/neuron'
+import { StepGymAction } from '../actions/gym'
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -39,6 +40,7 @@ export interface IProps extends RouteComponentProps<any> {
   decayNetwork: () => void
   decayNeurons: () => void
   stepNetwork: () => void // izhik step
+  stepGym: (payload: StepGymAction) => void
   pauseNetwork: () => void
   resumeNetwork: () => void
   speedUpNetwork: () => void
@@ -242,9 +244,10 @@ export class Network extends React.Component<IProps, IState> {
   }
 
   public startRuntime () {
-    const { decayNeurons, config } = this.props
+    const { decayNeurons, config, stepGym } = this.props
     const step = () => {
       // decayNetwork()
+      stepGym({ shouldStep: true })
       decayNeurons()
       this.stepSourcedDends()
     }
@@ -256,11 +259,12 @@ export class Network extends React.Component<IProps, IState> {
   }
 
   public restartRuntime () {
-    const { config, decayNeurons } = this.props
+    const { config, decayNeurons, stepGym } = this.props
     const { interval } = this.state
     const step = () => {
       decayNeurons()
       this.stepSourcedDends()
+      stepGym({ shouldStep: true })
     }
     if (config.isPaused) {
       interval.stop()
