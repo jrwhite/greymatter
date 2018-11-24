@@ -2,7 +2,7 @@ import { GymEnv } from '../containers/GymClient'
 import { actionCreator } from './helpers'
 
 export interface ReceiveGymStepReplyAction {
-  observation: { [name: string]: any }
+  observations: number[]
   isDone: boolean
   reward: number
   info?: any
@@ -39,6 +39,12 @@ export interface ChangeGymSpace {
 export interface SetGymActionAction {
   action: any
 }
+
+export interface StartGymAction {
+  shouldStart: boolean
+}
+
+export const startGym = actionCreator<StartGymAction>('START_GYM')
 
 export const setGymAction = actionCreator<SetGymActionAction>('SET_GYM_ACTION')
 

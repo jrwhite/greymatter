@@ -5,8 +5,8 @@ import { DataSource, IProps as DataProps } from './DataSource'
 import { connect } from 'react-redux'
 
 // TODO: move this to a gym selector file
-const getObservationState = (state: IState, props: IProps) => {
-  return state.network.gym.observation[props.name]
+const getObservationState = (state: IState, props: { index: number }) => {
+  return state.network.gym.observations[props.index]
 }
 
 const makeGetObservationState = () =>
@@ -23,7 +23,7 @@ const makeMapStateToProps = () => {
 }
 
 export interface IProps extends DataProps {
-  name: string
+  index: number
 }
 
 export class GymObservationData extends DataSource {

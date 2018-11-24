@@ -1,10 +1,15 @@
 import * as React from 'react'
 import { render } from 'react-dom'
 import { GymState } from '../reducers/gym'
-import { HTMLSelect, Icon } from '@blueprintjs/core'
+import { HTMLSelect, Icon, Button, Text } from '@blueprintjs/core'
 import GymClient from './GymClient'
 import { GymEnv } from './GymClient'
-import { setGymEnv, SetGymEnvAction } from '../actions/gym'
+import {
+  setGymEnv,
+  SetGymEnvAction,
+  ResetGymAction,
+  StartGymAction
+} from '../actions/gym'
 import * as Actions from '../actions/gym'
 import { IState as IIState } from '../reducers'
 import { bindActionCreators } from 'redux'
@@ -15,10 +20,15 @@ import GymObservationData from '../containers/GymObservationData'
 
 export interface IProps {
   // TODO: only pass gym props that are needed
+  resetGym: (payload: ResetGymAction) => void
+  startGym: (payload: StartGymAction) => void
   env: GymEnv
   observationSpace: any
   actionSpace: any
+  observations: number[]
   setGymEnv: (payload: SetGymEnvAction) => void
+  isDone: boolean
+  reward: number
 }
 
 export interface IState {
@@ -36,7 +46,15 @@ export class GymPanel extends React.Component<IProps, IState> {
   }
 
   render () {
-    const { env, setGymEnv } = this.props
+    const {
+      resetGym,
+      startGym,
+      env,
+      setGymEnv,
+      observations,
+      isDone,
+      reward
+    } = this.props
 
     const handleEnvChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
       setGymEnv({ env: e.currentTarget.value as GymEnv })
@@ -53,6 +71,18 @@ export class GymPanel extends React.Component<IProps, IState> {
           </option>
           <option value={GymEnv.Cartpole}>Cartpole-v1</option>
         </HTMLSelect>
+        <Button onClick={() => startGym({ shouldStart: true })}>'Start'</Button>
+        <Button onClick={() => resetGym({ shouldReset: true })}>
+          'Restart
+        </Button>
+        <Text>'Observations'</Text>
+        {observations.map((obs) => {
+          <Text>{obs}</Text>
+        })}
+        <Text>'Is Done'</Text>
+        <Text>{isDone}</Text>
+        <Text>'Reward'</Text>
+        <Text>{reward}</Text>
         <LineGraph
           scaleX={3}
           rangeX={50}
@@ -60,7 +90,7 @@ export class GymPanel extends React.Component<IProps, IState> {
           rangeY={{ start: -5, stop: 5 }}
         >
           <GraphLine>
-            <GymObservationData name={'0'} />
+            <GymObservationData index={0} />
           </GraphLine>
         </LineGraph>
       </div>
@@ -76,7 +106,10 @@ function mapStateToProps (state: IIState): Partial<IProps> {
   return {
     env: state.network.gym.env,
     observationSpace: state.network.gym.observationSpace,
-    actionSpace: state.network.gym.actionSpace
+    actionSpace: state.network.gym.actionSpace,
+    observations: state.network.gym.observations,
+    isDone: state.network.gym.isDone,
+    reward: state.network.gym.reward
   }
 }
 

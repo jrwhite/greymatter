@@ -9,7 +9,8 @@ import {
   monitorGym,
   changeGymActionSpace,
   changeGymObsSpace,
-  setGymAction
+  setGymAction,
+  startGym
 } from '../actions/gym'
 import { GymEnv } from '../containers/GymClient'
 
@@ -21,7 +22,8 @@ export interface GymObservationSpace {
 
 export interface GymState {
   env?: GymEnv
-  observation: { [name: string]: any }
+  // observation: { [name: string]: any }
+  observations: number[]
   observationSpace?: GymObservationSpace
   action?: number
   actionSpace?: any
@@ -33,10 +35,11 @@ export interface GymState {
   shouldMonitor?: boolean
   shouldClose?: boolean
   shouldStep?: boolean
+  shouldStart?: boolean
 }
 
 const initialGymState = {
-  observation: {},
+  observations: [],
   // action: undefined,
   action: 0,
   reward: 0,
@@ -96,6 +99,11 @@ export function gym (
     return {
       ...state,
       observationSpace: action.payload.space
+    }
+  } else if (startGym.test(action)) {
+    return {
+      ...state,
+      shouldStart: action.payload.shouldStart
     }
   } else {
     return state

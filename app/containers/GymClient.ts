@@ -9,7 +9,8 @@ import {
   MonitorGymAction,
   resetGym,
   stepGym,
-  ChangeGymSpace
+  ChangeGymSpace,
+  StartGymAction
 } from '../actions/gym'
 import { GymHttpClient } from '../utils/gymHTTPClient'
 const d3 = require('d3')
@@ -40,6 +41,7 @@ export interface IProps {
   resetGym: (payload: ResetGymAction) => void
   stepGym: (payload: StepGymAction) => void
   closeGym: (payload: CloseGymAction) => void
+  startGym: (payload: StartGymAction) => void
   monitorGym: (payload: MonitorGymAction) => void
   changeGymDone: (payload: ChangeGymDoneAction) => void
   receiveGymStepReply: (payload: ReceiveGymStepReplyAction) => void
@@ -64,7 +66,7 @@ export class GymClient extends React.Component<IProps, IState> {
 
   // this should be called when the gym panel is open??
   makeEnv = (env: GymEnv) => {
-    const { changeGymActionSpace, changeGymObsSpace } = this.props
+    const { changeGymActionSpace, changeGymObsSpace, startGym } = this.props
 
     const { remote, client } = this.state
 
@@ -95,6 +97,7 @@ export class GymClient extends React.Component<IProps, IState> {
     this.setState({
       client: newClient
     })
+    startGym({ shouldStart: false })
   }
 
   componentDidMount () {
@@ -111,7 +114,7 @@ export class GymClient extends React.Component<IProps, IState> {
     // console.log(gym)
     // if gym is now done, send a pause command
     if (!prevGym.isDone && gym.isDone) {
-      pauseNetwork()
+      // pauseNetwork()
     }
     if (!prevGym.shouldReset && gym.shouldReset) {
       this.gymReset()
@@ -119,7 +122,10 @@ export class GymClient extends React.Component<IProps, IState> {
     if (!prevGym.shouldStep && gym.shouldStep) {
       this.gymStep()
     }
-    if (gym.env && prevGym.env !== gym.env) {
+    // if (gym.env && prevGym.env !== gym.env) {
+    //   this.makeEnv(gym.env)
+    // }
+    if (!prevGym.shouldStart && gym.shouldStart && gym.env) {
       this.makeEnv(gym.env)
     }
   }
@@ -133,7 +139,7 @@ export class GymClient extends React.Component<IProps, IState> {
    */
 
   gymReset = () => {
-    const { gym, resetGym, receiveGymStepReply } = this.props
+    const { gym, resetGym, receiveGymStepReply, changeGymDone } = this.props
 
     const { instance, client } = this.state
 
@@ -142,7 +148,7 @@ export class GymClient extends React.Component<IProps, IState> {
         .envReset(instance)
         .then((reply: any) => {
           receiveGymStepReply(reply.observation)
-          resetGym({ shouldReset: false })
+          changeGymDone({ isDone: false })
         })
         .catch((error) => {
           console.error('Gym reset failed!')
@@ -151,6 +157,7 @@ export class GymClient extends React.Component<IProps, IState> {
     } else {
       console.error('No gym client to reset!')
     }
+    resetGym({ shouldReset: false })
   }
 
   gymStep = () => {
@@ -158,18 +165,23 @@ export class GymClient extends React.Component<IProps, IState> {
 
     const { client, instance } = this.state
 
-    console.log(gym.action)
-    console.log(client)
-    console.log(instance)
+    // console.log(gym.action)
+    // console.log(client)
+    // console.log(instance)
 
-    if (client && instance && gym.action !== undefined) {
+    if (
+      client &&
+      instance &&
+      gym.action !== undefined &&
+      gym.isDone === false
+    ) {
       console.log('gym step much success')
       client
         .envStep(instance, gym.action)
         .then((reply: any) => {
           console.log(reply)
           receiveGymStepReply({
-            observation: reply.observation,
+            observations: reply.observation,
             isDone: reply.done,
             reward: reply.reward,
             info: reply.info ? reply.info : undefined
@@ -178,7 +190,7 @@ export class GymClient extends React.Component<IProps, IState> {
         .catch((error) => {
           console.error('Gym step failed!')
           console.error(error)
-          this.gymReset()
+          // this.gymReset()
         })
     } else {
       console.error('No gym client to step!')
