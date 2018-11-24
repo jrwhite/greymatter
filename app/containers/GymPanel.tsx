@@ -17,6 +17,7 @@ import { connect, Dispatch } from 'react-redux'
 import { LineGraph } from '../components/LineGraph'
 import { GraphLine } from '../components/GraphLine'
 import GymObservationData from '../containers/GymObservationData'
+import GymGraph from './GymGraph'
 
 export interface IProps {
   // TODO: only pass gym props that are needed
@@ -83,6 +84,7 @@ export class GymPanel extends React.Component<IProps, IState> {
         <Text>{isDone}</Text>
         <Text>'Reward'</Text>
         <Text>{reward}</Text>
+        <GymGraph />
         <LineGraph
           scaleX={3}
           rangeX={50}
@@ -91,6 +93,9 @@ export class GymPanel extends React.Component<IProps, IState> {
         >
           <GraphLine>
             <GymObservationData index={0} />
+          </GraphLine>
+          <GraphLine>
+            <GymObservationData index={1} />
           </GraphLine>
         </LineGraph>
       </div>
