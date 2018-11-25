@@ -23,8 +23,6 @@ export interface EncodedSourceState {
   type: EncodedSourceType
   obsId: string
   encoding?: EncodingFunction // if there is no encdoing, selector will build it from control points
-  domain?: { start: number; stop: number }
-  range?: { start: number; stop: number }
   controlPoints: ControlPointState[]
 }
 

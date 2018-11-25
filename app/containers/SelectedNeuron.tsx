@@ -73,8 +73,7 @@ export class SelectedNeuron extends React.Component<IProps> {
       addNewObservable({
         name: id.toString(),
         type: ObservableType.Potential,
-        getValue: this.makeGetSelf(id),
-        range: { start: -300, stop: 100 }
+        getValue: this.makeGetSelf(id)
       })
     }
 
