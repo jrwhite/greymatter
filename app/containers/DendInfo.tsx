@@ -69,14 +69,12 @@ const makeGetDendItemState = () =>
   )
 
 const makeMapStateToProps = () => {
-  // const getSourceItem = makeGetSourceItemState()
-  const getNeuronSourceItem = makeGetSourceItemState()
-  const getGymSourceItem = makeGetGymSourceItemState()
+  const getSourceItem = makeGetSourceItemState()
   return (state: IState, props: IProps): Partial<IIProps> => ({
     id: props.id,
     index: props.index,
     weighting: props.weighting,
-    sourceItems: getSourceItem(state, { id: props.id }),
+    sourceItems: state.network.encodings,
     ...getSourceItem(state, props)
   })
 }
