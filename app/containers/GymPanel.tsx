@@ -10,7 +10,6 @@ import {
   ResetGymAction,
   StartGymAction
 } from '../actions/gym'
-import * as Actions from '../actions/gym'
 import { IState as IIState } from '../reducers'
 import { bindActionCreators } from 'redux'
 import { connect, Dispatch } from 'react-redux'
@@ -18,11 +17,17 @@ import { LineGraph } from '../components/LineGraph'
 import { GraphLine } from '../components/GraphLine'
 import GymObservationData from '../containers/GymObservationData'
 import GymGraph from './GymGraph'
+import { AddNewObservableAction } from '../actions/observables'
+import { ObservableType } from '../reducers/observables'
+import { IState as GlobalState } from '../reducers/'
+import { getObservationFromIndex } from '../selectors/gym'
+import NetworkActions from '../actions/network'
 
 export interface IProps {
   // TODO: only pass gym props that are needed
   resetGym: (payload: ResetGymAction) => void
   startGym: (payload: StartGymAction) => void
+  addNewObservable: (payload: AddNewObservableAction) => void
   env: GymEnv
   observationSpace: any
   actionSpace: any
@@ -46,10 +51,17 @@ export class GymPanel extends React.Component<IProps, IState> {
     showReward: false
   }
 
+  makeGetObservable (index: number) {
+    return (state: GlobalState) => {
+      getObservationFromIndex(state, index)
+    }
+  }
+
   render () {
     const {
       resetGym,
       startGym,
+      addNewObservable,
       env,
       setGymEnv,
       observations,
@@ -78,6 +90,18 @@ export class GymPanel extends React.Component<IProps, IState> {
         </Button>
         <Text>'Observations'</Text>
         <Text> {'obs 0: ' + observations[0]}</Text>
+        <Button
+          onClick={() =>
+            addNewObservable({
+              name: '0',
+              type: ObservableType.Gym,
+              getValue: this.makeGetObservable(0),
+              range: { start: -5, stop: 5 }
+            })
+          }
+        >
+          'Observable 0'
+        </Button>
         <Text> {'obs 1: ' + observations[1]}</Text>
         <Text> {'obs 2: ' + observations[2]}</Text>
         <Text> {'obs 3: ' + observations[3]}</Text>
@@ -119,7 +143,7 @@ function mapStateToProps (state: IIState): Partial<IProps> {
 }
 
 function mapDispatchToProps (dispatch: Dispatch<IIState>): Partial<IProps> {
-  return bindActionCreators(Actions as any, dispatch)
+  return bindActionCreators(NetworkActions as any, dispatch)
 }
 
 export default (connect(

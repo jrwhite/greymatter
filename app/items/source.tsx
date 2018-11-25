@@ -8,6 +8,8 @@ import * as React from 'react'
 export interface SourceItem {
   id: string
   name: string
+  domain: { start: number; stop: number }
+  range: { start: number; stop: number }
   type: EncodedSourceType
 }
 

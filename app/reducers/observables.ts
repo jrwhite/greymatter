@@ -6,6 +6,7 @@ import _ = require('lodash')
 
 export enum ObservableType {
   Gym = 'Gym Observation',
+  Reward = 'Gym Reward',
   Potential = 'Neuron Potential'
 }
 
@@ -13,6 +14,7 @@ export interface ObservableState {
   id: string
   name: string
   type: ObservableType
+  range: { start: number; stop: number }
   getValue: Selector<any, any> | Selector<any, any> // TODO: update with allowed selectors
   // getRange
 }

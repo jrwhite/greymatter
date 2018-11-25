@@ -13,7 +13,9 @@ const getSourceItems = (state: IState): SourceItem[] =>
       return {
         id: enc.id,
         name: enc.name,
-        type: enc.type
+        type: enc.type,
+        domain: enc.domain ? enc.domain : { start: 0, stop: 1 },
+        range: enc.range ? enc.range : { start: 0, stop: 1 }
       }
     }
   )

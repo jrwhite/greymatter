@@ -9,6 +9,7 @@ export interface AddObservableAction {
   name: string
   type: ObservableType
   getValue: Selector<any, any>
+  range: { start: number; stop: number }
 }
 
 export const addObservable = actionCreator<AddObservableAction>(
@@ -19,6 +20,7 @@ export interface AddNewObservableAction {
   name: string
   type: ObservableType
   getValue: Selector<any, any>
+  range: { start: number; stop: number }
 }
 
 export function addNewObservable (payload: AddNewObservableAction) {

@@ -28,7 +28,9 @@ const getSourceItem = (state: IState, id: string) => {
   return {
     id: source.id,
     name: source.name,
-    type: source.type
+    type: source.type,
+    domain: { start: -300, stop: 100 },
+    range: { start: 0, stop: 1 }
   }
 }
 
@@ -45,9 +47,12 @@ const getSynapseSourceItem = (
 }
 
 const makeGetSourceItemState = () =>
-  createSelector(getSynapseSourceItem, (sourceItem) => ({
-    source: sourceItem ? { ...sourceItem } : undefined
-  }))
+  createSelector(
+    getSynapseSourceItem,
+    (sourceItem) => ({
+      source: sourceItem ? { ...sourceItem } : undefined
+    })
+  )
 
 const getDendItem = (state: IState, props: IProps) => ({
   id: props.id,
@@ -58,7 +63,10 @@ const getDendItem = (state: IState, props: IProps) => ({
 })
 
 const makeGetDendItemState = () =>
-  createSelector(getDendItem, (dendItem) => ({ ...dendItem }))
+  createSelector(
+    getDendItem,
+    (dendItem) => ({ ...dendItem })
+  )
 
 const makeMapStateToProps = () => {
   const getSourceItem = makeGetSourceItemState()
