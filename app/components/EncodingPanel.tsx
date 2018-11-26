@@ -58,7 +58,7 @@ export class EncodingPanel extends React.Component<IProps, IState> {
           id={source ? source.id : 'enc'}
           color={'blue'}
           rangeX={{ start: -260, stop: 30 }}
-          rangeY={{ start: 0, stop: 1 }}
+          rangeY={{ start: 0, stop: 0.1 }}
           width={250}
           height={150}
         />

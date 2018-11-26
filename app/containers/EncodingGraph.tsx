@@ -6,6 +6,7 @@ import { connect, Dispatch } from 'react-redux'
 import { EncodingGraph, IProps as IIProps } from '../components/EncodingGraph'
 import { makeGetEncodingById } from '../selectors/encoding'
 import * as Actions from '../actions/encodings'
+import { makeGetObservableById } from '../selectors/observables'
 
 export interface IProps {
   id: string
@@ -18,10 +19,16 @@ export interface IProps {
 
 const makeMapStateToProps = () => {
   const getEncoding = makeGetEncodingById()
-  return (state: IState, props: IProps): Partial<IIProps> => ({
-    ...props,
-    controlPoints: getEncoding(state, props.id).controlPoints
-  })
+  const getObservable = makeGetObservableById()
+  return (state: IState, props: IProps): Partial<IIProps> => {
+    const encoding = getEncoding(state, props.id)
+    const observable = getObservable(state, encoding.obsId)
+    return {
+      ...props,
+      controlPoints: getEncoding(state, props.id).controlPoints,
+      rangeX: observable ? observable.getRange(state) : { start: 0, stop: 100 } // TODO: GET RID OF DEFAULT
+    }
+  }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IIProps> => {

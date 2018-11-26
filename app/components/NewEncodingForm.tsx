@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { EncodedSourceType } from '../reducers/encodings'
+import { EncodedSourceEnum } from '../reducers/encodings'
 import { Select, ItemRenderer } from '@blueprintjs/select'
 import { MenuItem, FormGroup, InputGroup, Button } from '@blueprintjs/core'
 import { SourceSelect } from './DendInfo'
@@ -13,7 +13,7 @@ export interface IProps {
 
 export interface IState {
   observable?: ObservableItem
-  encodingType?: EncodedSourceType
+  encodingType?: EncodedSourceEnum
 }
 
 const ObservableSelect = Select.ofType<ObservableItem>()
@@ -45,9 +45,9 @@ const renderObservableItem: ItemRenderer<ObservableItem> = (
   )
 }
 
-const EncodingSelect = Select.ofType<EncodedSourceType>()
+const EncodingSelect = Select.ofType<EncodedSourceEnum>()
 
-const renderEncodingType: ItemRenderer<EncodedSourceType> = (
+const renderEncodingType: ItemRenderer<EncodedSourceEnum> = (
   source,
   { handleClick, modifiers, query }
 ) => {
@@ -98,7 +98,7 @@ export class NewEncodingForm extends React.Component<IProps, IState> {
     this.setState({ observable: item })
   }
 
-  handleEncodingSelect = (item: EncodedSourceType) => {
+  handleEncodingSelect = (item: EncodedSourceEnum) => {
     this.setState({ encodingType: item })
   }
 
@@ -131,7 +131,7 @@ export class NewEncodingForm extends React.Component<IProps, IState> {
         <FormGroup label='Select Encoding'>
           <EncodingSelect
             popoverProps={{ usePortal: false, captureDismiss: true }}
-            items={[EncodedSourceType.GymAction, EncodedSourceType.Tonic]}
+            items={[EncodedSourceEnum.GymAction, EncodedSourceEnum.Tonic]}
             itemRenderer={renderEncodingType}
             onItemSelect={this.handleEncodingSelect}
           >

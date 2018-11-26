@@ -1,4 +1,4 @@
-import { EncodedSourceType } from '../reducers/encodings'
+import { EncodedSourceEnum } from '../reducers/encodings'
 import { ItemRenderer } from '@blueprintjs/select'
 import { MenuItem } from '@blueprintjs/core'
 import * as React from 'react'
@@ -8,7 +8,7 @@ import * as React from 'react'
 export interface SourceItem {
   id: string
   name: string
-  type: EncodedSourceType
+  type: EncodedSourceEnum
 }
 
 export const renderSourceItem: ItemRenderer<SourceItem> = (

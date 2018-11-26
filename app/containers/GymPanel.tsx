@@ -18,9 +18,14 @@ import { LineGraph } from '../components/LineGraph'
 import { GraphLine } from '../components/GraphLine'
 import GymObservationData from '../containers/GymObservationData'
 import GymGraph from './GymGraph'
+import { AddNewObservableAction } from '../actions/observables'
+import { ObservableEnum } from '../reducers/observables'
+import NetworkActions from '../actions/network';
 
 export interface IProps {
   // TODO: only pass gym props that are needed
+  addAllGymObservables: () => void
+  addNewObservable: (payload: AddNewObservableAction) => void
   resetGym: (payload: ResetGymAction) => void
   startGym: (payload: StartGymAction) => void
   env: GymEnv
@@ -48,6 +53,8 @@ export class GymPanel extends React.Component<IProps, IState> {
 
   render () {
     const {
+      addAllGymObservables,
+      addNewObservable,
       resetGym,
       startGym,
       env,
@@ -81,6 +88,9 @@ export class GymPanel extends React.Component<IProps, IState> {
         <Text> {'obs 1: ' + observations[1]}</Text>
         <Text> {'obs 2: ' + observations[2]}</Text>
         <Text> {'obs 3: ' + observations[3]}</Text>
+        <Button onClick={() => addAllGymObservables()}>
+          'Add Gym Observables'
+        </Button>
         <Text>{'is done: ' + isDone}</Text>
         <Text>'Reward'</Text>
         <Text>{reward}</Text>
@@ -119,7 +129,7 @@ function mapStateToProps (state: IIState): Partial<IProps> {
 }
 
 function mapDispatchToProps (dispatch: Dispatch<IIState>): Partial<IProps> {
-  return bindActionCreators(Actions as any, dispatch)
+  return bindActionCreators(NetworkActions as any, dispatch)
 }
 
 export default (connect(

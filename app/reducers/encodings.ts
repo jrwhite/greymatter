@@ -1,11 +1,11 @@
 import { Selector } from 'reselect'
 import { IAction } from '../actions/helpers'
-import { Point } from '../utils/geometry'
+import { Point, Line } from '../utils/geometry'
 import { addEncoding, moveControlPoint } from '../actions/encodings'
 import * as _ from 'lodash'
 import { ENVELOPE } from '@blueprintjs/icons/lib/esm/generated/iconNames'
 
-export enum EncodedSourceType {
+export enum EncodedSourceEnum {
   Tonic = 'Tonically active',
   GymAction = 'Gym Action'
 }
@@ -20,7 +20,7 @@ export interface ControlPointState {
 export interface EncodedSourceState {
   id: string
   name: string
-  type: EncodedSourceType
+  type: EncodedSourceEnum
   obsId: string
   encoding?: EncodingFunction // if there is no encdoing, selector will build it from control points
   controlPoints: ControlPointState[]

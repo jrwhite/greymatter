@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { HTMLSelect, Button, MenuItem, Text } from '@blueprintjs/core'
 import { Select, ItemRenderer, ItemPredicate } from '@blueprintjs/select'
-import { EncodedSourceType } from '../reducers/encodings'
+import { EncodedSourceEnum } from '../reducers/encodings'
 import { SetDendSourceAction } from '../actions/neurons'
 import { IProps as IIProps } from '../containers/DendInfo'
 import { SourceItem, renderSourceItem } from '../items/source'

@@ -15,6 +15,17 @@ export const getNeuronFromId = (state: IState, id: string) =>
 export const getDendFromId = (state: NeuronState, id: string): DendState =>
   state.dends.find((d) => d.id === id)!!
 
+export const getNeuronPotRange = (state: IState) => ({
+  start: -300,
+  stop: 100
+})
+
+export const makeGetNeuronPotRange = () =>
+  createSelector(
+    getNeuronPotRange,
+    (potRange) => potRange
+  )
+
 const getNeuron = (state: IState, props: { id: string }) =>
   state.network.neurons.find((n) => n.id === props.id)
 

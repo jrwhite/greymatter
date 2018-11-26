@@ -4,17 +4,18 @@ import { IAction } from '../actions/helpers'
 import { addObservable } from '../actions/observables'
 import _ = require('lodash')
 
-export enum ObservableType {
+export enum ObservableEnum {
   Gym = 'Gym Observation',
-  Potential = 'Neuron Potential'
+  Potential = 'Neuron Potential',
+  Reward = 'Gym Reward'
 }
 
 export interface ObservableState {
   id: string
   name: string
-  type: ObservableType
+  type: ObservableEnum
   getValue: Selector<any, any> | Selector<any, any> // TODO: update with allowed selectors
-  // getRange
+  getRange: Selector<any, any> // TODO: Update with allowed selectors
 }
 
 export type Observable = ObservableState
