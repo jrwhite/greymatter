@@ -24,6 +24,7 @@ export interface EncodedSourceState {
   obsId: string
   encoding?: EncodingFunction // if there is no encdoing, selector will build it from control points
   controlPoints: ControlPointState[]
+  range: { start: number; stop: number }
 }
 
 const changeEncodingWithId = (

@@ -19,6 +19,7 @@ import * as Actions from '../actions/gym'
 import { bindActionCreators } from 'redux'
 import { connect, Dispatch } from 'react-redux'
 import NetworkActions from '../actions/network'
+import { makeGetEncodedAction } from '../selectors/encoding'
 
 export enum GymEnv {
   Cartpole = 'CartPole-v1'
@@ -49,6 +50,7 @@ export interface IProps {
   receiveGymStepReply: (payload: ReceiveGymStepReplyAction) => void
   gymStopped: () => void
   gym: GymState
+  action?: number
 }
 
 export interface IState {
@@ -162,7 +164,13 @@ export class GymClient extends React.Component<IProps, IState> {
   }
 
   gymStep = () => {
-    const { gym, stepGym, receiveGymStepReply, changeGymDone } = this.props
+    const {
+      gym,
+      action,
+      stepGym,
+      receiveGymStepReply,
+      changeGymDone
+    } = this.props
 
     const { client, instance } = this.state
 
@@ -170,15 +178,12 @@ export class GymClient extends React.Component<IProps, IState> {
     // console.log(client)
     // console.log(instance)
 
-    if (
-      client &&
-      instance &&
-      gym.action !== undefined &&
-      gym.isDone === false
-    ) {
+    if (client && instance && action !== undefined && gym.isDone === false) {
       console.log('gym step much success')
+      console.log(action)
+      console.log(Math.round(action))
       client
-        .envStep(instance, gym.action)
+        .envStep(instance, Math.round(action))
         .then((reply: any) => {
           console.log(reply)
           receiveGymStepReply({
@@ -206,6 +211,16 @@ export class GymClient extends React.Component<IProps, IState> {
   }
 }
 
+function makeMapStateToProps () {
+  const getAction = makeGetEncodedAction()
+  return (state: IIState): Partial<IProps> => {
+    return {
+      gym: state.network.gym,
+      action: getAction(state)
+    }
+  }
+}
+
 function mapStateToProps (state: IIState): Partial<IProps> {
   return {
     gym: state.network.gym
@@ -217,6 +232,7 @@ function mapDispatchToProps (dispatch: Dispatch<IIState>): Partial<IProps> {
 }
 
 export default (connect(
-  mapStateToProps,
+  // mapStateToProps,
+  makeMapStateToProps(),
   mapDispatchToProps
 )(GymClient) as any) as React.StatelessComponent<Partial<IProps>>

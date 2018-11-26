@@ -19,6 +19,7 @@ export interface AddEncodingAction {
   obsId: string
   encoding?: EncodingFunction
   controlPoints: ControlPointState[]
+  range: { start: number; stop: number }
 }
 
 export const addEncoding = actionCreator<AddEncodingAction>('ADD_ENCODING')
@@ -39,10 +40,10 @@ export interface AddNewEncodingAction {
   obsId: string
 }
 
-const initialEncodingState: EncodedSourceState = {
+const initialEncodingState: Partial<EncodedSourceState> = {
   id: 'enc',
   name: 'UNINITIALIZED',
-  type: EncodedSourceEnum.Tonic,
+  // type: EncodedSourceEnum.Tonic,
   obsId: 'obs',
   controlPoints: [
     { pos: { x: 0, y: 0 }, index: 0 },
@@ -57,10 +58,12 @@ export function addNewEncoding (payload: AddNewEncodingAction) {
     const domain = getObservableById(getState(), payload.obsId).getRange(
       getState()
     )
-    const range =
-      payload.type === EncodedSourceEnum.Tonic
-        ? TONIC_RANGE
-        : { start: 0, stop: 2 }
+    let range = { start: 0, stop: 1 }
+    if (payload.type === EncodedSourceEnum.Tonic) {
+      range = TONIC_RANGE
+    } else if (payload.type === EncodedSourceEnum.GymAction) {
+      range = { start: 0, stop: 1 }
+    }
     const controlPoints = [
       { pos: { x: domain.start, y: range.start }, index: 0 },
       { pos: { x: domain.stop, y: range.stop }, index: 1 }
@@ -71,7 +74,8 @@ export function addNewEncoding (payload: AddNewEncodingAction) {
         ...initialEncodingState,
         ...payload,
         id: newId,
-        controlPoints
+        controlPoints,
+        range
       })
     )
   }

@@ -134,11 +134,15 @@ export class EncodingGraph extends React.Component<IProps> {
       .scaleLinear()
       .domain([0, width])
       .range([rangeX.stop, rangeX.start])
-    const invScaleY = (y: number) => {
-      return (
-        rangeY.start + ((height - y) / height) * (rangeY.stop - rangeY.start)
-      )
-    }
+    // const invScaleY = (y: number) => {
+    //   return (
+    //     rangeY.start + ((height - y) / height) * (rangeY.stop - rangeY.start)
+    //   )
+    // }
+    const invScaleY = d3
+      .scaleLinear()
+      .domain([0, height])
+      .range(rangeY.stop, rangeY.start)
 
     const moveCallback = (newPos: Point, index: number) => {
       moveControlPoint({

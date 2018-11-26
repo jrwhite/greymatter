@@ -25,8 +25,9 @@ const makeMapStateToProps = () => {
     const observable = getObservable(state, encoding.obsId)
     return {
       ...props,
-      controlPoints: getEncoding(state, props.id).controlPoints,
-      rangeX: observable ? observable.getRange(state) : { start: 0, stop: 100 } // TODO: GET RID OF DEFAULT
+      controlPoints: encoding.controlPoints,
+      rangeX: observable ? observable.getRange(state) : { start: 0, stop: 100 }, // TODO: GET RID OF DEFAULT
+      rangeY: encoding.range ? encoding.range : { start: 0, stop: 100 }
     }
   }
 }

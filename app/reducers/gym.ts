@@ -25,7 +25,6 @@ export interface GymState {
   // observation: { [name: string]: any }
   observations: number[]
   observationSpace?: GymObservationSpace
-  action?: number
   actionSpace?: any
   reward: number
   isDone: boolean
@@ -76,11 +75,6 @@ export function gym (
     return {
       ...state,
       ...action.payload
-    }
-  } else if (setGymAction.test(action)) {
-    return {
-      ...state,
-      action: action.payload.action
     }
   } else if (stepGym.test(action)) {
     return {
