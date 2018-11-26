@@ -18,16 +18,12 @@ export function makeEncodingFromCtrlPoints (
       }
     })
     const upper: ControlPointState = controlPoints.reduce((prev, cur) => {
-      console.log(cur)
-      console.log(prev)
       if (cur.pos.x > obs) {
         return cur
       } else {
         return prev
       }
     })
-    console.log(lower)
-    console.log(upper)
     if (!lower || !upper) return 0
     return (
       (obs - lower.pos.x) *
