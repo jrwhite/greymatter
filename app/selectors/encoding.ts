@@ -21,7 +21,9 @@ export const getEncodedValueById = (state: IState, id: string): number => {
   const source = getEncodingById(state, id)
   const observable = getObservableById(state, source.obsId)
   const obsValue = observable.getValue(state)
+  console.log(obsValue)
   const encodingFunc = makeEncodingFromCtrlPoints(source.controlPoints)
+  console.log(encodingFunc)
   const encodedValue = encodingFunc(obsValue)
   return encodedValue
 }

@@ -238,6 +238,7 @@ export class Network extends React.Component<IProps, IState> {
   stepSourcedDends () {
     const { potentiateNeuron, sourcedDends } = this.props
     if (sourcedDends === undefined) return
+    console.log(sourcedDends)
     sourcedDends.forEach((d) =>
       potentiateNeuron({ id: d.neuronId, change: d.value })
     )

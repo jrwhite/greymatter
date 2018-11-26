@@ -13,6 +13,7 @@ import NewEncodingForm from '../containers/NewEncodingForm'
 import { GraphLine } from './GraphLine'
 import EncodingGraph from '../containers/EncodingGraph'
 import { SourceItem, renderSourceItem } from '../items/source'
+import { TONIC_RANGE } from '../actions/encodings'
 
 export interface IProps {
   sourceItems: SourceItem[]
@@ -58,7 +59,7 @@ export class EncodingPanel extends React.Component<IProps, IState> {
           id={source ? source.id : 'enc'}
           color={'blue'}
           rangeX={{ start: -260, stop: 30 }}
-          rangeY={{ start: 0, stop: 0.1 }}
+          rangeY={TONIC_RANGE}
           width={250}
           height={150}
         />

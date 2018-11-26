@@ -32,7 +32,7 @@ export class EncodingGraph extends React.Component<IProps> {
 
     const xAxisScale = d3
       .scaleLinear()
-      .domain([rangeX.start, rangeX.stop])
+      .domain([rangeX.stop, rangeX.start])
       .range([0, width])
 
     const yAxis = d3.axisLeft(yAxisScale).ticks(5)
@@ -125,11 +125,15 @@ export class EncodingGraph extends React.Component<IProps> {
       width
     } = this.props
 
-    const invScaleX = (x: number) => {
-      return (
-        rangeX.start + ((width - x) / width) * (rangeX.stop - rangeX.start)
-      )
-    }
+    // const invScaleX = (x: number) => {
+    //   return (
+    //     rangeX.start + ((width - x) / width) * (rangeX.stop - rangeX.start)
+    //   )
+    // }
+    const invScaleX = d3
+      .scaleLinear()
+      .domain([0, width])
+      .range([rangeX.stop, rangeX.start])
     const invScaleY = (y: number) => {
       return (
         rangeY.start + ((height - y) / height) * (rangeY.stop - rangeY.start)
