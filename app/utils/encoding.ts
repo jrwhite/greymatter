@@ -31,6 +31,7 @@ export function makeEncodingFromCtrlPoints (
       .scaleLinear()
       .domain([lower.pos.x, upper.pos.x])
       .range([lower.pos.y, upper.pos.y])
+      .clamp(true)
     return scale(obs)
   }
 }

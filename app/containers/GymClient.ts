@@ -117,7 +117,8 @@ export class GymClient extends React.Component<IProps, IState> {
     // console.log(gym)
     // if gym is now done, send a pause command
     if (!prevGym.isDone && gym.isDone) {
-      pauseNetwork()
+      // pauseNetwork()
+      this.gymReset()
     }
     if (!prevGym.shouldReset && gym.shouldReset) {
       this.gymReset()
