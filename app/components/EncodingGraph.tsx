@@ -32,7 +32,7 @@ export class EncodingGraph extends React.Component<IProps> {
 
     const xAxisScale = d3
       .scaleLinear()
-      .domain([rangeX.stop, rangeX.start])
+      .domain([rangeX.start, rangeX.stop])
       .range([0, width])
 
     const yAxis = d3.axisLeft(yAxisScale).ticks(5)
@@ -79,21 +79,21 @@ export class EncodingGraph extends React.Component<IProps> {
       </svg>
     )
   }
-  scaleX = (x: number) => {
+  makeScaleX () {
     const { rangeX, width } = this.props
     const scale = d3
       .scaleLinear()
-      .domain(rangeX)
+      .domain([rangeX.start, rangeX.stop])
       .range([0, width])
-    return scale(x)
+    return scale
   }
-  scaleY = (y: number) => {
+  makeScaleY () {
     const { rangeY, height } = this.props
     const scale = d3
       .scaleLinear()
-      .domain({ start: rangeY.stop, stop: rangeY.start })
+      .domain([rangeY.stop, rangeY.start])
       .range([0, height])
-    return scale(y)
+    return scale
   }
 
   renderLines () {
@@ -104,10 +104,13 @@ export class EncodingGraph extends React.Component<IProps> {
     }
     // return <Line line={line} />
 
+    const scaleX = this.makeScaleX()
+    const scaleY = this.makeScaleY()
+
     const lineSetter = d3
       .line()
-      .x((d: ControlPointState) => this.scaleX(d.pos.x))
-      .y((d: ControlPointState) => this.scaleY(d.pos.y))
+      .x((d: ControlPointState) => scaleX(d.pos.x))
+      .y((d: ControlPointState) => scaleY(d.pos.y))
     if (controlPoints === undefined) return null
     return (
       <g>
@@ -139,7 +142,7 @@ export class EncodingGraph extends React.Component<IProps> {
     const invScaleX = d3
       .scaleLinear()
       .domain([0, width])
-      .range([rangeX.stop, rangeX.start])
+      .range([rangeX.start, rangeX.stop])
     // const invScaleY = (y: number) => {
     //   return (
     //     rangeY.start + ((height - y) / height) * (rangeY.stop - rangeY.start)
@@ -148,7 +151,7 @@ export class EncodingGraph extends React.Component<IProps> {
     const invScaleY = d3
       .scaleLinear()
       .domain([0, height])
-      .range(rangeY.start, rangeY.stop)
+      .range([rangeY.stop, rangeY.start])
 
     const moveCallback = (newPos: Point, index: number) => {
       moveControlPoint({
@@ -160,13 +163,16 @@ export class EncodingGraph extends React.Component<IProps> {
 
     if (controlPoints === undefined) return null
 
+    const scaleX = this.makeScaleX()
+    const scaleY = this.makeScaleY()
+
     return (
       <g>
         {controlPoints.map((ctrl: ControlPointState, i: number) => (
           <ControlPoint
             // scaleX={this.scaleX}
             // scaleY={this.scaleY}
-            pos={{ x: this.scaleX(ctrl.pos.x), y: this.scaleY(ctrl.pos.y) }}
+            pos={{ x: scaleX(ctrl.pos.x), y: scaleY(ctrl.pos.y) }}
             moveCallback={(newPos: Point) => moveCallback(newPos, i)}
           />
         ))}
