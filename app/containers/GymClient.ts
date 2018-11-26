@@ -18,6 +18,7 @@ import { IState as IIState } from '../reducers'
 import * as Actions from '../actions/gym'
 import { bindActionCreators } from 'redux'
 import { connect, Dispatch } from 'react-redux'
+import NetworkActions from '../actions/network'
 
 export enum GymEnv {
   Cartpole = 'CartPole-v1'
@@ -114,7 +115,7 @@ export class GymClient extends React.Component<IProps, IState> {
     // console.log(gym)
     // if gym is now done, send a pause command
     if (!prevGym.isDone && gym.isDone) {
-      // pauseNetwork()
+      pauseNetwork()
     }
     if (!prevGym.shouldReset && gym.shouldReset) {
       this.gymReset()
@@ -212,7 +213,7 @@ function mapStateToProps (state: IIState): Partial<IProps> {
 }
 
 function mapDispatchToProps (dispatch: Dispatch<IIState>): Partial<IProps> {
-  return bindActionCreators(Actions as any, dispatch)
+  return bindActionCreators(NetworkActions as any, dispatch)
 }
 
 export default (connect(

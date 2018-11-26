@@ -25,7 +25,8 @@ function makeMapStateToProps (): (state: IState) => Partial<IProps> {
     synapses: state.network.synapses,
     ghostSynapse: state.network.ghostSynapse,
     config: state.network.config,
-    sourcedDends: getSourcedDends(state)
+    sourcedDends: getSourcedDends(state),
+    gymStepRatio: state.network.gym.stepRatio
   })
 }
 

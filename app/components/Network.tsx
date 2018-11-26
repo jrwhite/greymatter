@@ -53,6 +53,7 @@ export interface IProps extends RouteComponentProps<any> {
   synapses: SynapseState[]
   config: ConfigState
   sourcedDends: SourcedDendValue[]
+  gymStepRatio: number
 }
 
 export interface IState {
@@ -60,13 +61,15 @@ export interface IState {
     pos: Point;
   }
   interval: any
+  gymSteps: number
 }
 
 const initialState: IState = {
   mouse: {
     pos: { x: 0, y: 0 }
   },
-  interval: Object
+  interval: Object,
+  gymSteps: 0
 }
 
 @HotkeysTarget
@@ -238,17 +241,21 @@ export class Network extends React.Component<IProps, IState> {
   stepSourcedDends () {
     const { potentiateNeuron, sourcedDends } = this.props
     if (sourcedDends === undefined) return
-    console.log(sourcedDends)
     sourcedDends.forEach((d) =>
       potentiateNeuron({ id: d.neuronId, change: d.value })
     )
   }
 
   public startRuntime () {
-    const { decayNeurons, config, stepGym } = this.props
+    const { decayNeurons, gymStepRatio, config, stepGym } = this.props
+    let gymSteps = 0
+
     const step = () => {
       // decayNetwork()
-      stepGym({ shouldStep: true })
+      if (gymSteps++ > gymStepRatio) {
+        gymSteps = 0
+        stepGym({ shouldStep: true })
+      }
       decayNeurons()
       this.stepSourcedDends()
     }
@@ -260,12 +267,16 @@ export class Network extends React.Component<IProps, IState> {
   }
 
   public restartRuntime () {
-    const { config, decayNeurons, stepGym } = this.props
+    const { config, decayNeurons, gymStepRatio, stepGym } = this.props
+    let gymSteps = 0
     const { interval } = this.state
     const step = () => {
+      if (gymSteps++ > gymStepRatio) {
+        gymSteps = 0
+        stepGym({ shouldStep: true })
+      }
       decayNeurons()
       this.stepSourcedDends()
-      stepGym({ shouldStep: true })
     }
     if (config.isPaused) {
       interval.stop()

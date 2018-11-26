@@ -36,6 +36,7 @@ export interface GymState {
   shouldClose?: boolean
   shouldStep?: boolean
   shouldStart?: boolean
+  stepRatio: number
 }
 
 const initialGymState = {
@@ -43,7 +44,8 @@ const initialGymState = {
   // action: undefined,
   action: 0,
   reward: 0,
-  isDone: true
+  isDone: true,
+  stepRatio: 10
 }
 
 export function gym (

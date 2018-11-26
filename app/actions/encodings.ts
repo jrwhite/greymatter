@@ -10,7 +10,7 @@ import { actionCreator } from './helpers'
 import { IState } from '../reducers'
 import { getObservableById } from '../selectors/observables'
 
-export const TONIC_RANGE = { start: 0, stop: 10 }
+export const TONIC_RANGE = { start: 0, stop: 20 }
 
 export interface AddEncodingAction {
   id: string
