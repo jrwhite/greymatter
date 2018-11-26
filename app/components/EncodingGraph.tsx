@@ -81,13 +81,19 @@ export class EncodingGraph extends React.Component<IProps> {
   }
   scaleX = (x: number) => {
     const { rangeX, width } = this.props
-    return width - ((x - rangeX.start) / (rangeX.stop - rangeX.start)) * width
+    const scale = d3
+      .scaleLinear()
+      .domain(rangeX)
+      .range([0, width])
+    return scale(x)
   }
   scaleY = (y: number) => {
     const { rangeY, height } = this.props
-    return (
-      height - ((y - rangeY.start) / (rangeY.stop - rangeY.start)) * height
-    )
+    const scale = d3
+      .scaleLinear()
+      .domain({ start: rangeY.stop, stop: rangeY.start })
+      .range([0, height])
+    return scale(y)
   }
 
   renderLines () {
@@ -142,7 +148,7 @@ export class EncodingGraph extends React.Component<IProps> {
     const invScaleY = d3
       .scaleLinear()
       .domain([0, height])
-      .range(rangeY.stop, rangeY.start)
+      .range(rangeY.start, rangeY.stop)
 
     const moveCallback = (newPos: Point, index: number) => {
       moveControlPoint({
