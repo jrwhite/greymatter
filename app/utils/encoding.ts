@@ -2,6 +2,8 @@ import { ControlPoint } from '../components/ControlPoint'
 import lowerCase = require('lodash/fp/lowerCase')
 import { ControlPointState } from '../reducers/encodings'
 
+const d3 = require('d3')
+
 export function makeEncodingFromCtrlPoints (
   controlPoints: ControlPointState[]
 ): (obs: number) => number {
@@ -25,9 +27,10 @@ export function makeEncodingFromCtrlPoints (
       }
     })
     if (!lower || !upper) return 0
-    return (
-      (obs - lower.pos.x) *
-      ((upper.pos.y - lower.pos.y) / (upper.pos.x - lower.pos.x))
-    )
+    const scale = d3
+      .scaleLinear()
+      .domain([lower.pos.x, upper.pos.x])
+      .range([lower.pos.y, upper.pos.y])
+    return scale(obs)
   }
 }
