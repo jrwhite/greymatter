@@ -79,6 +79,8 @@ export class EncodingGraph extends React.Component<IProps> {
       </svg>
     )
   }
+
+  // TODO: don't actually need to 'make' the scales. can just define them
   makeScaleX () {
     const { rangeX, width } = this.props
     const scale = d3
@@ -87,6 +89,7 @@ export class EncodingGraph extends React.Component<IProps> {
       .range([0, width])
     return scale
   }
+
   makeScaleY () {
     const { rangeY, height } = this.props
     const scale = d3
