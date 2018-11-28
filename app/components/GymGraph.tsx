@@ -46,6 +46,7 @@ export class GymGraph extends React.Component<IProps, IState> {
           {obsLines.map((obs) => {
             return (
               <Checkbox
+                key={obs.index}
                 checked={obs.show}
                 onChange={() =>
                   this.setState({
