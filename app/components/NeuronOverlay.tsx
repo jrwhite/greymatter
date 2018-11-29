@@ -5,7 +5,7 @@ import { Icon } from '@blueprintjs/core'
 import { AxonState } from '../reducers/neurons'
 
 export interface IProps {
-  removeNeurons: (payload: RemoveNeuronsAction) => void
+  removeNeuron: (id: string) => void
   rotateNeuron: (payload: RotateNeuronAction) => void
   addNewApToSynapse: (id: string) => void
   fireNeuron: (id: string) => void
@@ -19,7 +19,7 @@ export class NeuronOverlay extends React.Component<IProps> {
 
   render () {
     const {
-      removeNeurons,
+      removeNeuron,
       rotateNeuron,
       id,
       axon,
@@ -39,7 +39,7 @@ export class NeuronOverlay extends React.Component<IProps> {
           />
         </g>
         <g
-          onClick={() => removeNeurons({ neurons: [{ id }] })}
+          onClick={() => removeNeuron(id)}
           transform={'translate(' + 60 + ',' + -50 + ')'}
           pointerEvents='all'
         >

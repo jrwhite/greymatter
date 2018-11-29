@@ -24,7 +24,11 @@ import { connect } from 'react-redux'
 import { DendList } from '../components/DendList'
 import { AddNewObservableAction } from '../actions/observables'
 import { ObservableEnum } from '../reducers/observables'
-import { makeGetNeuronPotential, getNeuronFromId, makeGetNeuronPotRange } from '../selectors/neuron'
+import {
+  makeGetNeuronPotential,
+  getNeuronFromId,
+  makeGetNeuronPotRange
+} from '../selectors/neuron'
 
 const getSelectedNeuron = (state: IState, props: IProps) =>
   state.network.neurons.find((neuron: NeuronState) => neuron.id === props.id)

@@ -1,5 +1,5 @@
 import { IAction } from '../actions/helpers'
-import { selectNeuron } from '../actions/neurons'
+import { selectNeuron, removeNeurons } from '../actions/neurons'
 import { selectInput } from '../actions/inputs'
 import {
   pauseNetwork,
@@ -9,6 +9,7 @@ import {
   setDefaultIzhikParams
 } from '../actions/config'
 import { IzhikParams } from './neurons'
+import * as _ from 'lodash'
 
 export interface ConfigState {
   selectedNeurons: SelectedNeuronState[]
@@ -69,6 +70,15 @@ export default function config (
       defaultIzhikParams: {
         ...action.payload
       }
+    }
+  } else if (removeNeurons.test(action)) {
+    return {
+      ...state,
+      selectedNeurons: _.differenceBy(
+        state.selectedNeurons,
+        action.payload.neurons,
+        'id'
+      )
     }
     // BEGIN VOID ACTIONS
   } else if (pauseNetwork.test(action)) {

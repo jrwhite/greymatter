@@ -21,7 +21,7 @@ export const Line: React.SFC<IProps> = (props) => {
     <path
       stroke={props.stroke ? props.stroke : 'red'}
       d={lineSetter(line.points)}
-      stroke-width={width ? width : 5}
+      strokeWidth={width ? width : 5}
     />
   )
 }

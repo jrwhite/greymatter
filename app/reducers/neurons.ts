@@ -23,6 +23,7 @@ import {
   rotateNeuron
 } from './../actions/neurons'
 import { setDefaultIzhikParams } from '../actions/config'
+import { removeSynapses } from '../actions/synapses';
 
 export interface NeuronState {
   id: string
@@ -238,7 +239,7 @@ export default function neurons (
       }
       return n
     })
-  } else if (removeSynapsesFromNeurons.test(action)) {
+  } else if (removeSynapses.test(action)) {
     return _.map(state, (n: NeuronState) => ({
       ...n,
       axon: {
