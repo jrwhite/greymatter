@@ -118,7 +118,7 @@ export class NewEncodingForm extends React.Component<IProps, IState> {
         </FormGroup>
         <FormGroup label='Select Observable'>
           <ObservableSelect
-            popoverProps={{ usePortal: false }}
+            popoverProps={{ usePortal: false, captureDismiss: true }}
             items={observableItems}
             itemRenderer={renderObservableItem}
             onItemSelect={this.handleObservableSelect}
