@@ -32,7 +32,7 @@ const initialConfigState = {
   selectedNeurons: [],
   selectedInputs: [],
   stepSize: 1,
-  stepInterval: 50,
+  stepInterval: 30,
   isPaused: true,
   defaultIzhikParams: {
     a: 0.02,

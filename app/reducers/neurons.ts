@@ -87,9 +87,9 @@ export interface IzhikState {
 export const initialIzhikState: IzhikState = {
   params: {
     a: 0.02,
-    b: 0.2,
+    b: 0.25,
     c: -65,
-    d: 2
+    d: 0.05
   },
   u: 0,
   current: 0,

@@ -44,7 +44,7 @@ const initialGymState = {
   action: 0,
   reward: 0,
   isDone: true,
-  stepRatio: 10
+  stepRatio: 30
 }
 
 export function gym (
