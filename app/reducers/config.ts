@@ -36,9 +36,9 @@ const initialConfigState = {
   isPaused: true,
   defaultIzhikParams: {
     a: 0.02,
-    b: 0.2,
+    b: 0.25,
     c: -65,
-    d: 2
+    d: 0.05
   }
 }
 

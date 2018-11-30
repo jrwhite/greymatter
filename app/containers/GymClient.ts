@@ -235,6 +235,6 @@ function mapDispatchToProps (dispatch: Dispatch<IIState>): Partial<IProps> {
 
 export default (connect(
   // mapStateToProps,
-  makeMapStateToProps(),
+  makeMapStateToProps(), // TODO: Remove parentheses here?
   mapDispatchToProps
 )(GymClient) as any) as React.StatelessComponent<Partial<IProps>>

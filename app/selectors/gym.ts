@@ -5,9 +5,16 @@ export const getObservationRange = (
   state: IState,
   index: number
 ): { start: number; stop: number } => {
-  return {
-    start: state.network.gym.observationSpace!!.low[index],
-    stop: state.network.gym.observationSpace!!.high[index]
+  const start = state.network.gym.observationSpace!!.low[index]
+  const stop = state.network.gym.observationSpace!!.high[index]
+  // TODO: why is the range so big OpenAI?!?
+  if (index === 1 || index === 3) {
+    return {
+      start: -5,
+      stop: 5
+    }
+  } else {
+    return { start, stop }
   }
 }
 

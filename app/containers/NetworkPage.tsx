@@ -16,7 +16,7 @@ function mapStateToProps (state: IState): Partial<IProps> {
   }
 }
 
-function makeMapStateToProps (): (state: IState) => Partial<IProps> {
+const makeMapStateToProps = (): ((state: IState) => Partial<IProps>) => {
   const getSourcedDends = makeGetSourcedDendValues()
 
   return (state: IState) => ({
@@ -35,6 +35,6 @@ function mapDispatchToProps (dispatch: Dispatch<IState>): Partial<IProps> {
 }
 
 export default (connect(
-  makeMapStateToProps(),
+  makeMapStateToProps,
   mapDispatchToProps
 )(Network) as any) as React.StatelessComponent<IProps>

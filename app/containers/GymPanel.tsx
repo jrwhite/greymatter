@@ -20,7 +20,7 @@ import GymObservationData from '../containers/GymObservationData'
 import GymGraph from './GymGraph'
 import { AddNewObservableAction } from '../actions/observables'
 import { ObservableEnum } from '../reducers/observables'
-import NetworkActions from '../actions/network';
+import NetworkActions from '../actions/network'
 
 export interface IProps {
   // TODO: only pass gym props that are needed
