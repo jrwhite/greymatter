@@ -34,7 +34,7 @@ const initialSynapseState: SynapseState = {
   dend: { id: 'd', neuronId: 'n' },
   length: 100,
   width: 2,
-  speed: 0.5,
+  speed: 1,
   isFiring: false,
   actionPotentials: []
 }

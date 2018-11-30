@@ -62,7 +62,8 @@ export interface IState {
 export class GymClient extends React.Component<IProps, IState> {
   props: IProps
   state: IState = {
-    remote: 'http://127.0.0.1:5000',
+    // remote: 'http://127.0.0.1:5000',
+    remote: 'http://35.226.48.74:5000',
     client: undefined,
     instance: undefined
   }
@@ -180,13 +181,13 @@ export class GymClient extends React.Component<IProps, IState> {
     // console.log(instance)
 
     if (client && instance && action !== undefined && gym.isDone === false) {
-      console.log('gym step much success')
-      console.log(action)
-      console.log(Math.round(action))
+      // console.log('gym step much success')
+      // console.log(action)
+      // console.log(Math.round(action))
       client
         .envStep(instance, Math.round(action))
         .then((reply: any) => {
-          console.log(reply)
+          // console.log(reply)
           receiveGymStepReply({
             observations: reply.observation,
             isDone: reply.done,

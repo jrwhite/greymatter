@@ -54,7 +54,7 @@ export class GymGraph extends React.Component<IProps, IState> {
                       if (prev.index === obs.index) {
                         return { ...obs, show: !obs.show }
                       } else {
-                        return obs
+                        return prev
                       }
                     })
                   })
@@ -66,34 +66,15 @@ export class GymGraph extends React.Component<IProps, IState> {
           })}
         </ControlGroup>
         <svg>
-          <ScaledLine
-            {...lineProps}
-            color={'blue'}
-            range={{ start: -5, stop: 5 }}
-          >
-            <GymObservationData index={0} />
-          </ScaledLine>
-          <ScaledLine
-            {...lineProps}
-            color={'green'}
-            range={{ start: -5, stop: 5 }}
-          >
-            <GymObservationData index={1} />
-          </ScaledLine>
-          <ScaledLine
-            {...lineProps}
-            color={'purple'}
-            range={{ start: -1, stop: 1 }}
-          >
-            <GymObservationData index={2} />
-          </ScaledLine>
-          <ScaledLine
-            {...lineProps}
-            color={'orange'}
-            range={{ start: -5, stop: 5 }}
-          >
-            <GymObservationData index={3} />
-          </ScaledLine>
+          {obsLines.map((obs) => {
+            return (
+              <g display={obs.show ? undefined : 'none'} key={obs.index}>
+                <ScaledLine {...lineProps} {...obs}>
+                  <GymObservationData index={obs.index} />
+                </ScaledLine>
+              </g>
+            )
+          })}
         </svg>
       </div>
     )
