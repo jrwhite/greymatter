@@ -23,7 +23,7 @@ export class IzhikParamsControls extends React.Component<IProps> {
 
     return (
       <ControlGroup fill={false} vertical={true}>
-        <Text>Izhik 'a':</Text>
+        <Text>Recovery Decay Rate:</Text>
         <Slider
           min={0.02}
           max={0.1}
@@ -32,7 +32,7 @@ export class IzhikParamsControls extends React.Component<IProps> {
           value={izhikParams.a}
           onRelease={changeA}
         />
-        <Text>Izhik 'b':</Text>
+        <Text>Recovery Sensitivity:</Text>
         <Slider
           min={0.2}
           max={0.25}
@@ -41,7 +41,7 @@ export class IzhikParamsControls extends React.Component<IProps> {
           value={izhikParams.b}
           onRelease={changeB}
         />
-        <Text>Izhik 'c':</Text>
+        <Text>Hyperpolarized Potential:</Text>
         <Slider
           min={-65}
           max={-50}
@@ -50,7 +50,7 @@ export class IzhikParamsControls extends React.Component<IProps> {
           value={izhikParams.c}
           onRelease={changeC}
         />
-        <Text>Izhik 'd':</Text>
+        <Text>Hyperpolarized Recovery:</Text>
         <Slider
           min={0.05}
           max={8}

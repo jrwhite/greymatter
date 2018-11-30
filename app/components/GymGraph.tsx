@@ -41,8 +41,8 @@ export class GymGraph extends React.Component<IProps, IState> {
     }
     const { obsLines } = this.state
     return (
-      <div>
-        <ControlGroup vertical={true}>
+      <div style={{ display: 'flex' }}>
+        <ControlGroup vertical={true} fill={false}>
           {obsLines.map((obs) => {
             return (
               <Checkbox
