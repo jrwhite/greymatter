@@ -331,10 +331,11 @@ export default function neurons (
     })
   } else if (potentiateNeuron.test(action)) {
     return state.map((n) => {
+      const mv = n.izhik.potToMv(n.potential)
       if (n.id === action.payload.id) {
         return {
           ...n,
-          potential: n.potential + action.payload.change
+          potential: n.izhik.mvToPot(mv + action.payload.change)
         }
       } else {
         return n
