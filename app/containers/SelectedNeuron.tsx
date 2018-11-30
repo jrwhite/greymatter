@@ -28,7 +28,8 @@ import { ObservableEnum } from '../reducers/observables'
 import {
   makeGetNeuronPotential,
   getNeuronFromId,
-  makeGetNeuronPotRange
+  makeGetNeuronPotRange,
+  makeGetNeuronPeriodRange
 } from '../selectors/neuron'
 
 const getSelectedNeuron = (state: IState, props: IProps) =>
@@ -61,8 +62,12 @@ export interface IProps {
 export class SelectedNeuron extends React.Component<IProps> {
   props: IProps
 
-  makeGetSelf (id: string) {
+  makeGetSelfPotential (id: string) {
     return (state: IState) => getNeuronFromId(state, id)!!.potential
+  }
+
+  makeGetSelfPeriod (id: string) {
+    return (state: IState) => getNeuronFromId(state, id)!!.firePeriod
   }
 
   render () {
@@ -81,10 +86,19 @@ export class SelectedNeuron extends React.Component<IProps> {
 
     const addPotentialObservable = () => {
       addNewObservable({
-        name: id.toString(),
+        name: id.toString() + '-potential',
         type: ObservableEnum.Potential,
-        getValue: this.makeGetSelf(id),
+        getValue: this.makeGetSelfPotential(id),
         getRange: makeGetNeuronPotRange()
+      })
+    }
+
+    const addPeriodObservable = () => {
+      addNewObservable({
+        name: id.toString() + '-period',
+        type: ObservableEnum.Period,
+        getValue: this.makeGetSelfPeriod(id),
+        getRange: makeGetNeuronPeriodRange()
       })
     }
 
@@ -123,8 +137,12 @@ export class SelectedNeuron extends React.Component<IProps> {
           <Divider />
           <Text>Selected Neuron</Text>
           <Button
-            text={'add observable'}
+            text={'add potential observable'}
             onClick={() => addPotentialObservable()}
+          />
+          <Button
+            text={'add firing rate observable'}
+            onClick={() => addPeriodObservable()}
           />
           <Divider />
           <Checkbox

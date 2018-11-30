@@ -7,7 +7,8 @@ import _ = require('lodash')
 export enum ObservableEnum {
   Gym = 'Gym Observation',
   Potential = 'Neuron Potential',
-  Reward = 'Gym Reward'
+  Reward = 'Gym Reward',
+  Period = 'Neuron Firing Period'
 }
 
 export interface ObservableState {

@@ -26,12 +26,14 @@ import {
 import { setDefaultIzhikParams } from '../actions/config'
 import { removeSynapses } from '../actions/synapses'
 
+export const MaxFirePeriod = 50
 export interface NeuronState {
   id: string
   name?: string
   pos: Point
   theta: number
   potential: number
+  firePeriod: number
   useDefaultConfig: boolean
   izhik: IzhikState
   axon: AxonState
@@ -100,6 +102,7 @@ const initialNeuronState: NeuronState = {
   pos: { x: 0, y: 0 },
   theta: 0,
   potential: 0,
+  firePeriod: 0,
   useDefaultConfig: true,
   izhik: initialIzhikState,
   axon: { id: 'a', cpos: { x: 50, y: 0 }, synapses: [] },
@@ -167,6 +170,7 @@ export default function neurons (
       if (n.id === action.payload.id) {
         return {
           ...n,
+          firePeriod: 0,
           potential: n.izhik.mvToPot(n.izhik.params.c),
           izhik: {
             ...n.izhik,
@@ -367,6 +371,8 @@ export default function neurons (
       const v = n.izhik.potToMv(n.potential)
       return {
         ...n,
+        firePeriod:
+          n.firePeriod + 1 > MaxFirePeriod ? MaxFirePeriod : n.firePeriod + 1,
         potential: n.izhik.mvToPot(stepIzhikPotential(v, n.izhik)),
         izhik: {
           ...n.izhik,

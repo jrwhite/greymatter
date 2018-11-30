@@ -4,7 +4,8 @@ import { IProps } from '../components/Neuron'
 import neurons, {
   NeuronState,
   DendState,
-  IzhikParams
+  IzhikParams,
+  MaxFirePeriod
 } from '../reducers/neurons'
 import * as _ from 'lodash'
 import { getEncodedValueById } from './encoding'
@@ -24,6 +25,17 @@ export const makeGetNeuronPotRange = () =>
   createSelector(
     getNeuronPotRange,
     (potRange) => potRange
+  )
+
+export const getNeuronPeriodRange = (state: IState) => ({
+  start: 0,
+  stop: MaxFirePeriod
+})
+
+export const makeGetNeuronPeriodRange = () =>
+  createSelector(
+    getNeuronPeriodRange,
+    (periodRange) => periodRange
   )
 
 const getNeuron = (state: IState, props: { id: string }) =>
