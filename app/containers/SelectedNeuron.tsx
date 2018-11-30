@@ -3,7 +3,8 @@ import { IzhikParams, NeuronState, DendState } from '../reducers/neurons'
 import {
   ChangeIzhikParamsAction,
   ChangeDendWeightingAction,
-  SetUseDefaultConfigAction
+  SetUseDefaultConfigAction,
+  ChangeNeuronCurrentAction
 } from '../actions/neurons'
 import { IState } from '../reducers'
 import { createSelector } from 'reselect'
@@ -39,12 +40,14 @@ const makeGetSelectedNeuronState = () =>
     (selectedNeuron) => ({
       izhikParams: selectedNeuron!!.izhik.params,
       dends: selectedNeuron!!.dends,
+      current: selectedNeuron!!.izhik.current,
       ...selectedNeuron
     })
   )
 
 export interface IProps {
   changeDendWeighting: (payload: ChangeDendWeightingAction) => void
+  changeNeuronCurrent: (payload: ChangeNeuronCurrentAction) => void
   changeIzhikParams: (payload: ChangeIzhikParamsAction) => void
   addNewObservable: (payload: AddNewObservableAction) => void
   setUseDefaultConfig: (payload: SetUseDefaultConfigAction) => void
@@ -52,6 +55,7 @@ export interface IProps {
   izhikParams: IzhikParams
   dends: DendState[]
   useDefaultConfig: boolean
+  current: number
 }
 
 export class SelectedNeuron extends React.Component<IProps> {
@@ -67,8 +71,10 @@ export class SelectedNeuron extends React.Component<IProps> {
       id,
       izhikParams,
       changeIzhikParams,
+      changeNeuronCurrent,
       changeDendWeighting,
       dends,
+      current,
       addNewObservable,
       useDefaultConfig
     } = this.props
@@ -103,6 +109,11 @@ export class SelectedNeuron extends React.Component<IProps> {
       changeIzhikParams({
         neuronId: id,
         params: { d }
+      })
+    const changeCurrent = (current: number) =>
+      changeNeuronCurrent({
+        neuronId: id,
+        current
       })
 
     return (
@@ -162,6 +173,15 @@ export class SelectedNeuron extends React.Component<IProps> {
             labelStepSize={1}
             value={izhikParams.d}
             onRelease={changeD}
+          />
+          <Text>Current:</Text>
+          <Slider
+            min={0}
+            max={20}
+            stepSize={1}
+            labelStepSize={2}
+            value={current}
+            onRelease={changeCurrent}
           />
           <Divider />
           <Text>Dendrites:</Text>

@@ -56,6 +56,11 @@ export interface ChangeIzhikParamsAction {
   params: Partial<IzhikParams>
 }
 
+export interface ChangeNeuronCurrentAction {
+  neuronId: string
+  current: number
+}
+
 export interface HyperpolarizeNeuron {
   id: string
 }
@@ -145,6 +150,9 @@ export const exciteNeuron = actionCreator<ExciteNeuron>('EXCITE_NEURON')
 export const addDend = actionCreator<AddDendAction>('ADD_DEND')
 export const changeIzhikParams = actionCreator<ChangeIzhikParamsAction>(
   'CHANGE_IZHIK_PARAMS'
+)
+export const changeNeuronCurrent = actionCreator<ChangeNeuronCurrentAction>(
+  'CHANGE_NERUON_CURRENT'
 )
 export const decayNeurons = actionCreatorVoid('DECAY_NEURONS')
 

@@ -6,7 +6,8 @@ import {
   setDendSource,
   decayNeurons,
   potentiateNeuron,
-  setUseDefaultConfig
+  setUseDefaultConfig,
+  changeNeuronCurrent
 } from '../actions/neurons'
 import { Arc, Point } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
@@ -23,7 +24,7 @@ import {
   rotateNeuron
 } from './../actions/neurons'
 import { setDefaultIzhikParams } from '../actions/config'
-import { removeSynapses } from '../actions/synapses';
+import { removeSynapses } from '../actions/synapses'
 
 export interface NeuronState {
   id: string
@@ -208,6 +209,20 @@ export default function neurons (
         }
       }
       return n
+    })
+  } else if (changeNeuronCurrent.test(action)) {
+    return state.map((n: NeuronState) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          izhik: {
+            ...n.izhik,
+            current: action.payload.current
+          }
+        }
+      } else {
+        return n
+      }
     })
   } else if (rotateNeuron.test(action)) {
     return _.map(state, (n: NeuronState) => {
