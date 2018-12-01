@@ -185,7 +185,6 @@ export function removeNeuron (id: string) {
       neuronToRemove.axon.synapses,
       neuronToRemove.dends.map((d) => ({ id: d.synapseId }))
     )
-    // TODO: refactor to accept arrays of neurons to remove
     dispatch(removeNeurons({ neurons: [{ id }] }))
     dispatch(removeSynapses({ synapses: synapsesToRemove }))
   }
