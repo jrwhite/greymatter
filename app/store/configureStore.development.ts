@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
+import createSagaMiddleware from 'redux-saga'
 import { createHashHistory } from 'history'
 import { routerMiddleware, push } from 'react-router-redux'
 import { createLogger } from 'redux-logger'
@@ -48,6 +49,7 @@ const logger = (createLogger as any)({
 
 const history = createHashHistory()
 const router = routerMiddleware(history)
+const saga = createSagaMiddleware()
 
 // If Redux DevTools Extension is installed use it, otherwise use Redux compose
 /* eslint-disable no-underscore-dangle */
@@ -58,7 +60,7 @@ const composeEnhancers: typeof compose = window.__REDUX_DEVTOOLS_EXTENSION_COMPO
   }) as any)
   : compose
 /* eslint-enable no-underscore-dangle */
-const enhancer = composeEnhancers(applyMiddleware(thunk, router, logger))
+const enhancer = composeEnhancers(applyMiddleware(thunk, router, logger, saga))
 
 export = {
   history,
