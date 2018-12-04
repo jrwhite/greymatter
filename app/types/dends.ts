@@ -5,13 +5,13 @@ import { Point, Arc } from "../utils/geometry";
 export interface DendState {
   id: string
   plast: PlastState
-  // baseCpos: Point
-  // synCpos: Point // point of synapse
-  // nu: number
+  baseCpos: Point
+  synCpos: Point // point of synapse
+  nu: number
   arc: Arc // arc width derived from long-term plast
   synapseId: string
-  // incomingAngle: number
-  // length: number // derived from short-term plast
+  incomingAngle: number
+  length: number // derived from short-term plast
   sourceId: string
 }
 
