@@ -8,7 +8,6 @@ import neurons, { NeuronState } from './neurons'
 import synapses, { SynapseState } from './synapses'
 import encodings, { EncodedSourceState } from './encodings'
 import observables, { ObservableState } from './observables'
-import { NormalizedObjects } from '../types/normalized'
 
 export interface ActionPotentialState {
   id: string
@@ -18,7 +17,7 @@ export interface ActionPotentialState {
 
 export interface NetworkState {
   ghostSynapse: GhostSynapseState
-  neurons: NormalizedObjects<NeuronState>
+  neurons: NeuronState[]
   synapses: SynapseState[]
   inputs: InputState[]
   config: ConfigState

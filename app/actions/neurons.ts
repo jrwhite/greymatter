@@ -3,9 +3,7 @@ import {
   IzhikParams,
   NeuronState,
   IzhikState,
-  initialIzhikState,
-  PulseTime,
-  DendState
+  initialIzhikState
 } from '../reducers/neurons'
 import { getAxonAbsPos } from '../selectors/synapse'
 import {
@@ -24,21 +22,21 @@ import {
 import { actionCreator, actionCreatorVoid } from './helpers'
 import { addNewSynapse, removeSynapses } from './synapses'
 import { addSynapseToInputAxon } from './inputs'
-import { initialPulseTime } from '../types/neurons'
-import { getNeuronFromId, getDendFromId } from '../selectors/neurons'
 const _ = require('lodash')
 
 export interface MoveNeuronAction {
   id: string
   pos: Point
 }
-export const moveNeuron = actionCreator<MoveNeuronAction>('MOVE_NEURON')
 
 export interface RotateNeuronAction {
   id: string
   theta: number
 }
-export const rotateNeuron = actionCreator<RotateNeuronAction>('ROTATE_NEURON')
+
+export interface RemoveNeuronsAction {
+  neurons: Array<{ id: string }>
+}
 
 export interface AddNeuronAction {
   id: string
@@ -46,21 +44,20 @@ export interface AddNeuronAction {
   pos: Point
   izhik: IzhikState
 }
-export const addNeuron = actionCreator<AddNeuronAction>('ADD_NEURON')
 
-export interface RemoveNeuronAction {
-  id: string
+export interface ChangeDendWeightingAction {
+  neuronId: string
+  dendId: string
+  weighting: number
 }
-export const removeNeuron = actionCreator<RemoveNeuronAction>('REMOVE_NEURON')
-// TODO: remove the old removeNeuron action and distribute logic to reducers
 
 export interface ChangeIzhikParamsAction {
-  id: string
+  neuronId: string
   params: Partial<IzhikParams>
 }
 
 export interface ChangeNeuronCurrentAction {
-  id: string
+  neuronId: string
   current: number
 }
 
@@ -73,14 +70,35 @@ export interface ExciteNeuron {
   dendId: string
 }
 
+export interface AddDendAction {
+  id: string
+  neuronId: string
+  baseCpos: Point
+  synCpos: Point
+  nu: number
+  incomingAngle: number
+}
+
 export interface RemoveSynapsesAction {
   synapses: Array<{ id: string }>
+}
+
+export interface AddSynapseToDendAction {
+  neuronId: string
+  dendId: string
+  synapseId: string
 }
 
 export interface AddSynapseToAxonAction {
   neuronId: string
   axonId: string
   synapseId: string
+}
+
+export interface SetDendSourceAction {
+  neuronId: string
+  dendId: string
+  sourceId: string
 }
 
 export interface SetUseDefaultConfigAction {
@@ -101,8 +119,14 @@ export const potentiateNeuron = actionCreator<PotentiateNeuronAction>(
   'POTENTIATE_NEURON'
 )
 
+export const setDendSource = actionCreator<SetDendSourceAction>(
+  'SET_DEND_SOURCE'
+)
 export const addSynapseToAxon = actionCreator<AddSynapseToAxonAction>(
   'ADD_SYNAPSE_TO_AXON'
+)
+export const addSynapseToDend = actionCreator<AddSynapseToDendAction>(
+  'ADD_SYNAPSE_TO_DEND'
 )
 
 export const removeSynapsesFromNeurons = actionCreator<RemoveSynapsesAction>(
@@ -112,8 +136,18 @@ export const removeSynapsesFromNeurons = actionCreator<RemoveSynapsesAction>(
 export const hyperpolarizeNeuron = actionCreator<HyperpolarizeNeuron>(
   'HYPERPOLARIZE_NEURON'
 )
+export const changeDendWeighting = actionCreator<ChangeDendWeightingAction>(
+  'CHANGE_DEND_WEIGHTING'
+)
+export const rotateNeuron = actionCreator<RotateNeuronAction>('ROTATE_NEURON')
+export const removeNeurons = actionCreator<RemoveNeuronsAction>(
+  'REMOVE_NEURONS'
+)
+export const moveNeuron = actionCreator<MoveNeuronAction>('MOVE_NEURON')
+export const addNeuron = actionCreator<AddNeuronAction>('ADD_NEURON')
 export const selectNeuron = actionCreator<SelectNeuronAction>('SELECT_NEURON')
 export const exciteNeuron = actionCreator<ExciteNeuron>('EXCITE_NEURON')
+export const addDend = actionCreator<AddDendAction>('ADD_DEND')
 export const changeIzhikParams = actionCreator<ChangeIzhikParamsAction>(
   'CHANGE_IZHIK_PARAMS'
 )
@@ -121,45 +155,6 @@ export const changeNeuronCurrent = actionCreator<ChangeNeuronCurrentAction>(
   'CHANGE_NERUON_CURRENT'
 )
 export const decayNeurons = actionCreatorVoid('DECAY_NEURONS')
-
-export interface AddPulseTimeAction {
-  id: string
-  pulseTime: PulseTime
-}
-
-export const addPulseTime = actionCreator<AddPulseTimeAction>('ADD_PULSE_TIME')
-
-// TODO: get rid of exciteNeuron? potentiateNeuron does the same thing now
-
-export interface RecvPulseAction {
-  id: string
-  dendId: string
-}
-
-export function recvPulse (payload: RecvPulseAction) {
-  return (dispatch: Function, getState: () => IState) => {
-    // add pulseTime
-    dispatch(addPulseTime({ id: payload.id, pulseTime: initialPulseTime }))
-    // get dendrite weighting
-    const neuron: NeuronState | undefined = getNeuronFromId(
-      getState(),
-      payload.id
-    )
-    if (neuron === undefined) return
-    const dend: DendState = getDendFromId(neuron, payload.dendId)
-    const change: number = dend.weighting
-    // potentiate neuron
-    dispatch(potentiateNeuron({ id: payload.id, change }))
-  }
-}
-
-export interface PotentiateDendsAction {
-  id: string
-}
-
-export const potentiateDends = actionCreator<PotentiateDendsAction>(
-  'POTENTIATE_DENDS'
-)
 
 export function fireNeuron (id: string) {
   return (dispatch: Function, getState: () => IState) => {

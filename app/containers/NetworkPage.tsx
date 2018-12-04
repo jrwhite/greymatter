@@ -4,7 +4,7 @@ import { connect, Dispatch } from 'react-redux'
 import { Network, IProps } from '../components/Network'
 import { IState } from '../reducers'
 import NetworkActions from '../actions/network'
-import { makeGetSourcedDendValues } from '../selectors/neurons'
+import { makeGetSourcedDendValues } from '../selectors/neuron'
 
 function mapStateToProps (state: IState): Partial<IProps> {
   return {

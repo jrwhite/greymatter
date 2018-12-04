@@ -2,8 +2,12 @@ import * as React from 'react'
 import { Ellipse } from '../utils/geometry'
 import { makeGetEncodedValueById } from '../selectors/encoding'
 import { IState } from '../reducers'
-import { IProps, Dendrite as RenderDend } from '../components/Dendrite'
-import { getDendFromId, getNeuronFromId } from '../selectors/neurons'
+import {
+  IProps,
+  Dendrite as RenderDend,
+  Dendrite
+} from '../components/Dendrite'
+import { getDendFromId, getNeuronFromId } from '../selectors/neuron'
 import { createSelector } from 'reselect'
 import { DendState } from '../reducers/neurons'
 import { connect } from 'react-redux'
@@ -13,7 +17,6 @@ export interface IIProps {
   neuronId: string
   bodyEllipse: Ellipse
 }
-
 
 const getDendState = (state: IState, props: IIProps): DendState => {
   const neuron = getNeuronFromId(state, props.neuronId)!!
@@ -38,22 +41,6 @@ const makeMapStateToProps = () => {
     ...getDendState(state, props)
     // sourceVal: getSourceValue(state, getDendState(state, props).sourceId)
   })
-}
-
-interface LogicProps {
-
-}
-
-class Dendrite extends React.Component<IProps> {
-  props: IProps
-
-  // componentDidUpdate (prevProps: IProps) {
-  //   if (prevProps.)
-  // }
-
-  render () {
-    return <RenderDend {...this.props} />
-  }
 }
 
 export default (connect(makeMapStateToProps())(

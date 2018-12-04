@@ -18,7 +18,7 @@ export interface AddSynapseAction {
 }
 
 export interface RemoveSynapsesAction {
-  synapses: string[]
+  synapses: Array<{ id: string }>
 }
 
 export interface AddApToSynapse {

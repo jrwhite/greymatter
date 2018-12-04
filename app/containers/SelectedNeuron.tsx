@@ -30,7 +30,7 @@ import {
   getNeuronFromId,
   makeGetNeuronPotRange,
   makeGetNeuronPeriodRange
-} from '../selectors/neurons'
+} from '../selectors/neuron'
 
 const getSelectedNeuron = (state: IState, props: IProps) =>
   state.network.neurons.find((neuron: NeuronState) => neuron.id === props.id)
