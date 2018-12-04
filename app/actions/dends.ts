@@ -1,6 +1,8 @@
 import { actionCreator } from './helpers'
 import { Point } from '../utils/geometry'
 import { PlastState } from '../types/dends'
+import * as _ from 'lodash'
+import { IState } from '../reducers'
 
 export interface AddSynapseToDendAction {
   id: string
@@ -27,12 +29,33 @@ export const setDendPlast = actionCreator<SetDendPlastAction>('SET_DEND_PLAST')
 export interface AddDendAction {
   id: string
   neuronId: string
-  baseCpos: Point
-  synCpos: Point
-  nu: number
-  incomingAngle: number
+  // baseCpos: Point
+  // synCpos: Point
+  // nu: number
+  // incomingAngle: number
 }
 export const addDend = actionCreator<AddDendAction>('ADD_DEND')
+
+export interface AddNewDendAction {
+  neuronId: string
+}
+export function addNewDend (payload: AddNewDendAction) {
+  return (dispatch: Function, getState: () => IState) => {
+    const newId = _.uniqueId('d')
+    dispatch(addDend({ id: newId, neuronId: payload.neuronId }))
+  }
+}
+
+export interface TryMakeSynapseAtNewDendAction {
+  neuronId: string
+}
+export function tryMakeSynapseAtNewDend (
+  payload: TryMakeSynapseAtNewDendAction
+) {
+  return (dispatch: Function, getState: () => IState) => {
+    dispatch
+  }
+}
 
 // TODO: implement removeDend in reducer
 export interface RemoveDendAction {
