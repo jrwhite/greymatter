@@ -7,7 +7,8 @@ import {
   decayNeurons,
   potentiateNeuron,
   setUseDefaultConfig,
-  changeNeuronCurrent
+  changeNeuronCurrent,
+  potentiateDends
 } from '../actions/neurons'
 import { Arc, Point } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
@@ -27,6 +28,9 @@ import { setDefaultIzhikParams } from '../actions/config'
 import { removeSynapses } from '../actions/synapses'
 
 export const MaxFirePeriod = 50
+export const stdpPotFactor = 0.1
+export const maxWeighting = 80
+
 export interface NeuronState {
   id: string
   name?: string
@@ -58,6 +62,7 @@ export interface DendState {
   incomingAngle: number
   length: number // derived from short-term plast
   sourceId: string
+  spikeTime?: number
 }
 
 export interface PlastState {
@@ -160,7 +165,17 @@ export default function neurons (
           ...n,
           potential:
             n.potential +
-            n.dends.find((d) => d.id === action.payload.dendId)!!.weighting
+            n.dends.find((d) => d.id === action.payload.dendId)!!.weighting,
+          dends: n.dends.map((d) => {
+            if (d.id === action.payload.dendId) {
+              return {
+                ...d,
+                spikeTime: 1
+              }
+            } else {
+              return d
+            }
+          })
         }
       }
       return n
@@ -366,6 +381,28 @@ export default function neurons (
         return n
       }
     })
+  } else if (potentiateDends.test(action)) {
+    return state.map((n: NeuronState) => {
+      if (n.id === action.payload.id) {
+        return {
+          ...n,
+          dends: n.dends.map((d) => {
+            if (d.spikeTime === undefined) return d
+            const change = (MaxFirePeriod - d.spikeTime) * stdpPotFactor
+            console.log(change)
+            const newWeighting = d.weighting + change
+            return {
+              ...d,
+              spikeTime: undefined,
+              weighting:
+                newWeighting > maxWeighting ? maxWeighting : newWeighting
+            }
+          })
+        }
+      } else {
+        return n
+      }
+    })
     // begin void actions
   } else if (decayNeurons.test(action)) {
     return state.map((n: NeuronState) => {
@@ -375,9 +412,9 @@ export default function neurons (
         n.firePeriod + 1 > MaxFirePeriod ? MaxFirePeriod : n.firePeriod + 1
       // stop updating on small potential changes to save performance
       if (
-        Math.abs(newPot - n.potential) < 0.1 ||
-        Math.abs(n.potential - newPot) < 0.1 ||
-        n.firePeriod < MaxFirePeriod
+        Math.abs(newPot - n.potential) < 0.01 ||
+        (Math.abs(n.potential - newPot) < 0.01 &&
+          newFirePeriod === MaxFirePeriod)
       ) {
         return n
       }
@@ -388,7 +425,15 @@ export default function neurons (
         izhik: {
           ...n.izhik,
           u: stepIzhikU(v, n.izhik)
-        }
+        },
+        dends: n.dends.map((d) => ({
+          ...d,
+          spikeTime: d.spikeTime
+            ? d.spikeTime + 1 > MaxFirePeriod
+              ? d.spikeTime + 1
+              : d.spikeTime
+            : undefined
+        }))
       }
     })
   } else {

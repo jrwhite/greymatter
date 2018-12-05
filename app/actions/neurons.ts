@@ -156,8 +156,16 @@ export const changeNeuronCurrent = actionCreator<ChangeNeuronCurrentAction>(
 )
 export const decayNeurons = actionCreatorVoid('DECAY_NEURONS')
 
+export interface PotentiateDendsAction {
+  id: string
+}
+export const potentiateDends = actionCreator<PotentiateDendsAction>(
+  'POTENTIATE_DENDS'
+)
+
 export function fireNeuron (id: string) {
   return (dispatch: Function, getState: () => IState) => {
+    dispatch(potentiateDends({ id }))
     dispatch(hyperpolarizeNeuron({ id }))
   }
 }
