@@ -8,7 +8,8 @@ import {
   potentiateNeuron,
   setUseDefaultConfig,
   changeNeuronCurrent,
-  potentiateDends
+  potentiateDends,
+  depressDends
 } from '../actions/neurons'
 import { Arc, Point } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
@@ -31,6 +32,7 @@ export const MaxFirePeriod = 50
 // export const stdpPotFactor = 0.1
 export const stdpPotFactor = 1
 // export const stdpPotFactor = 0
+export const stdpDepFactor = 10
 export const maxWeighting = 80
 
 export interface NeuronState {
@@ -172,11 +174,16 @@ export default function neurons (
             n.potential +
             n.dends.find((d) => d.id === action.payload.dendId)!!.weighting,
           dends: n.dends.map((d) => {
+            const change = (n.izhik.u - n.fireU) * stdpDepFactor
+            console.log(n.fireU)
+            console.log(n.izhik.u)
+            console.log(change)
             if (d.id === action.payload.dendId) {
               return {
                 ...d,
                 spikeTime: 1,
-                spikeU: n.izhik.u
+                spikeU: n.izhik.u,
+                weighting: change > 0 ? d.weighting - change : d.weighting
               }
             } else {
               return d

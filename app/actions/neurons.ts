@@ -163,10 +163,16 @@ export const potentiateDends = actionCreator<PotentiateDendsAction>(
   'POTENTIATE_DENDS'
 )
 
+export interface DepressDendsAction {
+  id: string
+}
+export const depressDends = actionCreator<DepressDendsAction>('DEPRESS_DENDS')
+
 export function fireNeuron (id: string) {
   return (dispatch: Function, getState: () => IState) => {
     dispatch(hyperpolarizeNeuron({ id }))
     dispatch(potentiateDends({ id }))
+    // dispatch(depressDends({ id }))
   }
 }
 
