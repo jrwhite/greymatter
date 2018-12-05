@@ -7,8 +7,7 @@ import {
   decayNeurons,
   potentiateNeuron,
   setUseDefaultConfig,
-  changeNeuronCurrent,
-  removeNeuron
+  changeNeuronCurrent
 } from '../actions/neurons'
 import { Arc, Point } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
@@ -21,74 +20,127 @@ import {
   exciteNeuron,
   hyperpolarizeNeuron,
   moveNeuron,
+  removeNeurons,
   rotateNeuron
 } from './../actions/neurons'
 import { setDefaultIzhikParams } from '../actions/config'
 import { removeSynapses } from '../actions/synapses'
-import {
-  NeuronState,
-  initialNeuronState,
-  DendState,
-  initialDendState,
-  MaxFirePeriod
-} from '../types/neurons'
-import { NormalizedObjects } from '../types/normalized'
-import { combineReducers } from 'redux'
 
-export interface IState {
-  [id: string]: NeuronState
+export const MaxFirePeriod = 50
+export interface NeuronState {
+  id: string
+  name?: string
+  pos: Point
+  theta: number
+  potential: number
+  firePeriod: number
+  useDefaultConfig: boolean
+  izhik: IzhikState
+  axon: AxonState
+  dends: DendState[]
 }
 
-function changeById (
-  state: IState,
-  id: string,
-  change: Partial<NeuronState>
-): IState {
-  const neuron = state[id]
-  return {
-    ...state,
-    [id]: {
-      ...neuron,
-      ...change
-    }
-  }
+export interface AxonState {
+  id: string
+  cpos: Point
+  synapses: Array<{ id: string }>
 }
 
-function changeDendById (
-  state: NormalizedObjects<DendState>,
-  id: string,
-  change: Partial<DendState>
-): NormalizedObjects<DendState> {
-  const dend = state.byId[id]
-  return {
-    ...state,
-    byId: {
-      ...state.byId,
-      [id]: {
-        ...dend,
-        ...change
-      }
-    }
-  }
+export interface DendState {
+  id: string
+  weighting: number // derived from plast
+  plast: PlastState
+  baseCpos: Point
+  synCpos: Point // point of synapse
+  nu: number
+  arc: Arc // arc width derived from long-term plast
+  synapseId: string
+  incomingAngle: number
+  length: number // derived from short-term plast
+  sourceId: string
 }
 
-function byId (
-  state: { [id: string]: NeuronState } = {},
+export interface PlastState {
+  short: number // short term plasticity
+  long: number // long-term plasticity
+}
+
+export interface IzhikParams {
+  a: number
+  b: number
+  c: number
+  d: number
+}
+
+export interface IzhikState {
+  params: IzhikParams
+  u: number
+  current: number
+  potToMv: (pot: number) => number // multiply with potential to get mV
+  mvToPot: (mv: number) => number
+}
+
+/**
+ * Initial states
+ */
+
+export const initialIzhikState: IzhikState = {
+  params: {
+    a: 0.02,
+    b: 0.25,
+    c: -65,
+    d: 0.05
+  },
+  u: 0,
+  current: 0,
+  potToMv: (pot: number) => pot * (30 / 100),
+  mvToPot: (mv: number) => mv * (100 / 30)
+}
+
+const initialNeuronState: NeuronState = {
+  id: 'n',
+  pos: { x: 0, y: 0 },
+  theta: 0,
+  potential: 0,
+  firePeriod: 0,
+  useDefaultConfig: true,
+  izhik: initialIzhikState,
+  axon: { id: 'a', cpos: { x: 50, y: 0 }, synapses: [] },
+  dends: []
+}
+
+const initialDendState: DendState = {
+  id: 'd',
+  weighting: 30,
+  plast: { short: 15, long: 15 },
+  baseCpos: { x: 0, y: 0 },
+  synCpos: { x: 0, y: 0 },
+  nu: 1,
+  arc: { start: 1, stop: 1 },
+  synapseId: 's',
+  incomingAngle: 1,
+  length: 2,
+  sourceId: 'src'
+}
+
+export default function neurons (
+  state: NeuronState[] = [],
   action: IAction
-): { [id: string]: NeuronState } {
+): NeuronState[] {
   if (moveNeuron.test(action)) {
-    const neuron = state[action.payload.id]
-    return {
-      ...state,
-      [action.payload.id]: {
-        ...neuron,
-        pos: action.payload.pos
+    return state.map((n: NeuronState) => {
+      if (n.id === action.payload.id) {
+        return {
+          ...n,
+          ...action.payload
+        }
       }
-    }
+      return n
+    })
   } else if (addNeuron.test(action)) {
-    return {
+    return [
       ...state,
-      [action.payload.id]: {
+      {
         ...initialNeuronState,
         id: action.payload.id,
         pos: action.payload.pos,
@@ -98,75 +150,102 @@ function byId (
           id: action.payload.axonId
         }
       }
-    }
-  } else if (removeNeuron.test(action)) {
-    return _.omit(state, action.payload.id)
-  } else if (hyperpolarizeNeuron.test(action)) {
-    const neuron = state[action.payload.id]
-    return {
-      ...state,
-      [action.payload.id]: {
-        ...neuron,
-        firePeriod: 0,
-        potential: neuron.izhik.mvToPot(neuron.izhik.params.c),
-        izhik: {
-          ...neuron.izhik,
-          u: neuron.izhik.u + neuron.izhik.params.d
+    ]
+  } else if (removeNeurons.test(action)) {
+    return _.differenceBy(state, action.payload.neurons, 'id')
+  } else if (exciteNeuron.test(action)) {
+    return state.map((n) => {
+      if (n.id === action.payload.id) {
+        return {
+          ...n,
+          potential:
+            n.potential +
+            n.dends.find((d) => d.id === action.payload.dendId)!!.weighting
         }
       }
-    }
-  } else if (changeDendWeighting.test(action)) {
-    const neuron = state[action.payload.neuronId]
-    return {
-      ...state,
-      [action.payload.neuronId]: {
-        ...neuron,
-        dends: changeDendById(neuron.dends, action.payload.dendId, {
-          // weighting: action.payload.weighting
-        })
-      }
-    }
-  } else if (changeIzhikParams.test(action)) {
-    const neuron = state[action.payload.id]
-    return {
-      ...state,
-      [action.payload.id]: {
-        ...neuron,
-        izhik: {
-          ...neuron.izhik,
-          params: {
-            ...neuron.izhik.params,
-            ...action.payload.params
+      return n
+    })
+  } else if (hyperpolarizeNeuron.test(action)) {
+    return state.map((n) => {
+      if (n.id === action.payload.id) {
+        return {
+          ...n,
+          firePeriod: 0,
+          potential: n.izhik.mvToPot(n.izhik.params.c),
+          izhik: {
+            ...n.izhik,
+            u: n.izhik.u + n.izhik.params.d
           }
         }
       }
-    }
-  } else if (changeNeuronCurrent.test(action)) {
-    const neuron = state[action.payload.id]
-    return {
-      ...state,
-      [action.payload.id]: {
-        ...neuron,
-        izhik: {
-          ...neuron.izhik,
-          current: action.payload.current
+      return n
+    })
+  } else if (changeDendWeighting.test(action)) {
+    return _.map(state, (n: NeuronState) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          dends: _.map(n.dends, (d: DendState) => {
+            if (d.id === action.payload.dendId) {
+              return {
+                ...d,
+                weighting: action.payload.weighting
+              }
+            }
+            return d
+          })
         }
       }
-    }
+      return n
+    })
+  } else if (changeIzhikParams.test(action)) {
+    return state.map((n: NeuronState) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          izhik: {
+            ...n.izhik,
+            params: {
+              ...n.izhik.params,
+              ...action.payload.params
+            }
+          }
+        }
+      }
+      return n
+    })
+  } else if (changeNeuronCurrent.test(action)) {
+    return state.map((n: NeuronState) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          izhik: {
+            ...n.izhik,
+            current: action.payload.current
+          }
+        }
+      } else {
+        return n
+      }
+    })
   } else if (rotateNeuron.test(action)) {
-    return changeById(state, action.payload.id, {
-      theta: action.payload.theta
+    return _.map(state, (n: NeuronState) => {
+      if (n.id === action.payload.id) {
+        return {
+          ...n,
+          theta: action.payload.theta
+        }
+      }
+      return n
     })
   } else if (addDend.test(action)) {
-    const neuron = state[action.payload.neuronId]
-    return {
-      ...state,
-      [action.payload.neuronId]: {
-        ...neuron,
-        dends: {
-          byId: {
-            ...neuron.dends.byId,
-            [action.payload.id]: {
+    return state.map((n: NeuronState) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          dends: [
+            ...n.dends,
+            {
               ...initialDendState,
               ...action.payload,
               arc: {
@@ -174,80 +253,122 @@ function byId (
                 stop: action.payload.nu + 1 / 16
               }
             }
-          },
-          allIds: _.concat(neuron.dends.allIds, action.payload.id)
+          ]
         }
       }
-    }
+      return n
+    })
   } else if (removeSynapses.test(action)) {
-    // const neuron = state[action.payload.id]
-    // return {
-    //   ...neuron,
-    //   [action.payload.id]: {
-    //     ...neuron,
-    //     axon: {
-    //       ...neuron.axon,
-    //       synapseIds: _.differenceBy(
-    //         neuron.axon.synapseIds,
-    //         action.payload.synapses
-    //       )
-    //     }
-    //   }
-    // }
+    return _.map(state, (n: NeuronState) => ({
+      ...n,
+      axon: {
+        ...n.axon,
+        synapses: _.differenceBy(
+          n.axon.synapses,
+          action.payload.synapses,
+          'id'
+        )
+      },
+      dends: _.differenceWith(
+        n.dends,
+        action.payload.synapses,
+        (a, b) => a.synapseId === b.id
+      )
+    }))
   } else if (addSynapseToAxon.test(action)) {
-    const neuron = state[action.payload.neuronId]
-    return {
-      ...state,
-      [action.payload.neuronId]: {
-        ...neuron,
-        axon: {
-          ...neuron.axon,
-          synapseIds: _.concat(
-            neuron.axon.synapseIds,
-            action.payload.synapseId
-          )
+    return state.map((n) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          axon: {
+            ...n.axon,
+            synapses: _.concat(n.axon.synapses, {
+              id: action.payload.synapseId
+            })
+          }
         }
       }
-    }
+      return n
+    })
   } else if (addSynapseToDend.test(action)) {
-    const neuron = state[action.payload.neuronId]
-    return {
-      ...state,
-      [action.payload.neuronId]: {
-        ...neuron,
-        dends: changeDendById(neuron.dends, action.payload.dendId, {
-          synapseId: action.payload.synapseId
-        })
+    return state.map((n) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          dends: n.dends.map((d) => {
+            if (d.id === action.payload.dendId) {
+              return {
+                ...d,
+                synapseId: action.payload.synapseId
+              }
+            }
+            return d
+          })
+        }
+      } else {
+        return n
       }
-    }
+    })
   } else if (setDendSource.test(action)) {
-    const neuron = state[action.payload.neuronId]
-    return {
-      ...state,
-      [action.payload.neuronId]: {
-        ...neuron,
-        dends: changeDendById(neuron.dends, action.payload.dendId, {
-          sourceId: action.payload.sourceId
-        })
+    return state.map((n) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          dends: n.dends.map((d: DendState) => {
+            if (d.id === action.payload.dendId) {
+              return {
+                ...d,
+                sourceId: action.payload.sourceId
+              }
+            } else {
+              return d
+            }
+          })
+        }
+      } else {
+        return n
       }
-    }
+    })
   } else if (potentiateNeuron.test(action)) {
-    const neuron = state[action.payload.id]
-    const mv = neuron.izhik.potToMv(neuron.potential)
-    return {
-      ...state,
-      [action.payload.id]: {
-        ...neuron,
-        potential: neuron.izhik.mvToPot(mv + action.payload.change)
+    return state.map((n) => {
+      const mv = n.izhik.potToMv(n.potential)
+      if (n.id === action.payload.id) {
+        return {
+          ...n,
+          potential: n.izhik.mvToPot(mv + action.payload.change)
+        }
+      } else {
+        return n
       }
-    }
+    })
   } else if (setUseDefaultConfig.test(action)) {
-    changeById(state, action.payload.id, {
-      useDefaultConfig: action.payload.useDefaultConfig
+    return state.map((n) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          useDefaultConfig: action.payload.useDefaultConfig
+        }
+      } else {
+        return n
+      }
+    })
+  } else if (setDefaultIzhikParams.test(action)) {
+    return state.map((n) => {
+      if (n.useDefaultConfig) {
+        return {
+          ...n,
+          izhik: {
+            ...n.izhik,
+            params: { ...action.payload }
+          }
+        }
+      } else {
+        return n
+      }
     })
     // begin void actions
   } else if (decayNeurons.test(action)) {
-    return _.mapValues(state, (n: NeuronState) => {
+    return state.map((n: NeuronState) => {
       const v = n.izhik.potToMv(n.potential)
       return {
         ...n,
@@ -260,18 +381,7 @@ function byId (
         }
       }
     })
+  } else {
+    return state
   }
-  return state
 }
-
-function allIds (state: string[] = [], action: IAction): string[] {
-  if (addNeuron.test(action)) {
-    return _.concat(state, action.payload.id)
-  } else if (removeNeuron.test(action)) {
-    return _.filter(state, (id) => id !== action.payload.id)
-  }
-  return state
-}
-
-const neurons = combineReducers({ byId, allIds })
-export default neurons

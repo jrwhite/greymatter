@@ -21,13 +21,13 @@ import GymClient from '../containers/GymClient'
 import { LowerBar } from './LowerBar'
 import { GhostSynapseState } from '../reducers/ghostSynapse'
 import { InputState } from '../reducers/inputs'
+import { NeuronState } from '../reducers/neurons'
 import { SynapseState } from '../reducers/synapses'
 import { ConfigState } from '../reducers/config'
 import { NeuronPotentialData } from '../containers/NeuronPotentialData'
 import { PotentiateNeuronAction } from '../actions/neurons'
-import { SourcedDendValue } from '../selectors/neurons'
+import { SourcedDendValue } from '../selectors/neuron'
 import { StepGymAction } from '../actions/gym'
-import { NeuronState } from '../types/neurons'
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -49,7 +49,7 @@ export interface IProps extends RouteComponentProps<any> {
   addNewApToSynapse: (id: string) => void
   ghostSynapse: GhostSynapseState
   inputs: InputState[]
-  neuronIds: string[]
+  neurons: NeuronState[]
   synapses: SynapseState[]
   config: ConfigState
   sourcedDends: SourcedDendValue[]
@@ -117,7 +117,7 @@ export class Network extends React.Component<IProps, IState> {
     const {
       resetNetwork,
       ghostSynapse,
-      neuronIds,
+      neurons,
       synapses,
       inputs,
       slowDownNetwork,
@@ -129,10 +129,10 @@ export class Network extends React.Component<IProps, IState> {
 
     // TODO: refactor ghostSynapse into separate component
     const axonNeuron = ghostSynapse.axon
-      ? neuronIds.find((n) => n.id === ghostSynapse.axon!!.neuronId)
+      ? neurons.find((n) => n.id === ghostSynapse.axon!!.neuronId)
       : undefined
     const dendNeuron = ghostSynapse.dend
-      ? neuronIds.find((n) => n.id === ghostSynapse.dend!!.neuronId)
+      ? neurons.find((n) => n.id === ghostSynapse.dend!!.neuronId)
       : undefined
 
     // console.log('network rerender')
@@ -183,8 +183,8 @@ export class Network extends React.Component<IProps, IState> {
                 {inputs.map((input: InputState) => (
                   <Input key={input.id} {...input} />
                 ))}
-                {neuronIds.map((id: string) => (
-                  <Neuron key={id} id={id} />
+                {neurons.map((neuron: NeuronState) => (
+                  <Neuron key={neuron.id} id={neuron.id} />
                 ))}
                 {synapses.map((synapse: SynapseState) => (
                   <Synapse key={synapse.id} {...synapse} />

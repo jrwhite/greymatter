@@ -4,14 +4,24 @@ import { connect, Dispatch } from 'react-redux'
 import { Network, IProps } from '../components/Network'
 import { IState } from '../reducers'
 import NetworkActions from '../actions/network'
-import { makeGetSourcedDendValues } from '../selectors/neurons'
+import { makeGetSourcedDendValues } from '../selectors/neuron'
+
+function mapStateToProps (state: IState): Partial<IProps> {
+  return {
+    inputs: state.network.inputs,
+    neurons: state.network.neurons,
+    synapses: state.network.synapses,
+    ghostSynapse: state.network.ghostSynapse,
+    config: state.network.config
+  }
+}
 
 const makeMapStateToProps = (): ((state: IState) => Partial<IProps>) => {
   const getSourcedDends = makeGetSourcedDendValues()
 
   return (state: IState) => ({
     inputs: state.network.inputs,
-    neuronIds: state.network.neurons.allIds,
+    neurons: state.network.neurons,
     synapses: state.network.synapses,
     ghostSynapse: state.network.ghostSynapse,
     config: state.network.config,

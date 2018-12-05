@@ -2,8 +2,8 @@ import * as React from 'react'
 import { Ellipse } from './Ellipse'
 import { Arc, Ellipse as EllipseGeo } from '../utils/geometry'
 import * as _ from 'lodash'
+import { DendState } from '../reducers/neurons'
 import Dendrite from '../containers/Dendrite'
-import { DendState } from '../types/neurons';
 const d3 = require('d3')
 
 export interface IProps {

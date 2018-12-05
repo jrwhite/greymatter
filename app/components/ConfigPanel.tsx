@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { IzhikParamsControls } from './IzhikParamsControls'
+import { IzhikParams } from '../reducers/neurons'
 import {
   SetDefaultIzhikParamsAction,
   setDefaultIzhikParams
 } from '../actions/config'
-import { IzhikParams } from '../types/neurons';
 
 const styles = require('./ConfigPanel.scss')
 

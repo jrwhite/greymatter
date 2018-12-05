@@ -7,7 +7,7 @@ import {
   Dendrite as RenderDend,
   Dendrite
 } from '../components/Dendrite'
-import { getDendFromId, getNeuronFromId } from '../selectors/neurons'
+import { getDendFromId, getNeuronFromId } from '../selectors/neuron'
 import { createSelector } from 'reselect'
 import { DendState } from '../reducers/neurons'
 import { connect } from 'react-redux'

@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router'
 import { Point } from '../utils/geometry'
 import { TimeInterval, Timer } from 'd3'
 import { MoveInput, SelectInputAction } from '../actions/inputs'
-import { AxonState } from '../types/neurons';
+import { AxonState } from '../reducers/neurons'
 const { Menu } = remote
 const d3 = require('d3')
 
