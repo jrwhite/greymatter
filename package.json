@@ -1,8 +1,8 @@
 {
   "name": "greymatter",
-  "productName": "Greymatter",
+  "productName": "greymatter",
   "version": "0.10.0",
-  "description": "Neural network design tool",
+  "description": "Design spiking neural networks",
   "main": "main.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test node --trace-warnings ./test/runTests.js",

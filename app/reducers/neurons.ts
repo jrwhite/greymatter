@@ -370,11 +370,21 @@ export default function neurons (
   } else if (decayNeurons.test(action)) {
     return state.map((n: NeuronState) => {
       const v = n.izhik.potToMv(n.potential)
+      const newPot = n.izhik.mvToPot(stepIzhikPotential(v, n.izhik))
+      const newFirePeriod =
+        n.firePeriod + 1 > MaxFirePeriod ? MaxFirePeriod : n.firePeriod + 1
+      // stop updating on small potential changes to save performance
+      if (
+        Math.abs(newPot - n.potential) < 0.1 ||
+        Math.abs(n.potential - newPot) < 0.1 ||
+        n.firePeriod < MaxFirePeriod
+      ) {
+        return n
+      }
       return {
         ...n,
-        firePeriod:
-          n.firePeriod + 1 > MaxFirePeriod ? MaxFirePeriod : n.firePeriod + 1,
-        potential: n.izhik.mvToPot(stepIzhikPotential(v, n.izhik)),
+        firePeriod: newFirePeriod,
+        potential: newPot,
         izhik: {
           ...n.izhik,
           u: stepIzhikU(v, n.izhik)
