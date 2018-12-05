@@ -28,7 +28,9 @@ import { setDefaultIzhikParams } from '../actions/config'
 import { removeSynapses } from '../actions/synapses'
 
 export const MaxFirePeriod = 50
-export const stdpPotFactor = 0.1
+// export const stdpPotFactor = 0.1
+export const stdpPotFactor = 1
+// export const stdpPotFactor = 0
 export const maxWeighting = 80
 
 export interface NeuronState {
@@ -38,6 +40,7 @@ export interface NeuronState {
   theta: number
   potential: number
   firePeriod: number
+  fireU: number
   useDefaultConfig: boolean
   izhik: IzhikState
   axon: AxonState
@@ -63,6 +66,7 @@ export interface DendState {
   length: number // derived from short-term plast
   sourceId: string
   spikeTime?: number
+  spikeU?: number
 }
 
 export interface PlastState {
@@ -108,6 +112,7 @@ const initialNeuronState: NeuronState = {
   theta: 0,
   potential: 0,
   firePeriod: 0,
+  fireU: 0,
   useDefaultConfig: true,
   izhik: initialIzhikState,
   axon: { id: 'a', cpos: { x: 50, y: 0 }, synapses: [] },
@@ -170,7 +175,8 @@ export default function neurons (
             if (d.id === action.payload.dendId) {
               return {
                 ...d,
-                spikeTime: 1
+                spikeTime: 1,
+                spikeU: n.izhik.u
               }
             } else {
               return d
@@ -186,6 +192,7 @@ export default function neurons (
         return {
           ...n,
           firePeriod: 0,
+          fireU: n.izhik.u,
           potential: n.izhik.mvToPot(n.izhik.params.c),
           izhik: {
             ...n.izhik,
@@ -388,12 +395,18 @@ export default function neurons (
           ...n,
           dends: n.dends.map((d) => {
             if (d.spikeTime === undefined) return d
-            const change = (MaxFirePeriod - d.spikeTime) * stdpPotFactor
+            if (d.spikeU === undefined) return d
+            // const change = (MaxFirePeriod - d.spikeTime) * stdpPotFactor
+            console.log(d.spikeU)
+            console.log(n.fireU)
+            const change =
+              d.spikeU < n.fireU ? (n.fireU - d.spikeU) * stdpPotFactor : 0
             console.log(change)
             const newWeighting = d.weighting + change
             return {
               ...d,
               spikeTime: undefined,
+              spikeU: undefined,
               weighting:
                 newWeighting > maxWeighting ? maxWeighting : newWeighting
             }
@@ -410,13 +423,17 @@ export default function neurons (
       const newPot = n.izhik.mvToPot(stepIzhikPotential(v, n.izhik))
       const newFirePeriod =
         n.firePeriod + 1 > MaxFirePeriod ? MaxFirePeriod : n.firePeriod + 1
+      const newU = stepIzhikU(v, n.izhik)
       // stop updating on small potential changes to save performance
-      if (
-        Math.abs(newPot - n.potential) < 0.01 ||
-        (Math.abs(n.potential - newPot) < 0.01 &&
-          newFirePeriod === MaxFirePeriod)
-      ) {
-        return n
+      if (newFirePeriod === MaxFirePeriod) {
+        if (
+          Math.abs(newPot - n.potential) < 0.01 ||
+          Math.abs(n.potential - newPot) < 0.01 ||
+          Math.abs(n.izhik.u - newU) < 0.001 ||
+          Math.abs(newU - n.izhik.u) < 0.001
+        ) {
+          // return n
+        }
       }
       return {
         ...n,
