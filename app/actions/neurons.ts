@@ -1,10 +1,4 @@
 import { IState } from '../reducers'
-import {
-  IzhikParams,
-  NeuronState,
-  IzhikState,
-  initialIzhikState
-} from '../reducers/neurons'
 import { getAxonAbsPos } from '../selectors/synapse'
 import {
   addPoints,
@@ -22,21 +16,26 @@ import {
 import { actionCreator, actionCreatorVoid } from './helpers'
 import { addNewSynapse, removeSynapses } from './synapses'
 import { addSynapseToInputAxon } from './inputs'
+import {
+  IzhikState,
+  IzhikParams,
+  initialIzhikState,
+  NeuronState,
+  DendState
+} from '../types/neurons'
 const _ = require('lodash')
 
 export interface MoveNeuronAction {
   id: string
   pos: Point
 }
+export const moveNeuron = actionCreator<MoveNeuronAction>('MOVE_NEURON')
 
 export interface RotateNeuronAction {
   id: string
   theta: number
 }
-
-export interface RemoveNeuronsAction {
-  neurons: Array<{ id: string }>
-}
+export const rotateNeuron = actionCreator<RotateNeuronAction>('ROTATE_NEURON')
 
 export interface AddNeuronAction {
   id: string
@@ -44,131 +43,131 @@ export interface AddNeuronAction {
   pos: Point
   izhik: IzhikState
 }
+export const addNeuron = actionCreator<AddNeuronAction>('ADD_NEURON')
 
 export interface ChangeDendWeightingAction {
   neuronId: string
   dendId: string
   weighting: number
 }
+export const changeDendWeighting = actionCreator<ChangeDendWeightingAction>(
+  'CHANGE_DEND_WEIGHTING'
+)
 
 export interface ChangeIzhikParamsAction {
-  neuronId: string
+  id: string
   params: Partial<IzhikParams>
 }
+export const changeIzhikParams = actionCreator<ChangeIzhikParamsAction>(
+  'CHANGE_IZHIK_PARAMS'
+)
 
 export interface ChangeNeuronCurrentAction {
-  neuronId: string
+  id: string
   current: number
 }
+export const changeNeuronCurrent = actionCreator<ChangeNeuronCurrentAction>(
+  'CHANGE_NERUON_CURRENT'
+)
 
 export interface HyperpolarizeNeuron {
   id: string
 }
+export const hyperpolarizeNeuron = actionCreator<HyperpolarizeNeuron>(
+  'HYPERPOLARIZE_NEURON'
+)
 
 export interface ExciteNeuron {
   id: string
   dendId: string
 }
+export const exciteNeuron = actionCreator<ExciteNeuron>('EXCITE_NEURON')
 
 export interface AddDendAction {
   id: string
   neuronId: string
-  baseCpos: Point
-  synCpos: Point
-  nu: number
-  incomingAngle: number
+  // baseCpos: Point
+  // synCpos: Point
+  // nu: number
+  // incomingAngle: number
 }
+export const addDend = actionCreator<AddDendAction>('ADD_DEND')
 
 export interface RemoveSynapsesAction {
   synapses: Array<{ id: string }>
 }
+export const removeSynapsesFromNeurons = actionCreator<RemoveSynapsesAction>(
+  'REMOVE_SYNAPSES'
+)
 
 export interface AddSynapseToDendAction {
   neuronId: string
   dendId: string
   synapseId: string
 }
+export const addSynapseToDend = actionCreator<AddSynapseToDendAction>(
+  'ADD_SYNAPSE_TO_DEND'
+)
 
 export interface AddSynapseToAxonAction {
   neuronId: string
   axonId: string
   synapseId: string
 }
+export const addSynapseToAxon = actionCreator<AddSynapseToAxonAction>(
+  'ADD_SYNAPSE_TO_AXON'
+)
 
 export interface SetDendSourceAction {
   neuronId: string
   dendId: string
   sourceId: string
 }
+export const setDendSource = actionCreator<SetDendSourceAction>(
+  'SET_DEND_SOURCE'
+)
 
 export interface SetUseDefaultConfigAction {
-  neuronId: string
+  id: string
   useDefaultConfig: boolean
 }
-
 export const setUseDefaultConfig = actionCreator<SetUseDefaultConfigAction>(
   'SET_USE_DEFAULT_CONFIG'
 )
 
+export const potentiateNeuron = actionCreator<PotentiateNeuronAction>(
+  'POTENTIATE_NEURON'
+)
 export interface PotentiateNeuronAction {
   id: string
   change: number
 }
 
-export const potentiateNeuron = actionCreator<PotentiateNeuronAction>(
-  'POTENTIATE_NEURON'
-)
-
-export const setDendSource = actionCreator<SetDendSourceAction>(
-  'SET_DEND_SOURCE'
-)
-export const addSynapseToAxon = actionCreator<AddSynapseToAxonAction>(
-  'ADD_SYNAPSE_TO_AXON'
-)
-export const addSynapseToDend = actionCreator<AddSynapseToDendAction>(
-  'ADD_SYNAPSE_TO_DEND'
-)
-
-export const removeSynapsesFromNeurons = actionCreator<RemoveSynapsesAction>(
-  'REMOVE_SYNAPSES'
-)
-
-export const hyperpolarizeNeuron = actionCreator<HyperpolarizeNeuron>(
-  'HYPERPOLARIZE_NEURON'
-)
-export const changeDendWeighting = actionCreator<ChangeDendWeightingAction>(
-  'CHANGE_DEND_WEIGHTING'
-)
-export const rotateNeuron = actionCreator<RotateNeuronAction>('ROTATE_NEURON')
-export const removeNeurons = actionCreator<RemoveNeuronsAction>(
-  'REMOVE_NEURONS'
-)
-export const moveNeuron = actionCreator<MoveNeuronAction>('MOVE_NEURON')
-export const addNeuron = actionCreator<AddNeuronAction>('ADD_NEURON')
 export const selectNeuron = actionCreator<SelectNeuronAction>('SELECT_NEURON')
-export const exciteNeuron = actionCreator<ExciteNeuron>('EXCITE_NEURON')
-export const addDend = actionCreator<AddDendAction>('ADD_DEND')
-export const changeIzhikParams = actionCreator<ChangeIzhikParamsAction>(
-  'CHANGE_IZHIK_PARAMS'
-)
-export const changeNeuronCurrent = actionCreator<ChangeNeuronCurrentAction>(
-  'CHANGE_NERUON_CURRENT'
-)
+
 export const decayNeurons = actionCreatorVoid('DECAY_NEURONS')
 
-export function fireNeuron (id: string) {
+export interface FireNeuronAction {
+  id: string
+}
+
+export function fireNeuron (payload: FireNeuronAction) {
   return (dispatch: Function, getState: () => IState) => {
-    dispatch(hyperpolarizeNeuron({ id }))
+    dispatch(hyperpolarizeNeuron(payload))
   }
 }
 
-export function addNewNeuron (pos: Point) {
+export interface AddNewNeuronAction {
+  pos: Point
+}
+
+export function addNewNeuron (payload: AddNewNeuronAction) {
   return (dispatch: Function, getState: () => IState) => {
     const initialIzhikParams = getState().network.config.defaultIzhikParams
     dispatch(
       addNeuron({
         id: _.uniqueId('n'),
-        pos,
+        ...payload,
         axonId: _.uniqueId('a'),
         izhik: { ...initialIzhikState, params: initialIzhikParams }
       })
@@ -176,46 +175,65 @@ export function addNewNeuron (pos: Point) {
   }
 }
 
-export function removeNeuron (id: string) {
+export interface RemoveNeuronAction {
+  id: string
+}
+export const removeNeuron = actionCreator<RemoveNeuronAction>('REMOVE_NEURON')
+
+export interface RemoveNeuronAndRefsAction {
+  id: string
+}
+
+export function removeNeuronAndRefs (payload: RemoveNeuronAndRefsAction) {
   return (dispatch: Function, getState: () => IState) => {
-    const neuronToRemove: NeuronState = getState().network.neurons.find(
-      (n) => n.id === id
-    )!!
+    const neuronToRemove: NeuronState = getState().network.neurons.byId[
+      payload.id
+    ]
     const synapsesToRemove: Array<{ id: string }> = _.concat(
-      neuronToRemove.axon.synapses,
-      neuronToRemove.dends.map((d) => ({ id: d.synapseId }))
+      neuronToRemove.axon.synapseIds,
+      _.mapValues(neuronToRemove.dends.byId, (d: DendState) => ({
+        id: d.synapseId
+      }))
     )
-    dispatch(removeNeurons({ neurons: [{ id }] }))
+    dispatch(removeNeuron(payload))
     dispatch(removeSynapses({ synapses: synapsesToRemove }))
   }
 }
 
-export function addNewDend (
-  newDendId: string,
-  neuronId: string,
-  neuronPos: Point,
-  axonPos: Point,
-  bodyEllipse: Ellipse
-) {
+export interface AddNewDendAction {
+  neuronId: string
+  // neuronPos: Point
+  // axonPos: Point
+  // bodyEllipse: Ellipse
+}
+
+// getting rid of this. use selectors instead
+
+export function addNewDend (payload: AddNewDendAction) {
   return (dispatch: Function) => {
-    const newDendGeo: DendGeo = calcClosestDend(
-      neuronPos,
-      axonPos,
-      bodyEllipse
-    )
+    // const newDendGeo: DendGeo = calcClosestDend(
+    //   payload.neuronPos,
+    //   payload.axonPos,
+    //   payload.bodyEllipse
+    // neuronPos,
+    // axonPos,
+    // bodyEllipse
+    // )
+
+    const newId = _.uniqueId('d')
 
     dispatch(
       addDend({
-        id: newDendId,
-        neuronId,
-        baseCpos: newDendGeo.point,
+        id: newId,
+        neuronId: payload.neuronId
+        // baseCpos: newDendGeo.point,
         // synCpos: newDendGeo.point,
-        synCpos: addPoints(newDendGeo.point, {
-          x: Math.cos(newDendGeo.inTheta * Math.PI) * 15, // TODO: replace 15 with default short plast
-          y: Math.sin(newDendGeo.inTheta * Math.PI) * 15
-        }),
-        nu: newDendGeo.nu,
-        incomingAngle: newDendGeo.inTheta
+        // synCpos: addPoints(newDendGeo.point, {
+        //   x: Math.cos(newDendGeo.inTheta * Math.PI) * 15, // TODO: replace 15 with default short plast
+        //   y: Math.sin(newDendGeo.inTheta * Math.PI) * 15
+        // }),
+        // nu: newDendGeo.nu,
+        // incomingAngle: newDendGeo.inTheta
       })
     )
   }
@@ -239,10 +257,14 @@ export function tryMakeSynapseAtDend (id: string, neuronId: string) {
   }
 }
 
-export function tryMakeSynapseAtNewDend (
-  neuronId: string,
-  neuronPos: Point,
+export interface TryMakeSynapseAtNewDendAction {
+  neuronId: string
+  neuronPos: Point
   bodyEllipse: Ellipse
+}
+
+export function tryMakeSynapseAtNewDend (
+  payload: TryMakeSynapseAtNewDendAction
 ) {
   // using ghost synapse axon
   // this likely replaces tryMakeSynapseAtDend
@@ -250,41 +272,34 @@ export function tryMakeSynapseAtNewDend (
     const ghost = getState().network.ghostSynapse
 
     if (ghost.axon && !ghost.dend) {
+      // dispatch(addNewDend(...payload, getAxonAbsPos(getState(), ghost)))
       const newId = _.uniqueId('d')
-      dispatch(
-        addNewDend(
-          newId,
-          neuronId,
-          neuronPos,
-          getAxonAbsPos(getState(), ghost),
-          bodyEllipse
-        )
-      )
-      dispatch(tryMakeSynapseAtDend(newId, neuronId))
+
+      dispatch(addDend({ id: newId, neuronId: payload.neuronId }))
+      dispatch(tryMakeSynapseAtDend(newId, payload.neuronId))
     }
   }
 }
 
-export function tryMakeSynapseAtAxon (id: string, neuronId: string) {
+export interface TryMakeSynapseAtAxon {
+  id: string
+  neuronId: string
+}
+
+export function tryMakeSynapseAtAxon (payload: TryMakeSynapseAtAxon) {
   return (dispatch: Function, getState: () => IState) => {
     const ghost = getState().network.ghostSynapse
 
     if (ghost.dend && !ghost.axon) {
       dispatch(
         addNewSynapse({
-          axon: { id, neuronId },
+          axon: { ...payload },
           dend: { id: ghost.dend.id, neuronId: ghost.dend.neuronId }
         })
       )
       dispatch(resetGhostSynapse())
     } else {
-      dispatch(makeGhostSynapseAtAxon({ id, neuronId }))
+      dispatch(makeGhostSynapseAtAxon({ ...payload }))
     }
-  }
-}
-
-export function stepEncodedDends () {
-  return (dispatch: Function, getState: () => IState) => {
-    // TODO: check if this get properly memoized by reselect
   }
 }

@@ -12,9 +12,6 @@ import { SourceItem } from '../items/source'
 export interface IProps {
   id: string
   neuronId: string
-  index: number
-  weighting: number
-  synapseId: string
 }
 
 // selector needs to take DendState and give DendItem
@@ -51,8 +48,8 @@ const makeGetSourceItemState = () =>
 
 const getDendItem = (state: IState, props: IProps) => ({
   id: props.id,
-  index: props.index,
-  weighting: props.weighting,
+  // index: props.index,
+  // weighting: props.weighting,
   source: getSynapseSourceItem(state, props),
   sourceItems: state.network.encodings
 })
@@ -64,8 +61,8 @@ const makeMapStateToProps = () => {
   const getSourceItem = makeGetSourceItemState()
   return (state: IState, props: IProps): Partial<IIProps> => ({
     id: props.id,
-    index: props.index,
-    weighting: props.weighting,
+    // index: props.index,
+    // weighting: props.weighting,
     sourceItems: state.network.encodings,
     ...getSourceItem(state, props)
   })

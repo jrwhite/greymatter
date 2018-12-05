@@ -11,7 +11,6 @@ import { Line } from './Line'
 import { CurveNatural } from './CurveNatural'
 const d3 = require('d3')
 import * as _ from 'lodash'
-import { DendState } from '../reducers/neurons'
 import { changeDendWeighting } from '../actions/neurons'
 import { IIProps } from '../containers/Dendrite'
 

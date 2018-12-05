@@ -38,7 +38,7 @@ export interface IProps extends IIProps {
   pos: Point
   theta: number
   axon: AxonState
-  dends: DendState[]
+  dendIds: string[]
   potential: number
   isSelected: boolean
 }
@@ -122,7 +122,7 @@ export class Neuron extends React.Component<IProps, IState> {
       id,
       pos,
       axon,
-      dends,
+      dendIds,
       potential,
       isSelected
     } = this.props
@@ -159,7 +159,7 @@ export class Neuron extends React.Component<IProps, IState> {
           onClick={this.handleNeuronClick.bind(this)}
           fill={d3.interpolateGreys(potGreyScale(potential))}
         >
-          <NeuronBody id={id} dends={dends} theta={theta} />
+          <NeuronBody id={id} dends={[]} theta={theta} />
           {/* <Soma potential={potential} id={id} theta={theta} /> */}
         </g>
         <circle

@@ -3,7 +3,7 @@ import { IProps } from '../components/Synapse'
 import { createSelector } from 'reselect'
 import { addPoints, calcAxonPos, Point, subtractPoints } from '../utils/geometry'
 import * as _ from 'lodash'
-import { getNeuronFromId } from './neuron'
+import { getNeuronFromId } from './neurons'
 import { ActionPotentialState } from '../reducers/network'
 import { SynapseState } from '../reducers/synapses';
 

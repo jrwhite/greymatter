@@ -4,10 +4,12 @@ import config, { ConfigState } from './config'
 import { ghostSynapse, GhostSynapseState } from './ghostSynapse'
 import { gym, GymState } from './gym'
 import inputs, { InputState } from './inputs'
-import neurons, { NeuronState } from './neurons'
+import neurons from './neurons'
 import synapses, { SynapseState } from './synapses'
 import encodings, { EncodedSourceState } from './encodings'
 import observables, { ObservableState } from './observables'
+import { NormalizedObjects } from '../types/normalized';
+import { NeuronState } from '../types/neurons';
 
 export interface ActionPotentialState {
   id: string
@@ -17,7 +19,7 @@ export interface ActionPotentialState {
 
 export interface NetworkState {
   ghostSynapse: GhostSynapseState
-  neurons: NeuronState[]
+  neurons: NormalizedObjects<NeuronState>
   synapses: SynapseState[]
   inputs: InputState[]
   config: ConfigState

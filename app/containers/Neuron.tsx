@@ -1,4 +1,4 @@
-import { makeGetNeuronState } from '../selectors/neuron'
+import { makeGetNeuronState } from '../selectors/neurons'
 import { IState } from '../reducers'
 import { connect, Dispatch } from 'react-redux'
 import * as Actions from '../actions/neurons'
@@ -12,8 +12,13 @@ export interface IIProps {
 
 const makeMapStateToProps = () => {
   const getNeuronState = makeGetNeuronState()
-  return (state: IState, props: IIProps): Partial<IProps> =>
-    getNeuronState(state, props)
+  return (state: IState, props: IIProps): Partial<IProps> => {
+    const neuron = state.network.neurons.byId[props.id]
+    return {
+      ...neuron,
+      dendIds: neuron.dends.allIds
+    }
+  }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
@@ -21,6 +26,6 @@ const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
 }
 
 export default (connect(
-  makeMapStateToProps(),
+  makeMapStateToProps,
   mapDispatchToProps
 )(Neuron) as any) as React.StatelessComponent<IIProps>
