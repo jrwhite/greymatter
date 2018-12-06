@@ -72,7 +72,7 @@ const initialState: IState = {
   gymSteps: 0
 }
 
-@HotkeysTarget
+// @HotkeysTarget
 export class Network extends React.Component<IProps, IState> {
   public props: IProps
   public state: IState = initialState
@@ -141,9 +141,9 @@ export class Network extends React.Component<IProps, IState> {
       <div className={styles['container-top']}>
         <div className={styles['wrapper-upper']}>
           <div className={styles['container-upper']}>
-            <div className={styles.sidebar}>
+            {/* <div className={styles.sidebar}>
               <Sidebar />
-            </div>
+            </div> */}
             {/* { config.isPaused ? <GymClient /> : undefined }  */}
             <div className={styles['wrapper-editor']}>
               <svg
@@ -205,37 +205,37 @@ export class Network extends React.Component<IProps, IState> {
             </div>
           </div>
         </div>
-        <div className={styles['wrapper-lower']}>
+        {/* <div className={styles['wrapper-lower']}>
           <div className={styles.lowerbar}>
             <LowerBar />
           </div>
-        </div>
+        </div> */}
       </div>
     )
   }
 
-  public renderHotkeys () {
-    const { inputs, addNewApToSynapse } = this.props
+  // public renderHotkeys () {
+  //   const { inputs, addNewApToSynapse } = this.props
 
-    return (
-      <Hotkeys>
-        {inputs.map((input: InputState) =>
-          input.hotkey ? (
-            <Hotkey
-              label={'fire input ' + input.id}
-              global={false}
-              combo={input.hotkey}
-              onKeyDown={() =>
-                input.axon.synapses.forEach((s) => addNewApToSynapse(s.id))
-              }
-            />
-          ) : (
-            undefined
-          )
-        )}
-      </Hotkeys>
-    )
-  }
+  //   return (
+  //     <Hotkeys>
+  //       {inputs.map((input: InputState) =>
+  //         input.hotkey ? (
+  //           <Hotkey
+  //             label={'fire input ' + input.id}
+  //             global={false}
+  //             combo={input.hotkey}
+  //             onKeyDown={() =>
+  //               input.axon.synapses.forEach((s) => addNewApToSynapse(s.id))
+  //             }
+  //           />
+  //         ) : (
+  //           undefined
+  //         )
+  //       )}
+  //     </Hotkeys>
+  //   )
+  // }
 
   // TODO: refactor this into a runtime container. also maybe put runtime controls in runtime component
   stepSourcedDends () {

@@ -50,8 +50,7 @@
     "productName": "Greymatter",
     "appId": "com.github.jrwhite.greymatter",
     "dmg": {
-      "contents": [
-        {
+      "contents": [{
           "x": 410,
           "y": 150,
           "type": "link",
