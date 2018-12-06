@@ -1,10 +1,15 @@
 import * as React from 'react'
 import { Rotate } from './Rotate'
-import { RemoveNeuronsAction, RotateNeuronAction } from '../actions/neurons'
+import {
+  RemoveNeuronsAction,
+  RotateNeuronAction,
+  SetAxonTypeAction
+} from '../actions/neurons'
 import { Icon } from '@blueprintjs/core'
-import { AxonState } from '../reducers/neurons'
+import { AxonState, AxonType } from '../reducers/neurons'
 
 export interface IProps {
+  setAxonType: (payload: SetAxonTypeAction) => void
   removeNeuron: (id: string) => void
   rotateNeuron: (payload: RotateNeuronAction) => void
   addNewApToSynapse: (id: string) => void
@@ -19,6 +24,7 @@ export class NeuronOverlay extends React.Component<IProps> {
 
   render () {
     const {
+      setAxonType,
       removeNeuron,
       rotateNeuron,
       id,
@@ -64,6 +70,25 @@ export class NeuronOverlay extends React.Component<IProps> {
         >
           <rect width='15' height='15' fill='none' stroke='black' />
           <Icon icon='send-to' tagName='g' />
+        </g>
+        <g
+          onClick={() =>
+            setAxonType({
+              id,
+              type:
+                axon.type === AxonType.Excitatory
+                  ? AxonType.Inhibitory
+                  : AxonType.Inhibitory
+            })
+          }
+          transform={'translate(' + 60 + ',' + 70 + ')'}
+          pointerEvents='all'
+        >
+          <rect width='15' height='15' fill='none' stroke='black' />
+          <Icon
+            icon={axon.type === AxonType.Excitatory ? 'ban-circle' : 'add'}
+            tagName='g'
+          />
         </g>
       </g>
     )

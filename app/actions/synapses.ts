@@ -1,8 +1,14 @@
 import { AddSynapseAction } from './synapses'
 import { actionCreator } from './helpers'
-import { exciteNeuron, addSynapseToAxon, addSynapseToDend } from './neurons'
+import {
+  exciteNeuron,
+  addSynapseToAxon,
+  addSynapseToDend,
+  polarizeNeuron
+} from './neurons'
 import { IState } from '../reducers'
 import { addSynapseToInputAxon } from './inputs'
+import { AxonType } from '../reducers/neurons'
 const _ = require('lodash')
 
 export interface AddSynapseAction {
@@ -75,14 +81,22 @@ export const removeSynapses = actionCreator<RemoveSynapsesAction>(
   'REMOVE_SYNAPSE'
 )
 
-export function finishFiringApOnSynapse (id: string, synapseId: string) {
+export function finishFiringApOnSynapse (
+  id: string,
+  synapseId: string,
+  axonType: AxonType
+) {
   return (dispatch: Function, getState: () => IState) => {
     dispatch(removeApFromSynapse({ id, synapseId }))
     const dend: {
       id: string;
       neuronId: string;
     } = getState().network.synapses.find((s) => s.id === synapseId)!!.dend
-    dispatch(exciteNeuron({ id: dend.neuronId, dendId: dend.id }))
+    if (axonType === AxonType.Excitatory) {
+      dispatch(exciteNeuron({ id: dend.neuronId, dendId: dend.id }))
+    } else if (axonType === AxonType.Inhibitory) {
+      dispatch(polarizeNeuron({ id: dend.neuronId, dendId: dend.id }))
+    }
   }
 }
 

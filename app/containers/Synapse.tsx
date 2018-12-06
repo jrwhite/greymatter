@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux'
 import * as Actions from '../actions/synapses'
 import { IProps, Synapse } from '../components/Synapse'
 import { IState } from '../reducers'
-import { makeGetSynapseState } from '../selectors/synapse'
+import { makeGetSynapseState } from '../selectors/synapses'
 import NetworkActions from '../actions/network'
 
 const makeMapStateToProps = () => {

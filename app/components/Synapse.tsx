@@ -5,6 +5,7 @@ import { Line } from './Line'
 import { ActionPotentialState } from '../reducers/network'
 import ActionPotential from '../containers/ActionPotential'
 import { FilledLineSeg } from './FilledLineSeg'
+import { AxonType } from '../reducers/neurons'
 
 const d3 = require('d3')
 
@@ -17,6 +18,7 @@ export interface IProps extends RouteComponentProps<any> {
   length: number
   speed: number
   axonPos: Point
+  axonType: AxonType
   dendPos: Point
   isFiring: boolean
   actionPotentials: ActionPotentialState[]
@@ -29,6 +31,7 @@ export class Synapse extends React.Component<IProps> {
     const {
       finishFiringApOnSynapse,
       axonPos,
+      axonType,
       dendPos,
       id,
       speed,
@@ -77,6 +80,7 @@ export class Synapse extends React.Component<IProps> {
           <ActionPotential
             key={ap.id}
             id={ap.id}
+            axonType={axonType}
             synapseId={id}
             start={axonPos}
             stop={dendPos}

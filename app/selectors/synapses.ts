@@ -1,14 +1,22 @@
 import { IState } from '../reducers'
 import { IProps } from '../components/Synapse'
 import { createSelector } from 'reselect'
-import { addPoints, calcAxonPos, Point, subtractPoints } from '../utils/geometry'
+import {
+  addPoints,
+  calcAxonPos,
+  Point,
+  subtractPoints
+} from '../utils/geometry'
 import * as _ from 'lodash'
 import { getNeuronFromId } from './neuron'
 import { ActionPotentialState } from '../reducers/network'
-import { SynapseState } from '../reducers/synapses';
+import { SynapseState } from '../reducers/synapses'
+import { AxonType } from '../reducers/neurons'
 
-export const getSynapse = (state: IState, props: { id: string }): SynapseState =>
-  state.network.synapses.find((s) => s.id === props.id)!!
+export const getSynapse = (
+  state: IState,
+  props: { id: string }
+): SynapseState => state.network.synapses.find((s) => s.id === props.id)!!
 
 export const getAxonAbsPos = (state: IState, props: Partial<IProps>): Point => {
   if (props.axon && _.includes(props.axon!!.neuronId, 'in')) {
@@ -24,6 +32,20 @@ export const getAxonAbsPos = (state: IState, props: Partial<IProps>): Point => {
       ecc: 5 / 3
     })
     return addPoints(neuronState.pos, axonCPos)
+  }
+}
+
+export const getAxonType = (
+  state: IState,
+  props: Partial<IProps>
+): AxonType => {
+  if (props.axon && _.includes(props.axon!!.neuronId, 'in')) {
+    return AxonType.Excitatory
+  } else {
+    const neuronState = state.network.neurons.find(
+      (n) => n.id === props.axon!!.neuronId
+    )!!
+    return neuronState.axon.type
   }
 }
 
@@ -75,7 +97,8 @@ export const makeGetSynapseState = () =>
     getDendNeuronPos,
     getAxonPos,
     getDendPos,
-    (synapse, axonAbsPos, dendNeuronPos, axonPos, dendPos) => ({
+    getAxonType,
+    (synapse, axonAbsPos, dendNeuronPos, axonPos, dendPos, axonType) => ({
       ...synapse,
       // id: synapse!!.id,
       // axon: synapse!!.axon,
@@ -85,7 +108,8 @@ export const makeGetSynapseState = () =>
       // speed: synapse!!.speed,
       axonPos: axonAbsPos,
       dendPos: addPoints(dendNeuronPos, dendPos),
-      length: subtractPoints(dendPos, axonPos)
+      length: subtractPoints(dendPos, axonPos),
+      axonType
     })
   )
 

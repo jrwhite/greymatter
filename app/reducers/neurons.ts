@@ -9,7 +9,9 @@ import {
   setUseDefaultConfig,
   changeNeuronCurrent,
   potentiateDends,
-  depressDends
+  depressDends,
+  setAxonType,
+  polarizeNeuron
 } from '../actions/neurons'
 import { Arc, Point } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
@@ -32,7 +34,7 @@ export const MaxFirePeriod = 50
 // export const stdpPotFactor = 0.1
 export const stdpPotFactor = 1
 // export const stdpPotFactor = 0
-export const stdpDepFactor = 10
+export const stdpDepFactor = 20
 export const maxWeighting = 80
 
 export interface NeuronState {
@@ -49,10 +51,16 @@ export interface NeuronState {
   dends: DendState[]
 }
 
+export enum AxonType {
+  Inhibitory,
+  Excitatory
+}
+
 export interface AxonState {
   id: string
   cpos: Point
   synapses: Array<{ id: string }>
+  type: AxonType
 }
 
 export interface DendState {
@@ -117,7 +125,12 @@ const initialNeuronState: NeuronState = {
   fireU: 0,
   useDefaultConfig: true,
   izhik: initialIzhikState,
-  axon: { id: 'a', cpos: { x: 50, y: 0 }, synapses: [] },
+  axon: {
+    id: 'a',
+    cpos: { x: 50, y: 0 },
+    synapses: [],
+    type: AxonType.Excitatory
+  },
   dends: []
 }
 
@@ -174,16 +187,48 @@ export default function neurons (
             n.potential +
             n.dends.find((d) => d.id === action.payload.dendId)!!.weighting,
           dends: n.dends.map((d) => {
-            const change = (n.izhik.u - n.fireU) * stdpDepFactor
-            console.log(n.fireU)
-            console.log(n.izhik.u)
-            console.log(change)
             if (d.id === action.payload.dendId) {
+              const change = (n.izhik.u - n.fireU) * stdpDepFactor
+              console.log(n.fireU)
+              console.log(n.izhik.u)
+              console.log(change)
+              const newWeighting =
+                change > 0 ? d.weighting - change : d.weighting
               return {
                 ...d,
                 spikeTime: 1,
                 spikeU: n.izhik.u,
-                weighting: change > 0 ? d.weighting - change : d.weighting
+                weighting: newWeighting > 1 ? newWeighting : 0
+              }
+            } else {
+              return d
+            }
+          })
+        }
+      }
+      return n
+    })
+  } else if (polarizeNeuron.test(action)) {
+    return state.map((n) => {
+      if (n.id === action.payload.id) {
+        return {
+          ...n,
+          potential:
+            n.potential -
+            n.dends.find((d) => d.id === action.payload.dendId)!!.weighting,
+          dends: n.dends.map((d) => {
+            if (d.id === action.payload.dendId) {
+              const change = (n.izhik.u - n.fireU) * stdpDepFactor
+              console.log(n.fireU)
+              console.log(n.izhik.u)
+              console.log(change)
+              const newWeighting =
+                change > 0 ? d.weighting + change : d.weighting
+              return {
+                ...d,
+                spikeTime: 1,
+                spikeU: n.izhik.u,
+                weighting: newWeighting < maxWeighting ? newWeighting : 0
               }
             } else {
               return d
@@ -223,6 +268,19 @@ export default function neurons (
             }
             return d
           })
+        }
+      }
+      return n
+    })
+  } else if (setAxonType.test(action)) {
+    return _.map(state, (n: NeuronState) => {
+      if (n.id === action.payload.id) {
+        return {
+          ...n,
+          axon: {
+            ...n.axon,
+            type: action.payload.type
+          }
         }
       }
       return n

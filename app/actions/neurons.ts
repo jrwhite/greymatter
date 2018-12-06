@@ -3,9 +3,10 @@ import {
   IzhikParams,
   NeuronState,
   IzhikState,
-  initialIzhikState
+  initialIzhikState,
+  AxonType
 } from '../reducers/neurons'
-import { getAxonAbsPos } from '../selectors/synapse'
+import { getAxonAbsPos } from '../selectors/synapses'
 import {
   addPoints,
   calcClosestDend,
@@ -69,6 +70,14 @@ export interface ExciteNeuron {
   id: string
   dendId: string
 }
+
+export interface PolarizeNeuronAction {
+  id: string
+  dendId: string
+}
+export const polarizeNeuron = actionCreator<PolarizeNeuronAction>(
+  'POLARIZE_NEURON'
+)
 
 export interface AddDendAction {
   id: string
@@ -163,6 +172,12 @@ export const potentiateDends = actionCreator<PotentiateDendsAction>(
   'POTENTIATE_DENDS'
 )
 
+export interface SetAxonTypeAction {
+  id: string
+  type: AxonType
+}
+export const setAxonType = actionCreator<SetAxonTypeAction>('SET_AXON_TYPE')
+
 export interface DepressDendsAction {
   id: string
 }
@@ -170,8 +185,8 @@ export const depressDends = actionCreator<DepressDendsAction>('DEPRESS_DENDS')
 
 export function fireNeuron (id: string) {
   return (dispatch: Function, getState: () => IState) => {
-    dispatch(hyperpolarizeNeuron({ id }))
     dispatch(potentiateDends({ id }))
+    dispatch(hyperpolarizeNeuron({ id }))
     // dispatch(depressDends({ id }))
   }
 }

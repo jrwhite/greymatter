@@ -16,6 +16,7 @@ import {
   SetApShouldAnimateAction
 } from '../actions/synapses'
 import { Line } from './Line'
+import { AxonType } from '../reducers/neurons'
 const d3 = require('d3')
 
 export interface IProps extends IIProps {
@@ -26,6 +27,7 @@ export interface IProps extends IIProps {
   setApShouldAnimate: (payload: SetApShouldAnimateAction) => void
   id: string
   synapseId: string
+  axonType: AxonType
   type: string // inhib / excit
   start: Point
   stop: Point
@@ -99,7 +101,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
   render () {
     const {
       id,
-      type,
+      axonType,
       start,
       stop,
       finishFiringApOnSynapse,
@@ -126,14 +128,17 @@ export class ActionPotential extends React.Component<IProps, IState> {
     // }
 
     // d3.select('#' + id).interrupt()
+
+    const color = axonType === AxonType.Excitatory ? 'white' : 'black'
+
     return (
       <g>
         <defs>
           <radialGradient id={'apGradient' + id}>
-            <stop offset='0%' stopColor='white' stopOpacity='1' />
-            <stop offset='20%' stopColor='white' stopOpacity='1' />
-            <stop offset='50%' stopColor='white' stopOpacity='0.6' />
-            <stop offset='100%' stopColor='white' stopOpacity='0' />
+            <stop offset='0%' stopColor={color} stopOpacity='1' />
+            <stop offset='20%' stopColor={color} stopOpacity='1' />
+            <stop offset='50%' stopColor={color} stopOpacity='0.6' />
+            <stop offset='100%' stopColor={color} stopOpacity='0' />
           </radialGradient>
           {/* <clipPath id={'clipPath'}>
             <rect width={500} height={500} />
@@ -172,6 +177,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
       removeApFromSynapse,
       setApProgress,
       addNewApToSynapse,
+      axonType,
       start,
       stop,
       speed,
@@ -215,7 +221,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
       // .on('end', () => finishFiringApOnSynapse(id, synapseId))
       .on('end', () => {
         if (progress >= 1 - 1 / steps) {
-          finishFiringApOnSynapse(id, synapseId)
+          finishFiringApOnSynapse(id, synapseId, axonType)
         } else {
           setApProgress({ id, synapseId, progress: progress + 1 / steps })
           setApShouldAnimate({ id, synapseId, shouldAnimate: true })

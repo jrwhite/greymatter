@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux'
 import NetworkActions from '../actions/network'
 import { DendInfo, IProps as IIProps } from '../components/DendInfo'
 import { EncodedSourceState } from '../reducers/encodings'
-import { getSynapse } from '../selectors/synapse'
+import { getSynapse } from '../selectors/synapses'
 import { SynapseState } from '../reducers/synapses'
 import { SourceItem } from '../items/source'
 

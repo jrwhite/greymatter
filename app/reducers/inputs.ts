@@ -7,7 +7,7 @@ import {
   moveInput,
   changeInputHotkey
 } from '../actions/inputs'
-import { AxonState } from './neurons'
+import { AxonState, AxonType } from './neurons'
 import _ = require('lodash')
 import { Point } from '../utils/geometry'
 export interface InputState {
@@ -24,7 +24,12 @@ const initialInputState: InputState = {
   rate: 0,
   pos: { x: 0, y: 0 },
   theta: 0,
-  axon: { id: 'a', cpos: { x: 50, y: 0 }, synapses: [] },
+  axon: {
+    id: 'a',
+    cpos: { x: 50, y: 0 },
+    synapses: [],
+    type: AxonType.Excitatory
+  },
   hotkey: undefined
 }
 

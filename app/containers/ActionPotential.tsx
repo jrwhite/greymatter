@@ -8,7 +8,7 @@ import {
   makeGetSynapseState,
   getDendPos,
   getDendNeuronPos
-} from '../selectors/synapse'
+} from '../selectors/synapses'
 import { IState } from '../reducers'
 import { connect, Dispatch } from 'react-redux'
 import { ActionPotential, IProps } from '../components/ActionPotential'
@@ -16,10 +16,12 @@ import NetworkActions from '../actions/network'
 import { bindActionCreators } from 'redux'
 import { createSelector } from 'reselect'
 import { addPoints, Point } from '../utils/geometry'
+import { AxonType } from '../reducers/neurons';
 
 export interface IIProps {
   id: string
   synapseId: string
+  axonType: AxonType
   start: Point
   stop: Point
   speed: number
