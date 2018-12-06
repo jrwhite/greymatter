@@ -37,6 +37,7 @@ export const FilledLineSeg: React.SFC<IProps> = (props) => {
 
   return (
     <path
+      fill={props.fill}
       d={lineSetter([
         props.line.start,
         props.line.stop,

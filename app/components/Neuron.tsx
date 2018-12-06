@@ -21,6 +21,11 @@ import NeuronOverlay from '../containers/NeuronOverlay'
 const { Menu } = remote
 const d3 = require('d3')
 
+export const potGreyScale = d3
+  .scaleLinear()
+  .domain([-300, 100])
+  .range([0.8, 0.4])
+
 export interface IProps extends IIProps {
   fireNeuron: (id: string) => void
   addNewApToSynapse: (id: string) => void
@@ -142,11 +147,6 @@ export class Neuron extends React.Component<IProps, IState> {
       theta,
       ecc: 5 / 3
     })
-
-    const potGreyScale = d3
-      .scaleLinear()
-      .domain([-300, 100])
-      .range([1, 0.5])
 
     return (
       <g

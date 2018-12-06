@@ -68,7 +68,10 @@ export class Synapse extends React.Component<IProps> {
         </clipPath>
         <FilledLineSeg
           width={5}
-          fill='grey'
+          // fill='#394B59'
+          // fill='#182026'
+          // fill='#8A9BA8'
+          fill='#5C7080'
           line={{ start: axonPos, stop: dendPos }}
         />
         {/* <Line line={line} stroke='black' width={3} /> */}
