@@ -78,7 +78,7 @@ export class NeuronOverlay extends React.Component<IProps> {
               type:
                 axon.type === AxonType.Excitatory
                   ? AxonType.Inhibitory
-                  : AxonType.Inhibitory
+                  : AxonType.Excitatory
             })
           }
           transform={'translate(' + 60 + ',' + 70 + ')'}
