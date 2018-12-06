@@ -31,7 +31,7 @@ import { StepGymAction } from '../actions/gym'
 const { Menu } = remote
 const d3 = require('d3')
 
-const styles = require('./Network.scss')
+let styles = require('./Network.scss')
 
 export interface IProps extends RouteComponentProps<any> {
   addNewNeuron (pos: Point): void
@@ -138,79 +138,51 @@ export class Network extends React.Component<IProps, IState> {
     // console.log('network rerender')
 
     return (
-      <div className={styles['container-top']}>
-        <div className={styles['wrapper-upper']}>
-          <div className={styles['container-upper']}>
-            {/* <div className={styles.sidebar}>
-              <Sidebar />
-            </div> */}
-            {/* { config.isPaused ? <GymClient /> : undefined }  */}
-            <div className={styles['wrapper-editor']}>
-              <svg
-                className={styles.editor}
-                onContextMenu={this.onContextMenu.bind(this)}
-                onMouseMove={this.handleMouseMove.bind(this)}
-              >
-                {ghostSynapse && this.state.mouse ? (
-                  <GhostSynapse
-                    axon={
-                      axonNeuron
-                        ? {
-                          pos: addPoints(
-                              axonNeuron.pos,
-                              axonNeuron.axon.cpos
-                            )
-                        }
-                        : undefined
-                    }
-                    dend={
-                      dendNeuron
-                        ? {
-                          pos: addPoints(
-                              dendNeuron.pos,
-                              dendNeuron.dends.find(
-                                (d) => d.id === ghostSynapse.dend!!.id
-                              )!!.baseCpos
-                            )
-                        }
-                        : undefined
-                    }
-                    mouse={this.state.mouse}
-                  />
-                ) : (
-                  undefined
-                )}
-                {inputs.map((input: InputState) => (
-                  <Input key={input.id} {...input} />
-                ))}
-                {neurons.map((neuron: NeuronState) => (
-                  <Neuron key={neuron.id} id={neuron.id} />
-                ))}
-                {synapses.map((synapse: SynapseState) => (
-                  <Synapse key={synapse.id} {...synapse} />
-                ))}
-              </svg>
-              {/* <Text className={styles.overlay}>Overlay</Text> */}
-              <div className={styles.overlay}>
-                <ButtonGroup minimal={true} className={styles.overlay}>
-                  <Button icon='fast-backward' onClick={slowDownNetwork} />
-                  <Button
-                    icon={config.isPaused ? 'play' : 'pause'}
-                    onClick={config.isPaused ? resumeNetwork : pauseNetwork}
-                  />
-                  <Button icon='fast-forward' onClick={speedUpNetwork} />
-                  <Button icon='refresh' onClick={resetNetwork} />
-                </ButtonGroup>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* <div className={styles['wrapper-lower']}>
-          <div className={styles.lowerbar}>
-            <LowerBar />
-          </div>
-        </div> */}
-      </div>
+      <svg
+        // width='300'
+        // width='100vw'
+        // height='100vh'
+        // height='300'
+        className={styles.editor}
+        onContextMenu={this.onContextMenu.bind(this)}
+        onMouseMove={this.handleMouseMove.bind(this)}
+      >
+        {ghostSynapse && this.state.mouse ? (
+          <GhostSynapse
+            axon={
+              axonNeuron
+                ? {
+                  pos: addPoints(axonNeuron.pos, axonNeuron.axon.cpos)
+                }
+                : undefined
+            }
+            dend={
+              dendNeuron
+                ? {
+                  pos: addPoints(
+                      dendNeuron.pos,
+                      dendNeuron.dends.find(
+                        (d) => d.id === ghostSynapse.dend!!.id
+                      )!!.baseCpos
+                    )
+                }
+                : undefined
+            }
+            mouse={this.state.mouse}
+          />
+        ) : (
+          undefined
+        )}
+        {inputs.map((input: InputState) => (
+          <Input key={input.id} {...input} />
+        ))}
+        {neurons.map((neuron: NeuronState) => (
+          <Neuron key={neuron.id} id={neuron.id} />
+        ))}
+        {synapses.map((synapse: SynapseState) => (
+          <Synapse key={synapse.id} {...synapse} />
+        ))}
+      </svg>
     )
   }
 
