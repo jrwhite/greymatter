@@ -1,4 +1,4 @@
-@import '~@blueprintjs/core/lib/scss/variables';
+@import "~@blueprintjs/core/lib/scss/variables";
 
 .container-top {
     display: flex;
@@ -7,7 +7,6 @@
     // resize: vertical;
     overflow-y: auto;
     height: 100vh;
-    width: 100vh;
 }
 
 .wrapper-upper {
@@ -43,9 +42,9 @@
 }
 
 .editor {
-    //   z-index: 1;
-    width: 100vw;
-    height: 100vh;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
 }
 
 .sidebar {
@@ -57,7 +56,7 @@
 
 .lowerbar {
     flex: 0 1 auto;
-    background-color: $gray3;
+    background-color: $gray3
 }
 
 .overlay {
