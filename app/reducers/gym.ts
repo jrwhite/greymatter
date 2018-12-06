@@ -27,6 +27,8 @@ export interface GymState {
   observationSpace?: GymObservationSpace
   actionSpace?: any
   reward: number
+  prevTotalReward: number
+  curTotalReward: number
   isDone: boolean
   error?: string
   info?: any
@@ -43,6 +45,8 @@ const initialGymState = {
   // action: undefined,
   action: 0,
   reward: 0,
+  prevTotalReward: 0,
+  curTotalReward: 0,
   isDone: true,
   stepRatio: 30
 }
@@ -62,9 +66,17 @@ export function gym (
       env: action.payload.env
     }
   } else if (resetGym.test(action)) {
+    if (action.payload.shouldReset === false) {
+      return {
+        ...state,
+        shouldReset: false,
+        prevTotalReward: state.curTotalReward,
+        curTotalReward: 0
+      }
+    }
     return {
       ...state,
-      shouldReset: action.payload.shouldReset
+      shouldReset: true
     }
   } else if (closeGym.test(action)) {
     return {
@@ -74,7 +86,8 @@ export function gym (
   } else if (receiveGymStepReply.test(action)) {
     return {
       ...state,
-      ...action.payload
+      ...action.payload,
+      curTotalReward: state.curTotalReward + action.payload.reward
     }
   } else if (stepGym.test(action)) {
     return {

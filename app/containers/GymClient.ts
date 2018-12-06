@@ -152,7 +152,7 @@ export class GymClient extends React.Component<IProps, IState> {
       client
         .envReset(instance)
         .then((reply: any) => {
-          receiveGymStepReply(reply.observation)
+          // receiveGymStepReply(reply.observation)
           changeGymDone({ isDone: false })
         })
         .catch((error) => {

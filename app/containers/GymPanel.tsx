@@ -35,6 +35,8 @@ export interface IProps {
   setGymEnv: (payload: SetGymEnvAction) => void
   isDone: boolean
   reward: number
+  curTotalReward: number
+  prevTotalReward: number
 }
 
 export interface IState {
@@ -61,7 +63,9 @@ export class GymPanel extends React.Component<IProps, IState> {
       setGymEnv,
       observations,
       isDone,
-      reward
+      reward,
+      prevTotalReward,
+      curTotalReward
     } = this.props
 
     const handleEnvChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -85,9 +89,9 @@ export class GymPanel extends React.Component<IProps, IState> {
         </Button>
         <Text>'Observations'</Text>
         <Text> {'obs 0: ' + observations[0]}</Text>
-        <Text> {'obs 1: ' + observations[1]}</Text>
-        <Text> {'obs 2: ' + observations[2]}</Text>
-        <Text> {'obs 3: ' + observations[3]}</Text>
+        <Text> 'Reward' </Text>
+        <Text> 'Previous: {prevTotalReward}'</Text>
+        <Text> 'Current: {curTotalReward}'</Text>
         <Button onClick={() => addAllGymObservables()}>
           'Add Gym Observables'
         </Button>
@@ -124,7 +128,9 @@ function mapStateToProps (state: IIState): Partial<IProps> {
     actionSpace: state.network.gym.actionSpace,
     observations: state.network.gym.observations,
     isDone: state.network.gym.isDone,
-    reward: state.network.gym.reward
+    reward: state.network.gym.reward,
+    curTotalReward: state.network.gym.curTotalReward,
+    prevTotalReward: state.network.gym.prevTotalReward
   }
 }
 
