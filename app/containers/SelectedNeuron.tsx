@@ -1,10 +1,17 @@
 import * as React from 'react'
-import { IzhikParams, NeuronState, DendState } from '../reducers/neurons'
+import {
+  IzhikParams,
+  NeuronState,
+  DendState,
+  AxonState,
+  AxonType
+} from '../reducers/neurons'
 import {
   ChangeIzhikParamsAction,
   ChangeDendWeightingAction,
   SetUseDefaultConfigAction,
-  ChangeNeuronCurrentAction
+  ChangeNeuronCurrentAction,
+  SetAxonTypeAction
 } from '../actions/neurons'
 import { IState } from '../reducers'
 import { createSelector } from 'reselect'
@@ -15,7 +22,9 @@ import {
   Divider,
   Button,
   Checkbox,
-  Switch
+  Switch,
+  RadioGroup,
+  Radio
 } from '@blueprintjs/core'
 import { Dispatch, bindActionCreators, AnyAction } from 'redux'
 import * as NetworkActions from '../actions/network'
@@ -30,7 +39,7 @@ import {
   getNeuronFromId,
   makeGetNeuronPotRange,
   makeGetNeuronPeriodRange
-} from '../selectors/neuron'
+} from '../selectors/neurons'
 
 const getSelectedNeuron = (state: IState, props: IProps) =>
   state.network.neurons.find((neuron: NeuronState) => neuron.id === props.id)
@@ -47,6 +56,7 @@ const makeGetSelectedNeuronState = () =>
   )
 
 export interface IProps {
+  setAxonType: (payload: SetAxonTypeAction) => void
   changeDendWeighting: (payload: ChangeDendWeightingAction) => void
   changeNeuronCurrent: (payload: ChangeNeuronCurrentAction) => void
   changeIzhikParams: (payload: ChangeIzhikParamsAction) => void
@@ -55,6 +65,7 @@ export interface IProps {
   id: string
   izhikParams: IzhikParams
   dends: DendState[]
+  axon: AxonState
   useDefaultConfig: boolean
   current: number
 }
@@ -73,12 +84,14 @@ export class SelectedNeuron extends React.Component<IProps> {
   render () {
     const {
       setUseDefaultConfig,
+      setAxonType,
       id,
       izhikParams,
       changeIzhikParams,
       changeNeuronCurrent,
       changeDendWeighting,
       dends,
+      axon,
       current,
       addNewObservable,
       useDefaultConfig
@@ -144,6 +157,26 @@ export class SelectedNeuron extends React.Component<IProps> {
             text={'add firing rate observable'}
             onClick={() => addPeriodObservable()}
           />
+          <Divider />
+          <RadioGroup
+            label='Transmitter Type'
+            onChange={(value) =>
+              setAxonType({
+                id,
+                type:
+                  value.type === 'Excitatory'
+                    ? AxonType.Excitatory
+                    : value.type === 'Inhibitory'
+                    ? AxonType.Inhibitory
+                    : AxonType.Volume
+              })
+            }
+            selectedValue={axon.type}
+          >
+            <Radio label={'Excitatory'} value={AxonType.Excitatory} />
+            <Radio label={'Inhibitory'} value={AxonType.Inhibitory} />
+            <Radio label={'Volume'} value={AxonType.Volume} />
+          </RadioGroup>
           <Divider />
           <Checkbox
             checked={useDefaultConfig}

@@ -35,7 +35,7 @@ import {
 } from '../reducers/config'
 import { NeuronPotentialData } from '../containers/NeuronPotentialData'
 import { PotentiateNeuronAction } from '../actions/neurons'
-import { SourcedDendValue } from '../selectors/neuron'
+import { SourcedDendValue } from '../selectors/neurons'
 import {
   StepGymAction,
   setGymStepRatio,

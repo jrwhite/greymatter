@@ -12,9 +12,13 @@ import { remote } from 'electron'
 import { Popover, Text, Button, Position } from '@blueprintjs/core'
 import { PotentialGraph } from './PotentialGraph'
 import { PotentialGraphLine } from './PotentialGraphLine'
-import { MoveNeuronAction, RotateNeuronAction } from '../actions/neurons'
+import {
+  MoveNeuronAction,
+  RotateNeuronAction,
+  fireVolumeNeuron
+} from '../actions/neurons'
 import { SelectNeuronAction } from '../actions/config'
-import { AxonState, DendState } from '../reducers/neurons'
+import { AxonState, DendState, AxonType } from '../reducers/neurons'
 import { IIProps } from '../containers/Neuron'
 import NeuronOverlay from '../containers/NeuronOverlay'
 // import { PotentialGraphLine } from "./PotentialGraphLine"
@@ -28,6 +32,7 @@ export const potGreyScale = d3
 
 export interface IProps extends IIProps {
   fireNeuron: (id: string) => void
+  fireVolumeNeuron: () => void
   addNewApToSynapse: (id: string) => void
   removeNeuron: (id: string) => void
   moveNeuron: (payload: MoveNeuronAction) => void
@@ -121,6 +126,7 @@ export class Neuron extends React.Component<IProps, IState> {
   render () {
     const {
       fireNeuron,
+      fireVolumeNeuron,
       addNewApToSynapse,
       rotateNeuron,
       theta,
@@ -136,6 +142,7 @@ export class Neuron extends React.Component<IProps, IState> {
 
     if (potential >= 100) {
       fireNeuron(id)
+      if (axon.type === AxonType.Volume) fireVolumeNeuron()
       axon.synapses.forEach((s) => addNewApToSynapse(s.id))
     }
 

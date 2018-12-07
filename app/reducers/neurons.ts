@@ -11,7 +11,8 @@ import {
   potentiateDends,
   depressDends,
   setAxonType,
-  polarizeNeuron
+  polarizeNeuron,
+  fireVolumeNeuron
 } from '../actions/neurons'
 import { Arc, Point } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
@@ -36,6 +37,7 @@ export const stdpPotFactor = 1
 // export const stdpPotFactor = 0
 export const stdpDepFactor = 10
 export const maxWeighting = 80
+export const daWeighting = 20
 
 export interface NeuronState {
   id: string
@@ -52,8 +54,9 @@ export interface NeuronState {
 }
 
 export enum AxonType {
-  Inhibitory,
-  Excitatory
+  Inhibitory = 'Inhibitory',
+  Excitatory = 'Excitatory',
+  Volume = 'Volume'
 }
 
 export interface AxonState {
@@ -92,6 +95,7 @@ export interface IzhikParams {
 }
 
 export interface IzhikState {
+  receptors: number // number of receptor sites. TODO: support general VA transmitters
   params: IzhikParams
   u: number
   current: number
@@ -104,6 +108,7 @@ export interface IzhikState {
  */
 
 export const initialIzhikState: IzhikState = {
+  receptors: 2,
   params: {
     a: 0.02,
     b: 0.25,
@@ -482,6 +487,14 @@ export default function neurons (
       }
     })
     // begin void actions
+  } else if (fireVolumeNeuron.test(action)) {
+    return state.map((n: NeuronState) => {
+      const change = daWeighting * n.izhik.receptors
+      return {
+        ...n,
+        potential: n.potential + change
+      }
+    })
   } else if (decayNeurons.test(action)) {
     return state.map((n: NeuronState) => {
       const v = n.izhik.potToMv(n.potential)

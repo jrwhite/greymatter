@@ -1,4 +1,4 @@
-import { makeGetNeuronState } from '../selectors/neuron'
+import { makeGetNeuronState } from '../selectors/neurons'
 import { IState } from '../reducers'
 import { connect, Dispatch } from 'react-redux'
 import * as Actions from '../actions/neurons'
