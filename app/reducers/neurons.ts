@@ -34,7 +34,7 @@ export const MaxFirePeriod = 50
 // export const stdpPotFactor = 0.1
 export const stdpPotFactor = 1
 // export const stdpPotFactor = 0
-export const stdpDepFactor = 20
+export const stdpDepFactor = 10
 export const maxWeighting = 80
 
 export interface NeuronState {
