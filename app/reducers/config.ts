@@ -6,10 +6,17 @@ import {
   resumeNetwork,
   speedUpNetwork,
   slowDownNetwork,
-  setDefaultIzhikParams
+  setDefaultIzhikParams,
+  setStepInterval
 } from '../actions/config'
 import { IzhikParams } from './neurons'
 import * as _ from 'lodash'
+import * as d3 from 'd3'
+
+export const maxStepInterval = 200
+export const maxFps = 60
+export const minFps = 5
+export const minStepInterval = 10
 
 export interface ConfigState {
   selectedNeurons: SelectedNeuronState[]
@@ -79,6 +86,11 @@ export default function config (
         action.payload.neurons,
         'id'
       )
+    }
+  } else if (setStepInterval.test(action)) {
+    return {
+      ...state,
+      ...action.payload
     }
     // BEGIN VOID ACTIONS
   } else if (pauseNetwork.test(action)) {

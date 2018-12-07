@@ -44,6 +44,13 @@ export interface StartGymAction {
   shouldStart: boolean
 }
 
+export interface SetGymStepRatioAction {
+  stepRatio: number
+}
+export const setGymStepRatio = actionCreator<SetGymStepRatioAction>(
+  'SET_GYM_STEP_RATIO_ACTION'
+)
+
 export const startGym = actionCreator<StartGymAction>('START_GYM')
 
 export const setGymAction = actionCreator<SetGymActionAction>('SET_GYM_ACTION')

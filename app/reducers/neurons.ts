@@ -462,11 +462,11 @@ export default function neurons (
             if (d.spikeTime === undefined) return d
             if (d.spikeU === undefined) return d
             // const change = (MaxFirePeriod - d.spikeTime) * stdpPotFactor
-            console.log(d.spikeU)
-            console.log(n.fireU)
+            // console.log(d.spikeU)
+            // console.log(n.fireU)
             const change =
               d.spikeU < n.fireU ? (n.fireU - d.spikeU) * stdpPotFactor : 0
-            console.log(change)
+            // console.log(change)
             const newWeighting = d.weighting + change
             return {
               ...d,

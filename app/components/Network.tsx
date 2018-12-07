@@ -14,7 +14,10 @@ import {
   ButtonGroup,
   HotkeysTarget,
   Hotkeys,
-  Hotkey
+  Hotkey,
+  EditableText,
+  NumericInput,
+  ControlGroup
 } from '@blueprintjs/core'
 
 import GymClient from '../containers/GymClient'
@@ -23,11 +26,24 @@ import { GhostSynapseState } from '../reducers/ghostSynapse'
 import { InputState } from '../reducers/inputs'
 import { NeuronState } from '../reducers/neurons'
 import { SynapseState } from '../reducers/synapses'
-import { ConfigState } from '../reducers/config'
+import {
+  ConfigState,
+  maxStepInterval,
+  minStepInterval,
+  minFps,
+  maxFps
+} from '../reducers/config'
 import { NeuronPotentialData } from '../containers/NeuronPotentialData'
 import { PotentiateNeuronAction } from '../actions/neurons'
 import { SourcedDendValue } from '../selectors/neuron'
-import { StepGymAction } from '../actions/gym'
+import {
+  StepGymAction,
+  setGymStepRatio,
+  SetGymActionAction,
+  SetGymStepRatioAction
+} from '../actions/gym'
+import { SetStepIntervalAction } from '../actions/config'
+import { maxGymStepRatio, minGymStepRatio } from '../reducers/gym'
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -45,6 +61,8 @@ export interface IProps extends RouteComponentProps<any> {
   resumeNetwork: () => void
   speedUpNetwork: () => void
   slowDownNetwork: () => void
+  setStepInterval: (payload: SetStepIntervalAction) => void
+  setGymStepRatio: (payload: SetGymStepRatioAction) => void
   resetNetwork: () => void
   addNewApToSynapse: (id: string) => void
   ghostSynapse: GhostSynapseState
@@ -124,6 +142,9 @@ export class Network extends React.Component<IProps, IState> {
       speedUpNetwork,
       pauseNetwork,
       resumeNetwork,
+      setStepInterval,
+      setGymStepRatio,
+      gymStepRatio,
       config
     } = this.props
 
@@ -192,7 +213,9 @@ export class Network extends React.Component<IProps, IState> {
               </svg>
               {/* <Text className={styles.overlay}>Overlay</Text> */}
               <div className={styles.overlay}>
-                <ButtonGroup minimal={true} className={styles.overlay}>
+                <ControlGroup className={styles.overlay}>
+                  {' '}
+                  {/* <ButtonGroup minimal={true} className={styles.overlay}> */}
                   <Button icon='fast-backward' onClick={slowDownNetwork} />
                   <Button
                     icon={config.isPaused ? 'play' : 'pause'}
@@ -200,7 +223,32 @@ export class Network extends React.Component<IProps, IState> {
                   />
                   <Button icon='fast-forward' onClick={speedUpNetwork} />
                   <Button icon='refresh' onClick={resetNetwork} />
-                </ButtonGroup>
+                  {/* </ButtonGroup> */}
+                  <NumericInput
+                    style={{ maxWidth: '40px' }}
+                    max={maxFps}
+                    min={minFps}
+                    onValueChange={(value) =>
+                      setStepInterval({
+                        stepInterval: Math.round(1000 / value)
+                      })
+                    }
+                    value={Math.round(1000 / config.stepInterval)}
+                    stepSize={5}
+                  />
+                  <NumericInput
+                    style={{ maxWidth: '40px' }}
+                    max={maxGymStepRatio}
+                    min={minGymStepRatio}
+                    onValueChange={(value) =>
+                      setGymStepRatio({
+                        stepRatio: value
+                      })
+                    }
+                    value={gymStepRatio}
+                    stepSize={5}
+                  />
+                </ControlGroup>
               </div>
             </div>
           </div>

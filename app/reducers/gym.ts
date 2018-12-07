@@ -10,9 +10,13 @@ import {
   changeGymActionSpace,
   changeGymObsSpace,
   setGymAction,
-  startGym
+  startGym,
+  setGymStepRatio
 } from '../actions/gym'
 import { GymEnv } from '../containers/GymClient'
+
+export const maxGymStepRatio = 500
+export const minGymStepRatio = 10
 
 export interface GymObservationSpace {
   high: number[]
@@ -48,7 +52,7 @@ const initialGymState = {
   prevTotalReward: 0,
   curTotalReward: 0,
   isDone: true,
-  stepRatio: 30
+  stepRatio: 50
 }
 
 export function gym (
@@ -82,6 +86,11 @@ export function gym (
     return {
       ...state,
       shouldClose: action.payload.shouldClose
+    }
+  } else if (setGymStepRatio.test(action)) {
+    return {
+      ...state,
+      ...action.payload
     }
   } else if (receiveGymStepReply.test(action)) {
     return {
