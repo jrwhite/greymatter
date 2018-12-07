@@ -29,6 +29,7 @@ export interface GymState {
   // observation: { [name: string]: any }
   observations: number[]
   observationSpace?: GymObservationSpace
+  action: number
   actionSpace?: any
   reward: number
   prevTotalReward: number
@@ -52,7 +53,8 @@ const initialGymState = {
   prevTotalReward: 0,
   curTotalReward: 0,
   isDone: true,
-  stepRatio: 50
+  stepRatio: 50,
+  env: GymEnv.Cartpole
 }
 
 export function gym (
@@ -117,6 +119,11 @@ export function gym (
     return {
       ...state,
       observationSpace: action.payload.space
+    }
+  } else if (setGymAction.test(action)) {
+    return {
+      ...state,
+      ...action.payload
     }
   } else if (startGym.test(action)) {
     return {

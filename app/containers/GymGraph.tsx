@@ -7,6 +7,7 @@ export interface IIProps {}
 
 const mapStateToProps = (state: IState, props: IIProps): IProps => ({
   observations: state.network.gym.observations,
+  gymShouldreset: state.network.gym.shouldReset
 })
 
 export default (connect(mapStateToProps)(

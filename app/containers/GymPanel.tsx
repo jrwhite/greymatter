@@ -1,7 +1,14 @@
 import * as React from 'react'
 import { render } from 'react-dom'
 import { GymState } from '../reducers/gym'
-import { HTMLSelect, Icon, Button, Text } from '@blueprintjs/core'
+import {
+  HTMLSelect,
+  Icon,
+  Button,
+  Text,
+  ControlGroup,
+  FormGroup
+} from '@blueprintjs/core'
 import GymClient from './GymClient'
 import { GymEnv } from './GymClient'
 import {
@@ -21,6 +28,8 @@ import GymGraph from './GymGraph'
 import { AddNewObservableAction } from '../actions/observables'
 import { ObservableEnum } from '../reducers/observables'
 import NetworkActions from '../actions/network'
+
+const styles = require('../components/GymPanel.scss')
 
 export interface IProps {
   // TODO: only pass gym props that are needed
@@ -75,30 +84,39 @@ export class GymPanel extends React.Component<IProps, IState> {
     const { selectedObservations, showAction, showReward } = this.state
 
     return (
-      <div>
+      <div className={styles.container}>
         {env ? <GymClient /> : undefined}
-        <HTMLSelect onChange={handleEnvChange}>
-          <option selected disabled hidden>
-            Choose environment...
-          </option>
-          <option value={GymEnv.Cartpole}>Cartpole-v1</option>
-        </HTMLSelect>
-        <Button onClick={() => startGym({ shouldStart: true })}>'Start'</Button>
-        <Button onClick={() => resetGym({ shouldReset: true })}>
-          'Restart
-        </Button>
-        <Text>'Observations'</Text>
-        <Text> {'obs 0: ' + observations[0]}</Text>
-        <Text> 'Reward' </Text>
-        <Text> 'Previous: {prevTotalReward}'</Text>
-        <Text> 'Current: {curTotalReward}'</Text>
-        <Button onClick={() => addAllGymObservables()}>
-          'Add Gym Observables'
-        </Button>
-        <Text>{'is done: ' + isDone}</Text>
-        <Text>'Reward'</Text>
-        <Text>{reward}</Text>
-        <GymGraph />
+        <ControlGroup vertical={true}>
+          {' '}
+          <HTMLSelect onChange={handleEnvChange}>
+            <option selected disabled hidden>
+              Choose environment...
+            </option>
+            <option value={GymEnv.Cartpole}>Cartpole-v1</option>
+          </HTMLSelect>
+          <Button onClick={() => startGym({ shouldStart: true })}>
+            'Start'
+          </Button>
+          <Button onClick={() => resetGym({ shouldReset: true })}>
+            'Restart
+          </Button>
+          <Button onClick={() => addAllGymObservables()}>
+            'Add Gym Observables'
+          </Button>
+        </ControlGroup>
+
+        {/* <Text>'Observations'</Text>
+        <Text> {'obs 0: ' + observations[0]}</Text> */}
+        <div className={styles.element}>
+          <Text> 'Reward' </Text>
+          <Text> 'Previous: {prevTotalReward}'</Text>
+          <Text> 'Current: {curTotalReward}'</Text>
+          <Text>{'Is done?: ' + isDone}</Text>
+        </div>
+        <div className={styles.element}>
+          <Text>'Observations Graph'</Text>
+          <GymGraph />
+        </div>
         {/* <LineGraph
           scaleX={3}
           rangeX={50}

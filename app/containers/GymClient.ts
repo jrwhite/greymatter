@@ -10,7 +10,8 @@ import {
   resetGym,
   stepGym,
   ChangeGymSpace,
-  StartGymAction
+  StartGymAction,
+  SetGymActionAction
 } from '../actions/gym'
 import { GymHttpClient } from '../utils/gymHTTPClient'
 const d3 = require('d3')
@@ -41,6 +42,7 @@ export interface IProps {
   pauseNetwork: () => void
   changeGymActionSpace: (payload: ChangeGymSpace) => void
   changeGymObsSpace: (payload: ChangeGymSpace) => void
+  setGymAction: (payload: SetGymActionAction) => void
   resetGym: (payload: ResetGymAction) => void
   stepGym: (payload: StepGymAction) => void
   closeGym: (payload: CloseGymAction) => void
@@ -109,6 +111,7 @@ export class GymClient extends React.Component<IProps, IState> {
 
     if (gym.env) {
       this.makeEnv(gym.env)
+      this.gymReset()
     }
   }
 
@@ -171,6 +174,7 @@ export class GymClient extends React.Component<IProps, IState> {
       action,
       stepGym,
       receiveGymStepReply,
+      setGymAction,
       changeGymDone
     } = this.props
 
@@ -194,6 +198,7 @@ export class GymClient extends React.Component<IProps, IState> {
             reward: reply.reward,
             info: reply.info ? reply.info : undefined
           })
+          setGymAction({ action })
         })
         .catch((error) => {
           console.error('Gym step failed!')

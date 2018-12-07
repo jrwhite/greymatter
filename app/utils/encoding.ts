@@ -4,6 +4,19 @@ import { ControlPointState } from '../reducers/encodings'
 
 const d3 = require('d3')
 
+export const dataColors = [
+  '#2965CC',
+  '#29A634',
+  '#D99E0B',
+  '#D13913',
+  '#8F398F',
+  '#00B3A4',
+  '#DB2C6F',
+  '#9BBF30',
+  '#96622D',
+  '#7157D9'
+]
+
 export function makeEncodingFromCtrlPoints (
   controlPoints: ControlPointState[]
 ): (obs: number) => number {
