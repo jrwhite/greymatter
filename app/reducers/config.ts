@@ -42,6 +42,7 @@ const initialConfigState = {
   stepInterval: 30,
   isPaused: true,
   defaultIzhikParams: {
+    receptors: 3,
     a: 0.02,
     b: 0.25,
     c: -65,

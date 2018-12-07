@@ -40,6 +40,7 @@ import {
   makeGetNeuronPotRange,
   makeGetNeuronPeriodRange
 } from '../selectors/neurons'
+import { IzhikParamsControls } from '../components/IzhikParamsControls';
 
 const getSelectedNeuron = (state: IState, props: IProps) =>
   state.network.neurons.find((neuron: NeuronState) => neuron.id === props.id)
@@ -81,6 +82,11 @@ export class SelectedNeuron extends React.Component<IProps> {
     return (state: IState) => getNeuronFromId(state, id)!!.firePeriod
   }
 
+  onIzhikParamsChange (params: IzhikParams) {
+    const { changeIzhikParams, id } = this.props
+    changeIzhikParams({ neuronId: id, params })
+  }
+
   render () {
     const {
       setUseDefaultConfig,
@@ -114,34 +120,6 @@ export class SelectedNeuron extends React.Component<IProps> {
         getRange: makeGetNeuronPeriodRange()
       })
     }
-
-    // TODO: use IzhikParamsSliders instead
-
-    const changeA = (a: number) =>
-      changeIzhikParams({
-        neuronId: id,
-        params: { a }
-      })
-    const changeB = (b: number) =>
-      changeIzhikParams({
-        neuronId: id,
-        params: { b }
-      })
-    const changeC = (c: number) =>
-      changeIzhikParams({
-        neuronId: id,
-        params: { c }
-      })
-    const changeD = (d: number) =>
-      changeIzhikParams({
-        neuronId: id,
-        params: { d }
-      })
-    const changeCurrent = (current: number) =>
-      changeNeuronCurrent({
-        neuronId: id,
-        current
-      })
 
     return (
       <div>
@@ -189,52 +167,10 @@ export class SelectedNeuron extends React.Component<IProps> {
             }
           />
           <Divider />
-          <Text>Izhik 'a':</Text>
-          <Slider
-            min={0.02}
-            max={0.1}
-            stepSize={0.01}
-            labelStepSize={0.01}
-            value={izhikParams.a}
-            onRelease={changeA}
+          <IzhikParamsControls
+            izhikParams={izhikParams}
+            onChange={(params: IzhikParams) => this.onIzhikParamsChange(params)}
           />
-          <Text>Izhik 'b':</Text>
-          <Slider
-            min={0.2}
-            max={0.25}
-            stepSize={0.005}
-            labelStepSize={0.01}
-            value={izhikParams.b}
-            onRelease={changeB}
-          />
-          <Text>Izhik 'c':</Text>
-          <Slider
-            min={-65}
-            max={-50}
-            stepSize={1}
-            labelStepSize={3}
-            value={izhikParams.c}
-            onRelease={changeC}
-          />
-          <Text>Izhik 'd':</Text>
-          <Slider
-            min={0.05}
-            max={8}
-            stepSize={1}
-            labelStepSize={1}
-            value={izhikParams.d}
-            onRelease={changeD}
-          />
-          <Text>Current:</Text>
-          <Slider
-            min={0}
-            max={20}
-            stepSize={1}
-            labelStepSize={2}
-            value={current}
-            onRelease={changeCurrent}
-          />
-          <Divider />
           <Text>Dendrites:</Text>
           {dends.map((d) => (
             <Slider

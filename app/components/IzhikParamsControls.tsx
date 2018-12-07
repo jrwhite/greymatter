@@ -20,6 +20,8 @@ export class IzhikParamsControls extends React.Component<IProps> {
     const changeB = (b: number) => onChange({ ...izhikParams, b })
     const changeC = (c: number) => onChange({ ...izhikParams, c })
     const changeD = (d: number) => onChange({ ...izhikParams, d })
+    const changeRec = (receptors: number) =>
+      onChange({ ...izhikParams, receptors })
 
     return (
       <ControlGroup fill={false} vertical={true}>
@@ -58,6 +60,13 @@ export class IzhikParamsControls extends React.Component<IProps> {
           labelStepSize={1}
           value={izhikParams.d}
           onRelease={changeD}
+        />
+        <Text>Dopamine Receptors</Text>
+        <Slider
+          min={0}
+          max={5}
+          value={izhikParams.receptors}
+          onRelease={changeRec}
         />
       </ControlGroup>
     )

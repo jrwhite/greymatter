@@ -88,6 +88,7 @@ export interface PlastState {
 }
 
 export interface IzhikParams {
+  receptors: number // number of receptor sites. TODO: support general VA transmitters
   a: number
   b: number
   c: number
@@ -95,7 +96,6 @@ export interface IzhikParams {
 }
 
 export interface IzhikState {
-  receptors: number // number of receptor sites. TODO: support general VA transmitters
   params: IzhikParams
   u: number
   current: number
@@ -108,8 +108,8 @@ export interface IzhikState {
  */
 
 export const initialIzhikState: IzhikState = {
-  receptors: 2,
   params: {
+    receptors: 2,
     a: 0.02,
     b: 0.25,
     c: -65,
@@ -489,7 +489,7 @@ export default function neurons (
     // begin void actions
   } else if (fireVolumeNeuron.test(action)) {
     return state.map((n: NeuronState) => {
-      const change = daWeighting * n.izhik.receptors
+      const change = daWeighting * n.izhik.params.receptors
       return {
         ...n,
         potential: n.potential + change

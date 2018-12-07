@@ -5,6 +5,7 @@ export interface SelectNeuronAction {
 }
 
 export interface SetDefaultIzhikParamsAction {
+  receptors: number
   a: number
   b: number
   c: number
