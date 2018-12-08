@@ -18,10 +18,14 @@ export const Ellipse: React.SFC<IProps> = (props) => {
   return (
     <g>
       <g>
-        <path d={ellipseBoundarySetter(major, minor, theta)} />
+        <path stroke='none' d={ellipseBoundarySetter(major, minor, theta)} />
       </g>
       <g>
-        <path stroke='none' d={ellipsePathSetter(arcs, major, minor, theta)} />
+        <path
+          fill-rule='nonzero'
+          stroke='none'
+          d={ellipsePathSetter(arcs, major, minor, theta)}
+        />
       </g>
     </g>
   )

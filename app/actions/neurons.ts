@@ -267,7 +267,7 @@ export function recalcAllDends () {
           synCPos: calcTipPos(
             dendGeo.point,
             dendGeo.inTheta,
-            15 + d.weighting / 10
+            15 + d.weighting / 5
           ),
           nu: dendGeo.nu,
           incomingAngle: dendGeo.inTheta

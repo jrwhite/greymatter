@@ -7,6 +7,7 @@ import _ = require('lodash')
 export enum ObservableEnum {
   Gym = 'Gym Observation',
   Potential = 'Neuron Potential',
+  Recovery = 'Neuron Recovery',
   Reward = 'Gym Reward',
   Period = 'Neuron Firing Period'
 }

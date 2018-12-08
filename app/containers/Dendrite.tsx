@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Ellipse } from '../utils/geometry'
+import { Ellipse, Arc } from '../utils/geometry'
 import { makeGetEncodedValueById } from '../selectors/encoding'
 import { IState } from '../reducers'
 import {
@@ -16,6 +16,7 @@ export interface IIProps {
   id: string
   neuronId: string
   bodyEllipse: Ellipse
+  arc: Arc
 }
 
 const getDendState = (state: IState, props: IIProps): DendState => {
@@ -29,9 +30,9 @@ const makeGetDendState = () =>
     (dend) => ({
       synCpos: dend.synCpos,
       weighting: dend.weighting,
-      arc: dend.arc,
       baseCpos: dend.baseCpos,
-      incomingAngle: dend.incomingAngle
+      incomingAngle: dend.incomingAngle,
+      nu: dend.nu
     })
   )
 

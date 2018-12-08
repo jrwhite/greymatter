@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { Ellipse } from './Ellipse'
-import { Arc, Ellipse as EllipseGeo } from '../utils/geometry'
+import { Arc, Ellipse as EllipseGeo, dendArcLength } from '../utils/geometry'
 import * as _ from 'lodash'
 import { DendState } from '../reducers/neurons'
 import Dendrite from '../containers/Dendrite'
+import { arcWeightingScale } from './Dendrite'
 const d3 = require('d3')
 
 export interface IProps {
@@ -25,16 +26,28 @@ export class NeuronBody extends React.Component<IProps> {
   render () {
     const { dends, theta, id } = this.props
 
+    const dendArcs: Arc[] = dends.map((d) => {
+      const arcAdjustment = arcWeightingScale(d.weighting)
+      const arc = {
+        start: d.nu - dendArcLength - arcAdjustment,
+        stop: d.nu + dendArcLength + arcAdjustment
+      }
+
+      return arc
+    })
+
+    // if an arc is below a certain length, maybe just make it a joining segmetn??
+
     const bodyArcs: Arc[] = _.reduce(
-      dends,
+      dendArcs,
       (body, d): Arc[] => {
         return _.concat(_.initial(body), [
           {
             start: _.last(body)!!.start,
-            stop: d.arc.start
+            stop: d.stop
           },
           {
-            start: d.arc.stop,
+            start: d.start,
             stop: _.last(body)!!.stop
           }
         ])
@@ -49,6 +62,10 @@ export class NeuronBody extends React.Component<IProps> {
           <Dendrite
             key={d.id}
             id={d.id}
+            arc={{
+              start: d.nu - dendArcLength - arcWeightingScale(d.weighting),
+              stop: d.nu + dendArcLength + arcWeightingScale(d.weighting)
+            }}
             neuronId={id}
             bodyEllipse={{
               ...defaultEllipseGeo,

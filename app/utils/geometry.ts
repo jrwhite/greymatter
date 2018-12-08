@@ -366,6 +366,13 @@ export function ellipsePathSetter (
     ecc: major / minor
   }
 
+  const insetEllipse: Ellipse = {
+    major: major - 8,
+    minor: minor - 5,
+    theta: angle,
+    ecc: major / minor
+  }
+
   const inRadians = (a: Arc) => {
     return {
       start: a.start * PI,
@@ -378,10 +385,28 @@ export function ellipsePathSetter (
   const bezierCurves: ArcBezier[] = unitArcs.map((a: Arc) =>
     ellipseArcBezier(ellipse, a.start, a.stop)
   )
+  // pathSetter.moveTo(bezierCurves[0].p1.x, bezierCurves[0].p1.y)
   _.forEach(bezierCurves, (b: ArcBezier, i: number) => {
+    const insetArc: ArcBezier = ellipseArcBezier(
+      insetEllipse,
+      unitArcs[i].start,
+      unitArcs[i].stop
+    )
     pathSetter.moveTo(b.p1.x, b.p1.y)
     pathSetter.bezierCurveTo(b.q1.x, b.q1.y, b.q2.x, b.q2.y, b.p2.x, b.p2.y)
+    pathSetter.lineTo(insetArc.p2.x, insetArc.p2.y)
+    pathSetter.bezierCurveTo(
+      insetArc.q2.x,
+      insetArc.q2.y,
+      insetArc.q1.x,
+      insetArc.q1.y,
+      insetArc.p1.x,
+      insetArc.p1.y
+    )
+    pathSetter.closePath()
   })
+  // pathSetter.lineTo(bezierCurves[0].p1.x, bezierCurves[0].p1.y)
+  // pathSetter.closePath()
 
   return pathSetter.toString()
 }

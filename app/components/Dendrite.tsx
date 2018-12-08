@@ -6,7 +6,8 @@ import {
   calcDendCurves,
   Ellipse,
   Curve,
-  calcTipPos
+  calcTipPos,
+  dendArcLength
 } from '../utils/geometry'
 import { Line } from './Line'
 import { CurveNatural } from './CurveNatural'
@@ -20,18 +21,38 @@ export interface IProps extends IIProps {
   synCpos: Point
   weighting: number
   arc: Arc
+  nu: number
   bodyEllipse: Ellipse
   incomingAngle: number
   baseCpos: Point
   // sourceVal: number
 }
 
+export const arcWeightingScale = d3
+  .scaleLinear()
+  .domain([0, 100])
+  .range([-1 / 32, 1 / 16])
+
 export class Dendrite extends React.Component<IProps> {
   props: IProps
 
   render () {
-    const { baseCpos, weighting, arc, bodyEllipse, incomingAngle } = this.props
-    const tipPos = calcTipPos(baseCpos, incomingAngle, 15 + weighting / 10)
+    const {
+      arc,
+      nu,
+      baseCpos,
+      weighting,
+      bodyEllipse,
+      incomingAngle
+    } = this.props
+    const tipPos = calcTipPos(baseCpos, incomingAngle, 15 + weighting / 5)
+    // const arcAdjustment = arcWeightingScale(weighting)
+    // const arc = {
+    //   start: nu - dendArcLength - arcAdjustment,
+    //   stop: nu + dendArcLength + arcAdjustment
+    // }
+
+    // do overlap calculations here
 
     const curves: Curve[] = calcDendCurves(
       tipPos,

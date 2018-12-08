@@ -39,7 +39,7 @@ export const stdpPotFactor = 1
 // export const stdpPotFactor = 0
 export const stdpDepFactor = 10
 export const maxWeighting = 80
-export const daWeighting = 20
+export const daWeighting = 10
 
 export interface NeuronState {
   id: string
