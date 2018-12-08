@@ -264,7 +264,11 @@ export function recalcAllDends () {
         const dendGeo = calcClosestDend(n.pos, axonPos, ellipse)
         const dendPos: DendPos = {
           baseCPos: dendGeo.point,
-          synCPos: calcTipPos(dendGeo.point, dendGeo.inTheta, d.weighting),
+          synCPos: calcTipPos(
+            dendGeo.point,
+            dendGeo.inTheta,
+            15 + d.weighting / 10
+          ),
           nu: dendGeo.nu,
           incomingAngle: dendGeo.inTheta
         }

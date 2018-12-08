@@ -5,6 +5,7 @@ const d3 = require('d3')
 
 export interface IProps {
   onRotate: (newTheta: number) => void
+  onRotateDone: (newTheta: number) => void
   sensitivity: number
   pivot: Point
 }
@@ -51,6 +52,30 @@ export class Rotate extends React.Component<IProps, IState> {
     }
   }
 
+  onDragEnded = () => {
+    const { onRotateDone, sensitivity } = this.props
+
+    const { mousePos, theta } = this.state
+
+    const newMousePos: Point = {
+      ...d3.event
+    }
+
+    if (mousePos) {
+      const newTheta = theta + sensitivity * (newMousePos.x - mousePos.x)
+      onRotateDone(newTheta)
+
+      this.setState({
+        mousePos: newMousePos,
+        theta: newTheta
+      })
+    } else {
+      this.setState({
+        mousePos: newMousePos
+      })
+    }
+  }
+
   render () {
     const { onRotate } = this.props
 
@@ -69,6 +94,7 @@ export class Rotate extends React.Component<IProps, IState> {
                 .drag()
                 .on('start', this.onDragStarted)
                 .on('drag', this.onDragged)
+                .on('end', this.onDragEnded)
             )
         }
       >

@@ -20,8 +20,8 @@ export const getDendFromId = (state: NeuronState, id: string): DendState =>
 
 export const getNeuronEllipseGeo = (state: NeuronState): EllipseGeo => {
   return {
-    theta: state.theta,
-    ...defaultEllipseGeo
+    ...defaultEllipseGeo,
+    theta: state.theta
   }
 }
 

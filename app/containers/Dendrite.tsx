@@ -29,7 +29,9 @@ const makeGetDendState = () =>
     (dend) => ({
       synCpos: dend.synCpos,
       weighting: dend.weighting,
-      arc: dend.arc
+      arc: dend.arc,
+      baseCpos: dend.baseCpos,
+      incomingAngle: dend.incomingAngle
     })
   )
 

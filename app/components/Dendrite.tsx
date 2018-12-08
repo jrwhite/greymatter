@@ -5,7 +5,8 @@ import {
   Point,
   calcDendCurves,
   Ellipse,
-  Curve
+  Curve,
+  calcTipPos
 } from '../utils/geometry'
 import { Line } from './Line'
 import { CurveNatural } from './CurveNatural'
@@ -20,6 +21,8 @@ export interface IProps extends IIProps {
   weighting: number
   arc: Arc
   bodyEllipse: Ellipse
+  incomingAngle: number
+  baseCpos: Point
   // sourceVal: number
 }
 
@@ -27,9 +30,11 @@ export class Dendrite extends React.Component<IProps> {
   props: IProps
 
   render () {
-    const { synCpos, weighting, arc, bodyEllipse } = this.props
+    const { baseCpos, weighting, arc, bodyEllipse, incomingAngle } = this.props
+    const tipPos = calcTipPos(baseCpos, incomingAngle, 15 + weighting / 10)
+
     const curves: Curve[] = calcDendCurves(
-      synCpos,
+      tipPos,
       weighting / 12, // ctrlWidth
       weighting / 5, // ctrlHeight
       arc,
@@ -50,7 +55,7 @@ export class Dendrite extends React.Component<IProps> {
     const pathSetter = d3.path()
 
     pathSetter.moveTo(baseLeft.x, baseLeft.y)
-    pathSetter.quadraticCurveTo(ctrlLeft.x, ctrlLeft.y, synCpos.x, synCpos.y)
+    pathSetter.quadraticCurveTo(ctrlLeft.x, ctrlLeft.y, tipPos.x, tipPos.y)
     pathSetter.quadraticCurveTo(
       ctrlRight.x,
       ctrlRight.y,
@@ -61,11 +66,11 @@ export class Dendrite extends React.Component<IProps> {
 
     return (
       <g>
-        <path d={pathSetter.toString()} stroke='purple' />
-        <circle cx={baseLeft.x} cy={baseLeft.y} r={2} fill='purple' />
+        <path d={pathSetter.toString()} stroke='none' />
+        {/* <circle cx={baseLeft.x} cy={baseLeft.y} r={2} fill='purple' />
         <circle cx={baseRight.x} cy={baseRight.y} r={2} fill='purple' />
         <circle cx={ctrlLeft.x} cy={ctrlLeft.y} r={2} fill='purple' />
-        <circle cx={ctrlRight.x} cy={ctrlRight.y} r={2} fill='purple' />
+        <circle cx={ctrlRight.x} cy={ctrlRight.y} r={2} fill='purple' /> */}
       </g>
     )
   }
