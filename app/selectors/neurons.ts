@@ -9,12 +9,21 @@ import neurons, {
 } from '../reducers/neurons'
 import * as _ from 'lodash'
 import { getEncodedValueById } from './encoding'
+import { defaultEllipseGeo } from '../components/NeuronBody'
+import { Ellipse as EllipseGeo } from '../utils/geometry'
 
 export const getNeuronFromId = (state: IState, id: string) =>
   state.network.neurons.find((n) => n.id === id)
 
 export const getDendFromId = (state: NeuronState, id: string): DendState =>
   state.dends.find((d) => d.id === id)!!
+
+export const getNeuronEllipseGeo = (state: NeuronState): EllipseGeo => {
+  return {
+    theta: state.theta,
+    ...defaultEllipseGeo
+  }
+}
 
 export const getNeuronPotRange = (state: IState) => ({
   start: -300,

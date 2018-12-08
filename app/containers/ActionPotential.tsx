@@ -16,7 +16,7 @@ import NetworkActions from '../actions/network'
 import { bindActionCreators } from 'redux'
 import { createSelector } from 'reselect'
 import { addPoints, Point } from '../utils/geometry'
-import { AxonType } from '../reducers/neurons';
+import { AxonType } from '../reducers/neurons'
 
 export interface IIProps {
   id: string
@@ -48,7 +48,8 @@ const makeMapStateToProps = () => {
   const getSynapseState = makeGetSynapse()
   return (state: IState, props: IIProps): Partial<IProps> => ({
     ...props,
-    ...getApState(state, props)
+    ...getApState(state, props),
+    stepInterval: state.network.config.stepInterval
     // ...getSynapseState(state, { id: props.synapseId })
   })
 }

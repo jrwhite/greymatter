@@ -12,6 +12,13 @@ export interface IProps {
   theta: number
 }
 
+export const defaultEllipseGeo: EllipseGeo = {
+  major: 50,
+  minor: 30,
+  theta: 0,
+  ecc: 5 / 3
+}
+
 export class NeuronBody extends React.Component<IProps> {
   props: IProps
 
@@ -34,13 +41,6 @@ export class NeuronBody extends React.Component<IProps> {
       },
       [{ start: 1 / 4, stop: 7 / 4 }]
     )
-
-    const defaultEllipseGeo: EllipseGeo = {
-      major: 50,
-      minor: 30,
-      theta: 0,
-      ecc: 5 / 3
-    }
 
     return (
       <g>

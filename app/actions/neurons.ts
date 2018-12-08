@@ -6,13 +6,14 @@ import {
   initialIzhikState,
   AxonType
 } from '../reducers/neurons'
-import { getAxonAbsPos } from '../selectors/synapses'
+import { getAxonAbsPos, getSynapse } from '../selectors/synapses'
 import {
   addPoints,
   calcClosestDend,
   DendGeo,
   Ellipse,
-  Point
+  Point,
+  calcTipPos
 } from '../utils/geometry'
 import { SelectNeuronAction } from './config'
 import {
@@ -23,6 +24,7 @@ import {
 import { actionCreator, actionCreatorVoid } from './helpers'
 import { addNewSynapse, removeSynapses } from './synapses'
 import { addSynapseToInputAxon } from './inputs'
+import { getNeuronEllipseGeo } from '../selectors/neurons'
 const _ = require('lodash')
 
 export interface MoveNeuronAction {
@@ -89,6 +91,21 @@ export interface AddDendAction {
   nu: number
   incomingAngle: number
 }
+
+export interface SetDendsPosAction {
+  neuronId: string
+  dends: {
+    [id: string]: {
+      baseCPos: Point;
+      synCPos: Point;
+      nu: number;
+      incomingAngle: number;
+    };
+  }
+}
+export const setDendsPos = actionCreator<SetDendsPosAction>('SET_DENDS_POS')
+
+export const redrawDends = actionCreatorVoid('REDRAW_DENDS')
 
 export interface RemoveSynapsesAction {
   synapses: Array<{ id: string }>
@@ -221,6 +238,38 @@ export function removeNeuron (id: string) {
   }
 }
 
+export interface CalcDendsAction {
+  neuronId: string
+  axonPos: Point
+}
+
+export function calcDends (payload: CalcDendsAction) {
+  // calculate closest dendrite positions for neuron
+  return (dispatch: Function) => {}
+}
+
+export function recalcAllDends () {
+  return (dispatch: Function, getState: () => IState) => {
+    const neurons = getState().network.neurons
+    const synapses = getState().network.synapses
+    const state = getState()
+
+    neurons.map((n) => {
+      const closestDends: Array<DendGeo | { id: string }> = n.dends.map((d) => {
+        const synapse = getSynapse(state, { id: d.synapseId })
+        const axonPos = getAxonAbsPos(getState(), synapse)
+        const ellipse = getNeuronEllipseGeo(n)
+        const dendGeo = calcClosestDend(n.pos, axonPos, ellipse)
+        return {
+          id: d.id,
+          ...dendGeo
+        }
+      })
+      dispatch(setDendsPos(_.keyBy(closestDends, 'id')))
+    })
+  }
+}
+
 export function addNewDend (
   newDendId: string,
   neuronId: string,
@@ -241,10 +290,7 @@ export function addNewDend (
         neuronId,
         baseCpos: newDendGeo.point,
         // synCpos: newDendGeo.point,
-        synCpos: addPoints(newDendGeo.point, {
-          x: Math.cos(newDendGeo.inTheta * Math.PI) * 15, // TODO: replace 15 with default short plast
-          y: Math.sin(newDendGeo.inTheta * Math.PI) * 15
-        }),
+        synCpos: calcTipPos(newDendGeo.point, newDendGeo.inTheta, 30),
         nu: newDendGeo.nu,
         incomingAngle: newDendGeo.inTheta
       })

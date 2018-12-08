@@ -71,6 +71,7 @@ export const calcAxonPos = (ellipse: Ellipse): Point => {
   }
 }
 
+// ellipse-line intercept
 export const calcClosestDend = (
   to: Point,
   from: Point,
@@ -93,6 +94,20 @@ export const calcClosestDend = (
     nu: nu / PI, // position along ellipse
     inTheta: thetaIn / PI // incoming angle
   }
+}
+
+export const calcTipPos = (
+  base: Point,
+  theta: number,
+  weighting: number
+): Point => {
+  const tipVec = addPoints(base, {
+    x: Math.cos(theta * Math.PI) * weighting,
+    y: Math.sin(theta * Math.PI) * weighting
+  })
+  // const unitTipVec = getUnitVector(tipVec)
+  // return vectorScalarMultiply(tipVec, weighting)
+  return tipVec
 }
 
 const getThetaQuadrant = (theta: number): Quadrant => {

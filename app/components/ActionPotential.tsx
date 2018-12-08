@@ -33,6 +33,7 @@ export interface IProps extends IIProps {
   stop: Point
   progress: number
   speed: number
+  stepInterval: number
   length: number
   fill: string
   shouldAnimate: boolean
@@ -181,6 +182,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
       start,
       stop,
       speed,
+      stepInterval,
       length,
       id,
       synapseId,
@@ -197,7 +199,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
     )
 
     // console.log(length / speed)
-    const duration = length / speed
+    const duration = (stepInterval * length) / speed
     const transitionSetter = d3
       .transition(id)
       .duration(duration / steps)

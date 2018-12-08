@@ -12,7 +12,9 @@ import {
   depressDends,
   setAxonType,
   polarizeNeuron,
-  fireVolumeNeuron
+  fireVolumeNeuron,
+  redrawDends,
+  setDendsPos
 } from '../actions/neurons'
 import { Arc, Point } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
@@ -485,6 +487,21 @@ export default function neurons (
       } else {
         return n
       }
+    })
+  } else if (setDendsPos.test(action)) {
+    return state.map((n) => {
+      if (n.id === action.payload.neuronId) {
+        return {
+          ...n,
+          dends: n.dends.map((d) => {
+            return {
+              ...d,
+              ...action.payload.dends[d.id]
+            }
+          })
+        }
+      }
+      return n
     })
     // begin void actions
   } else if (fireVolumeNeuron.test(action)) {
