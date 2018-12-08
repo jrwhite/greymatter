@@ -92,15 +92,17 @@ export interface AddDendAction {
   incomingAngle: number
 }
 
+export interface DendPos {
+  baseCPos: Point
+  synCPos: Point
+  nu: number
+  incomingAngle: number
+}
+
 export interface SetDendsPosAction {
   neuronId: string
   dends: {
-    [id: string]: {
-      baseCPos: Point;
-      synCPos: Point;
-      nu: number;
-      incomingAngle: number;
-    };
+    [id: string]: DendPos;
   }
 }
 export const setDendsPos = actionCreator<SetDendsPosAction>('SET_DENDS_POS')
@@ -255,17 +257,25 @@ export function recalcAllDends () {
     const state = getState()
 
     neurons.map((n) => {
-      const closestDends: Array<DendGeo | { id: string }> = n.dends.map((d) => {
+      const closestDends: Array<DendPos | { id: string }> = n.dends.map((d) => {
         const synapse = getSynapse(state, { id: d.synapseId })
         const axonPos = getAxonAbsPos(getState(), synapse)
         const ellipse = getNeuronEllipseGeo(n)
         const dendGeo = calcClosestDend(n.pos, axonPos, ellipse)
+        const dendPos: DendPos = {
+          baseCPos: dendGeo.point,
+          synCPos: calcTipPos(dendGeo.point, dendGeo.inTheta, d.weighting),
+          nu: dendGeo.nu,
+          incomingAngle: dendGeo.inTheta
+        }
         return {
           id: d.id,
-          ...dendGeo
+          ...dendPos
         }
       })
-      dispatch(setDendsPos(_.keyBy(closestDends, 'id')))
+      const payload: SetDendsPosAction = _.keyBy(closestDends, 'id')
+      console.log(payload)
+      dispatch(setDendsPos({ neuronId: n.id, ...payload }))
     })
   }
 }

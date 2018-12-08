@@ -44,6 +44,7 @@ export interface IProps extends IIProps {
   ) => void
   selectNeuron: (payload: SelectNeuronAction) => void
   rotateNeuron: (payload: RotateNeuronAction) => void
+  recalcAllDends: () => void
   id: string
   pos: Point
   theta: number
@@ -217,7 +218,7 @@ export class Neuron extends React.Component<IProps, IState> {
   }
 
   onDragEnded = () => {
-    const { id, moveNeuron } = this.props
+    const { id, moveNeuron, recalcAllDends } = this.props
     const { pos, offset } = this.state
     this.setState({ dragging: false })
     const newPos: Point = {
@@ -227,6 +228,7 @@ export class Neuron extends React.Component<IProps, IState> {
       id,
       pos: { x: newPos.x + offset.x, y: newPos.y + offset.y }
     })
+    recalcAllDends()
   }
 
   renderD3 () {

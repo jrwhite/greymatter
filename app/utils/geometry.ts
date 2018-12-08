@@ -3,6 +3,8 @@ const d3 = require('d3')
 
 const PI = Math.PI
 
+export const dendArcLength = 1 / 16
+
 export interface Arc {
   start: number
   stop: number

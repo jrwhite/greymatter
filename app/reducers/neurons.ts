@@ -16,7 +16,7 @@ import {
   redrawDends,
   setDendsPos
 } from '../actions/neurons'
-import { Arc, Point } from '../utils/geometry'
+import { Arc, Point, dendArcLength } from '../utils/geometry'
 import { stepIzhikPotential, stepIzhikU } from '../utils/runtime'
 import {
   addDend,
@@ -494,9 +494,20 @@ export default function neurons (
         return {
           ...n,
           dends: n.dends.map((d) => {
+            const dends: any = action.payload
+            const newD = dends[d.id]
+            if (newD === undefined) return d
+            console.log(newD)
             return {
               ...d,
-              ...action.payload.dends[d.id]
+              baseCpos: newD.baseCPos,
+              synCpos: newD.synCPos,
+              nu: newD.nu,
+              incomingAngle: newD.incomingAngle,
+              arc: {
+                start: newD.nu - dendArcLength,
+                stop: newD.nu + dendArcLength
+              }
             }
           })
         }
