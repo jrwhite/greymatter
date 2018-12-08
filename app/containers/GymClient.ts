@@ -20,7 +20,7 @@ import * as Actions from '../actions/gym'
 import { bindActionCreators } from 'redux'
 import { connect, Dispatch } from 'react-redux'
 import NetworkActions from '../actions/network'
-import { makeGetEncodedAction } from '../selectors/encoding'
+import { makeGetEncodedAction } from '../selectors/encodings'
 
 export enum GymEnv {
   Cartpole = 'CartPole-v1'

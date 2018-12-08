@@ -1,4 +1,7 @@
 import { actionCreatorVoid, actionCreator } from './helpers'
+import { Point } from '../utils/geometry'
+import { AxonType } from '../reducers/neurons'
+import { MoveControlPointAction } from './encodings';
 
 export interface SelectNeuronAction {
   id: string
@@ -11,9 +14,12 @@ export interface SetDefaultIzhikParamsAction {
   c: number
   d: number
 }
-
 export const setDefaultIzhikParams = actionCreator<SetDefaultIzhikParamsAction>(
   'SET_DEFAULT_IZHIK_PARAMS'
+)
+
+export const moveStdpControlPoint = actionCreator<MoveControlPointAction>(
+  'MOVE_STDP_CONTROL_POINT'
 )
 
 export interface SetStepSizeAction {

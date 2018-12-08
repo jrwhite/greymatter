@@ -15,7 +15,8 @@ import { PotentialGraphLine } from './PotentialGraphLine'
 import {
   MoveNeuronAction,
   RotateNeuronAction,
-  fireVolumeNeuron
+  fireVolumeNeuron,
+  FireNeuronAction
 } from '../actions/neurons'
 import { SelectNeuronAction } from '../actions/config'
 import { AxonState, DendState, AxonType } from '../reducers/neurons'
@@ -31,7 +32,7 @@ export const potGreyScale = d3
   .range([0.8, 0.4])
 
 export interface IProps extends IIProps {
-  fireNeuron: (id: string) => void
+  fireNeuron: (payload: FireNeuronAction) => void
   fireVolumeNeuron: () => void
   addNewApToSynapse: (id: string) => void
   removeNeuron: (id: string) => void
@@ -142,7 +143,7 @@ export class Neuron extends React.Component<IProps, IState> {
     const { dragging } = this.state
 
     if (potential >= 100) {
-      fireNeuron(id)
+      fireNeuron({ id, axonType: axon.type })
       if (axon.type === AxonType.Volume) fireVolumeNeuron()
       axon.synapses.forEach((s) => addNewApToSynapse(s.id))
     }

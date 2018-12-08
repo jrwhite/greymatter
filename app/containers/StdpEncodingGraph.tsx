@@ -7,9 +7,10 @@ import { EncodingGraph, IProps as IIProps } from '../components/EncodingGraph'
 import { makeGetEncodingById } from '../selectors/encodings'
 import * as Actions from '../actions/encodings'
 import { makeGetObservableById } from '../selectors/observables'
+import { moveStdpControlPoint } from '../actions/config'
 
 export interface IProps {
-  id: string
+  id: string // axonType
   color?: string
   // rangeX: { start: number; stop: number }
   // rangeY: { start: number; stop: number }
@@ -17,26 +18,28 @@ export interface IProps {
   height: number
 }
 
-const makeMapStateToProps = () => {
-  const getEncoding = makeGetEncodingById()
-  const getObservable = makeGetObservableById()
-  return (state: IState, props: IProps): Partial<IIProps> => {
-    const encoding = getEncoding(state, props.id)
-    const observable = getObservable(state, encoding.obsId)
-    return {
-      ...props,
-      controlPoints: encoding.controlPoints,
-      rangeX: observable ? observable.getRange(state) : { start: 0, stop: 100 }, // TODO: GET RID OF DEFAULT
-      rangeY: encoding.range ? encoding.range : { start: 0, stop: 100 }
-    }
+const mapStateToProps = (state: IState, props: IProps): Partial<IIProps> => {
+  const encoding = state.network.config.stdpEncodings[props.id]
+  return {
+    ...props,
+    rangeX: encoding.domain,
+    rangeY: encoding.range,
+    controlPoints: encoding.controlPoints
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IIProps> => {
-  return bindActionCreators(NetworkActions as any, dispatch)
+  return bindActionCreators(
+    { moveControlPoint: moveStdpControlPoint },
+    dispatch
+  )
+}
+
+class StdpEncodingGraph extends EncodingGraph {
+  props: IIProps
 }
 
 export default connect(
-  makeMapStateToProps,
+  mapStateToProps,
   mapDispatchToProps
-)(EncodingGraph)
+)(StdpEncodingGraph)

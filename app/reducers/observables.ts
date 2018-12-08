@@ -9,8 +9,18 @@ export enum ObservableEnum {
   Potential = 'Neuron Potential',
   Recovery = 'Neuron Recovery',
   Reward = 'Gym Reward',
-  Period = 'Neuron Firing Period'
+  Period = 'Neuron Firing Period',
+  // begin locally-scoped observables
+  Stdp = 'STDP'
 }
+
+export const globalObservables = [
+  ObservableEnum.Gym,
+  ObservableEnum.Potential,
+  ObservableEnum.Recovery,
+  ObservableEnum.Reward,
+  ObservableEnum.Period
+]
 
 export interface ObservableState {
   id: string

@@ -25,6 +25,7 @@ import { actionCreator, actionCreatorVoid } from './helpers'
 import { addNewSynapse, removeSynapses } from './synapses'
 import { addSynapseToInputAxon } from './inputs'
 import { getNeuronEllipseGeo } from '../selectors/neurons'
+import { makeEncodingFromCtrlPoints } from '../utils/encoding'
 const _ = require('lodash')
 
 export interface MoveNeuronAction {
@@ -188,6 +189,7 @@ export const decayNeurons = actionCreatorVoid('DECAY_NEURONS')
 
 export interface PotentiateDendsAction {
   id: string
+  stdpFunc: (delta: number) => number
 }
 export const potentiateDends = actionCreator<PotentiateDendsAction>(
   'POTENTIATE_DENDS'
@@ -204,10 +206,19 @@ export interface DepressDendsAction {
 }
 export const depressDends = actionCreator<DepressDendsAction>('DEPRESS_DENDS')
 
-export function fireNeuron (id: string) {
+export interface FireNeuronAction {
+  id: string
+  axonType: AxonType
+}
+
+export function fireNeuron (payload: FireNeuronAction) {
   return (dispatch: Function, getState: () => IState) => {
-    dispatch(potentiateDends({ id }))
-    dispatch(hyperpolarizeNeuron({ id }))
+    const stdpEncoding = getState().network.config.stdpEncodings[
+      payload.axonType
+    ]
+    const stdpFunc = makeEncodingFromCtrlPoints(stdpEncoding.controlPoints)
+    dispatch(potentiateDends({ id: payload.id, stdpFunc }))
+    dispatch(hyperpolarizeNeuron({ id: payload.id }))
     // dispatch(depressDends({ id }))
   }
 }

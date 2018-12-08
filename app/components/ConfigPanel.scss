@@ -1,5 +1,9 @@
 :local {
     .container {
+        display: flex
+    }
+
+    .izhik {
         // flex: 1 20%;
         position: relative;
         // top: 20px;
@@ -9,4 +13,5 @@
         width: 400px;
 
     }
+
 }

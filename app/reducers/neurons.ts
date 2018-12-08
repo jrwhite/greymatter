@@ -40,6 +40,8 @@ export const stdpPotFactor = 1
 export const stdpDepFactor = 10
 export const maxWeighting = 80
 export const daWeighting = 10
+export const recoveryDeltaRange = { start: -5, stop: 5 }
+export const stdpRange = { start: -10, stop: 10 }
 
 export interface NeuronState {
   id: string
@@ -471,8 +473,12 @@ export default function neurons (
             // const change = (MaxFirePeriod - d.spikeTime) * stdpPotFactor
             // console.log(d.spikeU)
             // console.log(n.fireU)
-            const change =
-              d.spikeU < n.fireU ? (n.fireU - d.spikeU) * stdpPotFactor : 0
+            // const change =
+            //   d.spikeU < n.fireU ? (n.fireU - d.spikeU) * stdpPotFactor : 0
+            const delta = d.spikeU < n.fireU ? d.spikeU - n.fireU : 0
+            console.log(delta)
+            const change = action.payload.stdpFunc(delta)
+            console.log(change)
             // console.log(change)
             const newWeighting = d.weighting + change
             return {

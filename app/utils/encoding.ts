@@ -1,6 +1,7 @@
 import { ControlPoint } from '../components/ControlPoint'
 import lowerCase = require('lodash/fp/lowerCase')
 import { ControlPointState } from '../reducers/encodings'
+import * as _ from 'lodash'
 
 const d3 = require('d3')
 
@@ -24,22 +25,34 @@ export function makeEncodingFromCtrlPoints (
 
   // assume ordered controlPoints array ordered by pos.x
   // ACTUALLY it doesnt need to be
+  // EDIT: ACTUALLY it does have to be...
+  if (_.isEmpty(controlPoints)) return () => 0
   return (obs: number) => {
-    const lower: ControlPointState = controlPoints.reduce((prev, cur) => {
-      if (cur.pos.x < obs) {
-        return cur
-      } else {
+    const lower: ControlPointState | undefined = _.reduce(
+      controlPoints,
+      (prev, cur) => {
+        if (cur.pos.x < obs) {
+          if (prev.pos.x < cur.pos.x) {
+            return cur
+          }
+        }
         return prev
       }
-    })
-    const upper: ControlPointState = controlPoints.reduce((prev, cur) => {
-      if (cur.pos.x > obs) {
-        return cur
-      } else {
+    )
+    const upper: ControlPointState | undefined = _.reduceRight(
+      controlPoints,
+      (prev, cur) => {
+        if (cur.pos.x > obs) {
+          if (prev.pos.x > cur.pos.x) {
+            return cur
+          }
+        }
         return prev
       }
-    })
-    if (!lower || !upper) return 0
+    )
+    if (!lower || !upper) return () => 0
+    console.log(lower)
+    console.log(upper)
     const scale = d3
       .scaleLinear()
       .domain([lower.pos.x, upper.pos.x])

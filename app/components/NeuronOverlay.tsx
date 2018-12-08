@@ -3,7 +3,8 @@ import { Rotate } from './Rotate'
 import {
   RemoveNeuronsAction,
   RotateNeuronAction,
-  SetAxonTypeAction
+  SetAxonTypeAction,
+  FireNeuronAction
 } from '../actions/neurons'
 import { Icon } from '@blueprintjs/core'
 import { AxonState, AxonType } from '../reducers/neurons'
@@ -15,7 +16,7 @@ export interface IProps {
   removeNeuron: (id: string) => void
   rotateNeuron: (payload: RotateNeuronAction) => void
   addNewApToSynapse: (id: string) => void
-  fireNeuron: (id: string) => void
+  fireNeuron: (payload: FireNeuronAction) => void
   tryMakeSynapseAtAxon: (axonId: string, neuronId: string) => void
   id: string
   axon: AxonState
@@ -67,7 +68,7 @@ export class NeuronOverlay extends React.Component<IProps> {
         </g>
         <g
           onClick={() => {
-            fireNeuron(id)
+            fireNeuron({ id, axonType: axon.type })
             if (axon.type === AxonType.Volume) fireVolumeNeuron()
             axon.synapses.forEach((s) => addNewApToSynapse(s.id))
           }}

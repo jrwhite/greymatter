@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Ellipse, Arc } from '../utils/geometry'
-import { makeGetEncodedValueById } from '../selectors/encoding'
+import { makeGetEncodedValueById } from '../selectors/encodings'
 import { IState } from '../reducers'
 import {
   IProps,

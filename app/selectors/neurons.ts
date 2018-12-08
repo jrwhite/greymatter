@@ -8,7 +8,7 @@ import neurons, {
   MaxFirePeriod
 } from '../reducers/neurons'
 import * as _ from 'lodash'
-import { getEncodedValueById } from './encoding'
+import { getEncodedValueById } from './encodings'
 import { defaultEllipseGeo } from '../components/NeuronBody'
 import { Ellipse as EllipseGeo } from '../utils/geometry'
 
@@ -24,6 +24,17 @@ export const getNeuronEllipseGeo = (state: NeuronState): EllipseGeo => {
     theta: state.theta
   }
 }
+
+export const getNeuronRecoveryRange = (state: IState) => ({
+  start: -20,
+  stop: 0
+})
+
+export const makeGetNeuronRecoveryRange = () =>
+  createSelector(
+    getNeuronRecoveryRange,
+    (recoveryRange) => recoveryRange
+  )
 
 export const getNeuronPotRange = (state: IState) => ({
   start: -300,

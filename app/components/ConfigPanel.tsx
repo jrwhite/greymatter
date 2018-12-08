@@ -5,6 +5,7 @@ import {
   SetDefaultIzhikParamsAction,
   setDefaultIzhikParams
 } from '../actions/config'
+import StdpEncodingGraph from '../containers/StdpEncodingGraph'
 
 const styles = require('./ConfigPanel.scss')
 
@@ -23,11 +24,20 @@ export class ConfigPanel extends React.Component<IProps> {
     }
     return (
       <div className={styles.container}>
-        {/* <div> */}
-        <IzhikParamsControls
-          onChange={onIzhikParamsChange}
-          izhikParams={izhikParams}
-        />
+        <div className={styles.izhik}>
+          <IzhikParamsControls
+            onChange={onIzhikParamsChange}
+            izhikParams={izhikParams}
+          />
+        </div>
+        <div>
+          <StdpEncodingGraph
+            id={'Excitatory'}
+            color={'blue'}
+            width={250}
+            height={150}
+          />
+        </div>
       </div>
     )
   }

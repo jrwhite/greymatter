@@ -38,9 +38,10 @@ import {
   makeGetNeuronPotential,
   getNeuronFromId,
   makeGetNeuronPotRange,
-  makeGetNeuronPeriodRange
+  makeGetNeuronPeriodRange,
+  makeGetNeuronRecoveryRange
 } from '../selectors/neurons'
-import { IzhikParamsControls } from '../components/IzhikParamsControls';
+import { IzhikParamsControls } from '../components/IzhikParamsControls'
 
 const getSelectedNeuron = (state: IState, props: IProps) =>
   state.network.neurons.find((neuron: NeuronState) => neuron.id === props.id)
@@ -82,6 +83,10 @@ export class SelectedNeuron extends React.Component<IProps> {
     return (state: IState) => getNeuronFromId(state, id)!!.firePeriod
   }
 
+  makeGetSelfRecovery (id: string) {
+    return (state: IState) => getNeuronFromId(state, id)!!.izhik.u
+  }
+
   onIzhikParamsChange (params: IzhikParams) {
     const { changeIzhikParams, id } = this.props
     changeIzhikParams({ neuronId: id, params })
@@ -121,6 +126,15 @@ export class SelectedNeuron extends React.Component<IProps> {
       })
     }
 
+    const addRecoveryObservable = () => {
+      addNewObservable({
+        name: id.toString() + '-recovery',
+        type: ObservableEnum.Recovery,
+        getValue: this.makeGetSelfRecovery(id),
+        getRange: makeGetNeuronRecoveryRange()
+      })
+    }
+
     return (
       <div>
         <DendList dends={dends} neuronId={id} />
@@ -134,6 +148,10 @@ export class SelectedNeuron extends React.Component<IProps> {
           <Button
             text={'add firing rate observable'}
             onClick={() => addPeriodObservable()}
+          />
+          <Button
+            text={'add recovery rate observable'}
+            onClick={() => addRecoveryObservable()}
           />
           <Divider />
           <RadioGroup

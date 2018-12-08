@@ -58,8 +58,8 @@ export class EncodingPanel extends React.Component<IProps, IState> {
         <EncodingGraph
           id={source ? source.id : 'enc'}
           color={'blue'}
-          rangeX={{ start: -260, stop: 30 }}
-          rangeY={TONIC_RANGE}
+          // rangeX={{ start: -260, stop: 30 }}
+          // rangeY={TONIC_RANGE}
           width={250}
           height={150}
         />
