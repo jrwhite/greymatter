@@ -30,7 +30,7 @@ export class ConfigPanel extends React.Component<IProps> {
             izhikParams={izhikParams}
           />
         </div>
-        <div>
+        <div className={styles.graph}>
           <StdpEncodingGraph
             id={'Excitatory'}
             color={'blue'}

@@ -41,7 +41,11 @@ export const stdpDepFactor = 10
 export const maxWeighting = 80
 export const daWeighting = 10
 export const recoveryDeltaRange = { start: -5, stop: 5 }
-export const stdpRange = { start: -10, stop: 10 }
+export const firePeriodRange = {
+  start: -1 * MaxFirePeriod,
+  stop: MaxFirePeriod
+}
+export const stdpRange = { start: -5, stop: 5 }
 
 export interface NeuronState {
   id: string
@@ -197,12 +201,13 @@ export default function neurons (
             n.dends.find((d) => d.id === action.payload.dendId)!!.weighting,
           dends: n.dends.map((d) => {
             if (d.id === action.payload.dendId) {
-              const change = (n.izhik.u - n.fireU) * stdpDepFactor
-              console.log(n.fireU)
-              console.log(n.izhik.u)
+              // const delta = n.izhik.u - n.fireU
+              const delta = n.firePeriod
+              console.log(delta)
+              const change = delta > 0 ? action.payload.stdpFunc(delta) : 0
+              console.log('EXCITE CHANGE')
               console.log(change)
-              const newWeighting =
-                change > 0 ? d.weighting - change : d.weighting
+              const newWeighting = d.weighting + change
               return {
                 ...d,
                 spikeTime: 1,
@@ -227,12 +232,11 @@ export default function neurons (
             n.dends.find((d) => d.id === action.payload.dendId)!!.weighting,
           dends: n.dends.map((d) => {
             if (d.id === action.payload.dendId) {
-              const change = (n.izhik.u - n.fireU) * stdpDepFactor
-              console.log(n.fireU)
-              console.log(n.izhik.u)
-              console.log(change)
-              const newWeighting =
-                change > 0 ? d.weighting + change : d.weighting
+              const delta = n.izhik.u - n.fireU
+              console.log(delta)
+              if (delta <= 0) return d
+              const change = action.payload.stdpFunc(delta)
+              const newWeighting = d.weighting + change
               return {
                 ...d,
                 spikeTime: 1,
@@ -475,7 +479,8 @@ export default function neurons (
             // console.log(n.fireU)
             // const change =
             //   d.spikeU < n.fireU ? (n.fireU - d.spikeU) * stdpPotFactor : 0
-            const delta = d.spikeU < n.fireU ? d.spikeU - n.fireU : 0
+            // const delta = d.spikeU < n.fireU ? d.spikeU - n.fireU : 0
+            const delta = -1 * d.spikeTime
             console.log(delta)
             const change = action.payload.stdpFunc(delta)
             console.log(change)

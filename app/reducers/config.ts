@@ -14,7 +14,8 @@ import {
   IzhikParams,
   AxonType,
   recoveryDeltaRange,
-  stdpRange
+  stdpRange,
+  firePeriodRange
 } from './neurons'
 import * as _ from 'lodash'
 import * as d3 from 'd3'
@@ -66,33 +67,33 @@ const initialConfigState: ConfigState = {
   },
   stdpEncodings: {
     Excitatory: {
-      domain: recoveryDeltaRange,
+      domain: firePeriodRange,
       range: stdpRange,
       controlPoints: [
-        { index: 0, pos: { x: recoveryDeltaRange.start, y: 0 } },
+        { index: 0, pos: { x: firePeriodRange.start, y: 0 } },
         { index: 1, pos: { x: 0, y: stdpRange.stop } },
-        { index: 2, pos: { x: 0.1, y: stdpRange.start } },
-        { index: 3, pos: { x: recoveryDeltaRange.stop, y: 0 } }
+        { index: 2, pos: { x: 0.000001, y: stdpRange.start } },
+        { index: 3, pos: { x: firePeriodRange.stop, y: 0 } }
       ]
     },
     Inhibitory: {
-      domain: recoveryDeltaRange,
+      domain: firePeriodRange,
       range: stdpRange,
       controlPoints: [
-        { index: 0, pos: { x: 0, y: 0 } },
-        { index: 1, pos: { x: 0.25, y: 0.25 } },
-        { index: 2, pos: { x: 0.5, y: 0.5 } },
-        { index: 3, pos: { x: 1, y: 1 } }
+        { index: 0, pos: { x: firePeriodRange.start, y: 0 } },
+        { index: 1, pos: { x: 0, y: stdpRange.stop } },
+        { index: 2, pos: { x: 0.000001, y: stdpRange.start } },
+        { index: 3, pos: { x: firePeriodRange.stop, y: 0 } }
       ]
     },
     Volume: {
-      domain: recoveryDeltaRange,
+      domain: firePeriodRange,
       range: stdpRange,
       controlPoints: [
-        { index: 0, pos: { x: 0, y: 0 } },
-        { index: 1, pos: { x: 0.25, y: 0.25 } },
-        { index: 2, pos: { x: 0.5, y: 0.5 } },
-        { index: 3, pos: { x: 1, y: 1 } }
+        { index: 0, pos: { x: firePeriodRange.start, y: 0 } },
+        { index: 1, pos: { x: 0, y: stdpRange.stop } },
+        { index: 2, pos: { x: 0.000001, y: stdpRange.start } },
+        { index: 3, pos: { x: firePeriodRange.stop, y: 0 } }
       ]
     }
   }
@@ -151,7 +152,13 @@ export default function config (
           ...encoding,
           controlPoints: encoding.controlPoints.map((c, i) => {
             if (i === action.payload.index) {
-              return { ...c, pos: action.payload.newPos }
+              return {
+                ...c,
+                pos:
+                  i === 1 || i === 2
+                    ? { ...action.payload.newPos, x: c.pos.x }
+                    : action.payload.newPos
+              }
             }
             return c
           })

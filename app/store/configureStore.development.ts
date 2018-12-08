@@ -43,7 +43,8 @@ const logger = (createLogger as any)({
     action.type !== 'MOVE_NEURON' &&
     action.type !== 'STEP_NETWORK' &&
     action.type !== 'DECAY_NEURONS' &&
-    // action.type !== 'POTENTIATE_NEURON' &&
+    action.type !== 'POTENTIATE_NEURON' &&
+    action.type !== 'STEP_GYM' &&
     action.type !== 'SET_AP_PROGRESS'
 })
 

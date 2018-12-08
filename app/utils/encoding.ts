@@ -31,7 +31,7 @@ export function makeEncodingFromCtrlPoints (
     const lower: ControlPointState | undefined = _.reduce(
       controlPoints,
       (prev, cur) => {
-        if (cur.pos.x < obs) {
+        if (cur.pos.x <= obs) {
           if (prev.pos.x < cur.pos.x) {
             return cur
           }
@@ -42,7 +42,7 @@ export function makeEncodingFromCtrlPoints (
     const upper: ControlPointState | undefined = _.reduceRight(
       controlPoints,
       (prev, cur) => {
-        if (cur.pos.x > obs) {
+        if (cur.pos.x >= obs) {
           if (prev.pos.x > cur.pos.x) {
             return cur
           }

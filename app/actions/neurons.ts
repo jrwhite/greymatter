@@ -74,11 +74,13 @@ export const fireVolumeNeuron = actionCreatorVoid('FIRE_VOLUME_NEURON')
 export interface ExciteNeuron {
   id: string
   dendId: string
+  stdpFunc: (delta: number) => number
 }
 
 export interface PolarizeNeuronAction {
   id: string
   dendId: string
+  stdpFunc: (delta: number) => number
 }
 export const polarizeNeuron = actionCreator<PolarizeNeuronAction>(
   'POLARIZE_NEURON'

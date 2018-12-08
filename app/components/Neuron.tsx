@@ -148,7 +148,7 @@ export class Neuron extends React.Component<IProps, IState> {
       axon.synapses.forEach((s) => addNewApToSynapse(s.id))
     }
 
-    console.log('neuron rerender')
+    // console.log('neuron rerender')
 
     const axonPos: Point = calcAxonPos({
       major: 50,

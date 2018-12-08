@@ -9,6 +9,7 @@ import {
 import { IState } from '../reducers'
 import { addSynapseToInputAxon } from './inputs'
 import { AxonType } from '../reducers/neurons'
+import { makeEncodingFromCtrlPoints } from '../utils/encoding'
 const _ = require('lodash')
 
 export interface AddSynapseAction {
@@ -92,10 +93,15 @@ export function finishFiringApOnSynapse (
       id: string;
       neuronId: string;
     } = getState().network.synapses.find((s) => s.id === synapseId)!!.dend
+    const stdpFunc = makeEncodingFromCtrlPoints(
+      getState().network.config.stdpEncodings[axonType].controlPoints
+    )
     if (axonType === AxonType.Excitatory) {
-      dispatch(exciteNeuron({ id: dend.neuronId, dendId: dend.id }))
+      dispatch(exciteNeuron({ id: dend.neuronId, dendId: dend.id, stdpFunc }))
     } else if (axonType === AxonType.Inhibitory) {
-      dispatch(polarizeNeuron({ id: dend.neuronId, dendId: dend.id }))
+      dispatch(
+        polarizeNeuron({ id: dend.neuronId, dendId: dend.id, stdpFunc })
+      )
     }
   }
 }
