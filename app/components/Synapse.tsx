@@ -10,7 +10,11 @@ import { AxonType } from '../reducers/neurons'
 const d3 = require('d3')
 
 export interface IProps extends RouteComponentProps<any> {
-  finishFiringApOnSynapse (id: string, synapseId: string): void
+  finishFiringApOnSynapse (
+    id: string,
+    synapseId: string,
+    axonType: AxonType
+  ): void
   id: string
   axon: { id: string; neuronId: string }
   dend: { id: string; neuronId: string }
@@ -53,7 +57,8 @@ export class Synapse extends React.Component<IProps> {
       .x((d: Point) => d.x)
       .y((d: Point) => d.y)
     const length = Math.hypot(axonPos.x - dendPos.x, axonPos.y - dendPos.y)
-    const apCallback = (apId: string) => finishFiringApOnSynapse(apId, id)
+    const apCallback = (apId: string) =>
+      finishFiringApOnSynapse(apId, id, axonType)
 
     return (
       <g id={id}>

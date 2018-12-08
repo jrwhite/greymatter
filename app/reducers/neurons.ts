@@ -88,6 +88,7 @@ export interface DendState {
   sourceId: string
   spikeTime?: number
   spikeU?: number
+  spikeType?: AxonType
 }
 
 export interface PlastState {
@@ -211,6 +212,7 @@ export default function neurons (
               return {
                 ...d,
                 spikeTime: 1,
+                spikeType: AxonType.Excitatory,
                 spikeU: n.izhik.u,
                 weighting: newWeighting > 1 ? newWeighting : 0
               }
@@ -232,16 +234,20 @@ export default function neurons (
             n.dends.find((d) => d.id === action.payload.dendId)!!.weighting,
           dends: n.dends.map((d) => {
             if (d.id === action.payload.dendId) {
-              const delta = n.izhik.u - n.fireU
-              console.log(delta)
-              if (delta <= 0) return d
+              // const delta = n.izhik.u - n.fireU
+              const delta = n.firePeriod
+              // console.log(delta)
+              // if (delta <= 0) return d
               const change = action.payload.stdpFunc(delta)
               const newWeighting = d.weighting + change
               return {
                 ...d,
                 spikeTime: 1,
+                spikeType: AxonType.Inhibitory,
+                // spikeTime: undefined, // TODO: make this work. TEMP FIX
                 spikeU: n.izhik.u,
-                weighting: newWeighting < maxWeighting ? newWeighting : 0
+                weighting:
+                  newWeighting < maxWeighting ? newWeighting : d.weighting
               }
             } else {
               return d
@@ -474,6 +480,7 @@ export default function neurons (
           dends: n.dends.map((d) => {
             if (d.spikeTime === undefined) return d
             if (d.spikeU === undefined) return d
+            if (d.spikeType === undefined) return d
             // const change = (MaxFirePeriod - d.spikeTime) * stdpPotFactor
             // console.log(d.spikeU)
             // console.log(n.fireU)
@@ -482,7 +489,7 @@ export default function neurons (
             // const delta = d.spikeU < n.fireU ? d.spikeU - n.fireU : 0
             const delta = -1 * d.spikeTime
             console.log(delta)
-            const change = action.payload.stdpFunc(delta)
+            const change = action.payload.stdpFuncs[d.spikeType](delta)
             console.log(change)
             // console.log(change)
             const newWeighting = d.weighting + change

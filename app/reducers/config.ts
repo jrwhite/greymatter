@@ -55,7 +55,7 @@ export interface SelectedInputState {
 const initialConfigState: ConfigState = {
   selectedNeurons: [],
   selectedInputs: [],
-  stepSize: 1,
+  stepSize: 5,
   stepInterval: 30,
   isPaused: true,
   defaultIzhikParams: {
@@ -81,8 +81,8 @@ const initialConfigState: ConfigState = {
       range: stdpRange,
       controlPoints: [
         { index: 0, pos: { x: firePeriodRange.start, y: 0 } },
-        { index: 1, pos: { x: 0, y: stdpRange.stop } },
-        { index: 2, pos: { x: 0.000001, y: stdpRange.start } },
+        { index: 1, pos: { x: 0, y: stdpRange.start / 2 } },
+        { index: 2, pos: { x: 0.000001, y: stdpRange.stop } },
         { index: 3, pos: { x: firePeriodRange.stop, y: 0 } }
       ]
     },

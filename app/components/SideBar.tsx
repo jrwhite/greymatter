@@ -85,8 +85,8 @@ export class SideBar extends React.Component<IProps, IState> {
     })
     return (
       <LineGraph
-        scaleX={3}
-        rangeX={50}
+        scaleX={3 / 4}
+        rangeX={200}
         scaleY={0.4}
         rangeY={{ start: -300, stop: 100 }}
       >

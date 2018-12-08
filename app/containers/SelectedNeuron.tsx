@@ -134,7 +134,11 @@ export class SelectedNeuron extends React.Component<IProps> {
         getRange: makeGetNeuronRecoveryRange()
       })
     }
-
+    const changeCurrent = (current: number) =>
+      changeNeuronCurrent({
+        neuronId: id,
+        current
+      })
     return (
       <div>
         <DendList dends={dends} neuronId={id} />
@@ -188,6 +192,16 @@ export class SelectedNeuron extends React.Component<IProps> {
           <IzhikParamsControls
             izhikParams={izhikParams}
             onChange={(params: IzhikParams) => this.onIzhikParamsChange(params)}
+          />{' '}
+          <Divider />
+          <Text>Current:</Text>
+          <Slider
+            min={0}
+            max={5}
+            stepSize={0.1}
+            labelStepSize={0.5}
+            value={current}
+            onRelease={changeCurrent}
           />
           <Text>Dendrites:</Text>
           {dends.map((d) => (
