@@ -50,9 +50,10 @@ export default function volume (
       da: {
         ...state.da,
         molarity:
+          molarity -
           (molarity / decay.tau) *
-          Math.exp(-decay.stepSize / decay.tau) *
-          decay.stepSize
+            Math.exp(-decay.stepSize / decay.tau) *
+            decay.stepSize
       }
     }
   }

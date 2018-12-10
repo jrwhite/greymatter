@@ -8,8 +8,10 @@ import {
 } from '../actions/neurons'
 import { Icon } from '@blueprintjs/core'
 import { AxonState, AxonType } from '../reducers/neurons'
+import { AddDaAction } from '../actions/volume'
 
 export interface IProps {
+  addDa: (payload: AddDaAction) => void
   recalcAllDends: () => void
   fireVolumeNeuron: () => void
   setAxonType: (payload: SetAxonTypeAction) => void
@@ -27,6 +29,7 @@ export class NeuronOverlay extends React.Component<IProps> {
 
   render () {
     const {
+      addDa,
       setAxonType,
       removeNeuron,
       rotateNeuron,
@@ -69,7 +72,10 @@ export class NeuronOverlay extends React.Component<IProps> {
         <g
           onClick={() => {
             fireNeuron({ id, axonType: axon.type })
-            if (axon.type === AxonType.Volume) fireVolumeNeuron()
+            if (axon.type === AxonType.Volume) {
+              fireVolumeNeuron()
+              addDa({ amount: 30 })
+            }
             axon.synapses.forEach((s) => addNewApToSynapse(s.id))
           }}
           transform={'translate(' + 60 + ',' + 10 + ')'}

@@ -17,7 +17,8 @@ import {
   Hotkey,
   EditableText,
   NumericInput,
-  ControlGroup
+  ControlGroup,
+  Slider
 } from '@blueprintjs/core'
 
 import GymClient from '../containers/GymClient'
@@ -44,6 +45,8 @@ import {
 } from '../actions/gym'
 import { SetStepIntervalAction } from '../actions/config'
 import { maxGymStepRatio, minGymStepRatio } from '../reducers/gym'
+import { DaState, daRange } from '../reducers/volume'
+import { decayDa } from '../actions/volume'
 const { Menu } = remote
 const d3 = require('d3')
 
@@ -65,6 +68,7 @@ export interface IProps extends RouteComponentProps<any> {
   setGymStepRatio: (payload: SetGymStepRatioAction) => void
   resetNetwork: () => void
   addNewApToSynapse: (id: string) => void
+  decayDa: () => void
   ghostSynapse: GhostSynapseState
   inputs: InputState[]
   neurons: NeuronState[]
@@ -72,6 +76,7 @@ export interface IProps extends RouteComponentProps<any> {
   config: ConfigState
   sourcedDends: SourcedDendValue[]
   gymStepRatio: number
+  da: DaState
 }
 
 export interface IState {
@@ -145,7 +150,8 @@ export class Network extends React.Component<IProps, IState> {
       setStepInterval,
       setGymStepRatio,
       gymStepRatio,
-      config
+      config,
+      da
     } = this.props
 
     // TODO: refactor ghostSynapse into separate component
@@ -248,6 +254,12 @@ export class Network extends React.Component<IProps, IState> {
                     value={gymStepRatio}
                     stepSize={5}
                   />
+                  <Slider
+                    value={da.molarity}
+                    min={daRange.start}
+                    max={daRange.stop}
+                    stepSize={daRange.stop / 10}
+                  />
                 </ControlGroup>
               </div>
             </div>
@@ -295,7 +307,7 @@ export class Network extends React.Component<IProps, IState> {
   }
 
   public startRuntime () {
-    const { decayNeurons, gymStepRatio, config, stepGym } = this.props
+    const { decayNeurons, gymStepRatio, config, stepGym, decayDa } = this.props
     let gymSteps = 0
 
     const step = () => {
@@ -303,6 +315,7 @@ export class Network extends React.Component<IProps, IState> {
       if (gymSteps++ > gymStepRatio) {
         gymSteps = 0
         stepGym({ shouldStep: true })
+        decayDa()
       }
       decayNeurons()
       this.stepSourcedDends()
@@ -315,7 +328,7 @@ export class Network extends React.Component<IProps, IState> {
   }
 
   public restartRuntime () {
-    const { config, decayNeurons, gymStepRatio, stepGym } = this.props
+    const { config, decayDa, decayNeurons, gymStepRatio, stepGym } = this.props
     let gymSteps = 0
     const { interval } = this.state
     const step = () => {
@@ -324,6 +337,7 @@ export class Network extends React.Component<IProps, IState> {
         stepGym({ shouldStep: true })
       }
       decayNeurons()
+      decayDa()
       this.stepSourcedDends()
     }
     if (config.isPaused) {

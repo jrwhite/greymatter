@@ -22,6 +22,7 @@ import { SelectNeuronAction } from '../actions/config'
 import { AxonState, DendState, AxonType } from '../reducers/neurons'
 import { IIProps } from '../containers/Neuron'
 import NeuronOverlay from '../containers/NeuronOverlay'
+import { AddDaAction } from '../actions/volume'
 // import { PotentialGraphLine } from "./PotentialGraphLine"
 const { Menu } = remote
 const d3 = require('d3')
@@ -32,6 +33,7 @@ export const potGreyScale = d3
   .range([0.8, 0.4])
 
 export interface IProps extends IIProps {
+  addDa: (payload: AddDaAction) => void
   fireNeuron: (payload: FireNeuronAction) => void
   fireVolumeNeuron: () => void
   addNewApToSynapse: (id: string) => void
@@ -127,6 +129,7 @@ export class Neuron extends React.Component<IProps, IState> {
 
   render () {
     const {
+      addDa,
       fireNeuron,
       fireVolumeNeuron,
       addNewApToSynapse,
@@ -144,7 +147,11 @@ export class Neuron extends React.Component<IProps, IState> {
 
     if (potential >= 100) {
       fireNeuron({ id, axonType: axon.type })
-      if (axon.type === AxonType.Volume) fireVolumeNeuron()
+
+      if (axon.type === AxonType.Volume) {
+        fireVolumeNeuron()
+        addDa({ amount: 30 })
+      }
       axon.synapses.forEach((s) => addNewApToSynapse(s.id))
     }
 

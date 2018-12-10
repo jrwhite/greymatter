@@ -26,7 +26,8 @@ const makeMapStateToProps = (): ((state: IState) => Partial<IProps>) => {
     ghostSynapse: state.network.ghostSynapse,
     config: state.network.config,
     sourcedDends: getSourcedDends(state),
-    gymStepRatio: state.network.gym.stepRatio
+    gymStepRatio: state.network.gym.stepRatio,
+    da: state.network.volume.da
   })
 }
 
