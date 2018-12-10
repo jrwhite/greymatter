@@ -20,6 +20,7 @@ import {
 import * as _ from 'lodash'
 import * as d3 from 'd3'
 import { ControlPointState, EncodingFunction } from './encodings'
+import { ControlPoint } from '../components/ControlPoint'
 
 export const maxStepInterval = 200
 export const maxFps = 60
@@ -50,6 +51,12 @@ export interface SelectedNeuronState {
 
 export interface SelectedInputState {
   id: string
+}
+
+export interface StdpEncoding {
+  domain: { start: number; stop: number }
+  range: { start: number; stop: number }
+  controlPoints: ControlPointState[]
 }
 
 const initialConfigState: ConfigState = {
