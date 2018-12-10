@@ -6,6 +6,7 @@ import * as GymActions from './gym'
 import * as GhostSynapseActions from './ghostSynapse'
 import * as EncodingActions from './encodings'
 import * as ObservableActions from './observables'
+import * as VolumeActions from './volume'
 
 const NetworkActions: any = {
   ...ConfigActions,
@@ -15,7 +16,8 @@ const NetworkActions: any = {
   ...GymActions,
   ...GhostSynapseActions,
   ...EncodingActions,
-  ...ObservableActions
+  ...ObservableActions,
+  ...VolumeActions
 }
 
 export default NetworkActions

@@ -26,7 +26,8 @@ import { addNewSynapse, removeSynapses } from './synapses'
 import { addSynapseToInputAxon } from './inputs'
 import { getNeuronEllipseGeo } from '../selectors/neurons'
 import { makeEncodingFromCtrlPoints } from '../utils/encoding'
-import { StdpEncoding } from '../reducers/config'
+import { StdpEncoding, StdpModEncoding } from '../reducers/config'
+import { ControlPointState } from '../reducers/encodings'
 const _ = require('lodash')
 
 export interface MoveNeuronAction {
@@ -193,7 +194,11 @@ export const decayNeurons = actionCreatorVoid('DECAY_NEURONS')
 export interface PotentiateDendsAction {
   id: string
   // stdpFunc: (delta: number) => number
-  stdpFuncs: { [type: string]: (val: number) => number }
+  weightingModFuncs: {
+    [axonType: string]: { [stdpType: string]: (val: number) => number };
+  }
+  daMods: { [axonType: string]: { [stdpType: string]: number } }
+  stdpFuncs: { [axonType: string]: (val: number) => number }
 }
 export const potentiateDends = actionCreator<PotentiateDendsAction>(
   'POTENTIATE_DENDS'
@@ -222,7 +227,25 @@ export function fireNeuron (payload: FireNeuronAction) {
     const stdpFuncs = _.mapValues(stdpEncodings, (enc: StdpEncoding) =>
       makeEncodingFromCtrlPoints(enc.controlPoints)
     )
-    dispatch(potentiateDends({ id: payload.id, stdpFuncs }))
+    const weightingModFuncs = _.mapValues(stdpEncodings, (enc: StdpEncoding) =>
+      _.mapValues(
+        enc.modEncodings.Weighting.controlPoints,
+        (ctrl: ControlPointState[]) => makeEncodingFromCtrlPoints(ctrl)
+      )
+    )
+    const da = getState().network.volume.da
+    const daMods = _.mapValues(stdpEncodings, (enc: StdpEncoding) => {
+      return _.mapValues(
+        enc.modEncodings.Volume.controlPoints,
+        (ctrl: ControlPointState[]) => {
+          const encFunc = makeEncodingFromCtrlPoints(ctrl)
+          return encFunc(da.molarity)
+        }
+      )
+    })
+    dispatch(
+      potentiateDends({ id: payload.id, stdpFuncs, weightingModFuncs, daMods })
+    )
     dispatch(hyperpolarizeNeuron({ id: payload.id }))
     dispatch(recalcAllDends())
     // dispatch(depressDends({ id }))

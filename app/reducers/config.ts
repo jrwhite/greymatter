@@ -15,24 +15,42 @@ import {
   AxonType,
   recoveryDeltaRange,
   stdpRange,
-  firePeriodRange
+  firePeriodRange,
+  dendWeightingRange,
+  maxWeighting
 } from './neurons'
 import * as _ from 'lodash'
 import * as d3 from 'd3'
 import { ControlPointState, EncodingFunction } from './encodings'
 import { ControlPoint } from '../components/ControlPoint'
+import { daRange } from './volume'
 
 export const maxStepInterval = 200
 export const maxFps = 60
 export const minFps = 5
 export const minStepInterval = 10
 
+export enum StdpModTypes {
+  Volume = 'Volume',
+  Weighting = 'Weighting'
+}
+
+export interface StdpModEncoding {
+  domain: { start: number; stop: number }
+  range: { start: number; stop: number }
+  // encoding?: EncodingFunction
+  controlPoints: { [stdpType: string]: ControlPointState[] }
+  // controlPoints: ControlPointState[]
+}
+
 export interface StdpEncoding {
   domain: { start: number; stop: number }
   range: { start: number; stop: number }
   encoding?: EncodingFunction
   controlPoints: ControlPointState[]
+  modEncodings: { [modType: string]: StdpModEncoding }
 }
+
 export interface ConfigState {
   selectedNeurons: SelectedNeuronState[]
   selectedInputs: SelectedInputState[]
@@ -53,10 +71,65 @@ export interface SelectedInputState {
   id: string
 }
 
-export interface StdpEncoding {
-  domain: { start: number; stop: number }
-  range: { start: number; stop: number }
-  controlPoints: ControlPointState[]
+// TODO: add depression modifier
+
+// what percentage of the potentiation gets applied
+const initialModEncodings: { [modType: string]: StdpModEncoding } = {
+  Volume: {
+    domain: daRange,
+    range: { start: 0, stop: 1 },
+    controlPoints: {
+      Potentiation: [
+        { index: 0, pos: { x: daRange.start, y: 0.25 } },
+        { index: 1, pos: { x: daRange.stop / 4, y: 0.7 } },
+        { index: 2, pos: { x: daRange.stop / 2, y: 0.9 } },
+        { index: 3, pos: { x: daRange.stop, y: 1 } }
+      ]
+    }
+  },
+  Weighting: {
+    domain: dendWeightingRange,
+    range: { start: 0, stop: 1 },
+    controlPoints: {
+      Potentiation: [
+        { index: 0, pos: { x: dendWeightingRange.start, y: 1 } },
+        { index: 1, pos: { x: (maxWeighting * 1) / 4, y: 0.75 } },
+        { index: 2, pos: { x: (maxWeighting * 3) / 4, y: 0.25 } },
+        { index: 3, pos: { x: dendWeightingRange.stop, y: 0 } }
+      ]
+    }
+  }
+}
+
+const zeroModEncodings = {
+  Volume: {
+    domain: daRange,
+    range: { start: 0, stop: 1 },
+    controlPoints: {
+      Potentiation: [
+        { index: 0, pos: { x: daRange.start, y: 1 } },
+        { index: 1, pos: { x: daRange.stop, y: 1 } }
+      ],
+      Depression: [
+        { index: 0, pos: { x: daRange.start, y: 1 } },
+        { index: 1, pos: { x: daRange.stop, y: 1 } }
+      ]
+    }
+  },
+  Weighting: {
+    domain: dendWeightingRange,
+    range: { start: 0, stop: 1 },
+    controlPoints: {
+      Potentiation: [
+        { index: 0, pos: { x: dendWeightingRange.start, y: 1 } },
+        { index: 1, pos: { x: dendWeightingRange.stop, y: 1 } }
+      ],
+      Depression: [
+        { index: 0, pos: { x: dendWeightingRange.start, y: 1 } },
+        { index: 1, pos: { x: dendWeightingRange.stop, y: 1 } }
+      ]
+    }
+  }
 }
 
 const initialConfigState: ConfigState = {
@@ -81,17 +154,31 @@ const initialConfigState: ConfigState = {
         { index: 1, pos: { x: 0, y: stdpRange.stop } },
         { index: 2, pos: { x: 0.000001, y: stdpRange.start } },
         { index: 3, pos: { x: firePeriodRange.stop, y: 0 } }
-      ]
+      ],
+      modEncodings: initialModEncodings
     },
     Inhibitory: {
       domain: firePeriodRange,
       range: stdpRange,
       controlPoints: [
-        { index: 0, pos: { x: firePeriodRange.start, y: 0 } },
-        { index: 1, pos: { x: 0, y: stdpRange.start / 2 } },
-        { index: 2, pos: { x: 0.000001, y: stdpRange.stop } },
-        { index: 3, pos: { x: firePeriodRange.stop, y: 0 } }
-      ]
+        {
+          index: 0,
+          pos: { x: firePeriodRange.start, y: -0.1 * stdpRange.start }
+        },
+        {
+          index: 1,
+          pos: { x: 0.25 * firePeriodRange.start, y: stdpRange.stop / 2 }
+        },
+        {
+          index: 2,
+          pos: { x: 0.25 * firePeriodRange.stop, y: stdpRange.stop / 2 }
+        },
+        {
+          index: 3,
+          pos: { x: firePeriodRange.stop, y: -0.1 * stdpRange.start }
+        }
+      ],
+      modEncodings: zeroModEncodings
     },
     Volume: {
       domain: firePeriodRange,
@@ -101,7 +188,8 @@ const initialConfigState: ConfigState = {
         { index: 1, pos: { x: 0, y: stdpRange.stop } },
         { index: 2, pos: { x: 0.000001, y: stdpRange.start } },
         { index: 3, pos: { x: firePeriodRange.stop, y: 0 } }
-      ]
+      ],
+      modEncodings: zeroModEncodings
     }
   }
 }

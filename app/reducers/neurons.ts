@@ -41,11 +41,17 @@ export const stdpDepFactor = 10
 export const maxWeighting = 80
 export const daWeighting = 10
 export const recoveryDeltaRange = { start: -5, stop: 5 }
+export const dendWeightingRange = { start: 0, stop: 80 }
 export const firePeriodRange = {
   start: -1 * MaxFirePeriod,
   stop: MaxFirePeriod
 }
 export const stdpRange = { start: -5, stop: 5 }
+
+export enum StdpType {
+  Potentiation = 'Potentiation',
+  Depression = 'Depression'
+}
 
 export interface NeuronState {
   id: string
@@ -490,9 +496,16 @@ export default function neurons (
             const delta = -1 * d.spikeTime
             console.log(delta)
             const change = action.payload.stdpFuncs[d.spikeType](delta)
+            const weightingMod = action.payload.weightingModFuncs[d.spikeType][
+              change > 0 ? StdpType.Potentiation : StdpType.Depression
+            ](d.weighting)
+            const daMod =
+              action.payload.daMods[d.spikeType][
+                change > 0 ? StdpType.Potentiation : StdpType.Depression
+              ]
             console.log(change)
             // console.log(change)
-            const newWeighting = d.weighting + change
+            const newWeighting = d.weighting + change * weightingMod * daMod
             return {
               ...d,
               spikeTime: undefined,
