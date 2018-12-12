@@ -40,21 +40,15 @@ export interface IProps extends IIProps {
   // mask: string
 }
 
-export interface IState {
-  isAnimating: boolean
-  animationProgress: number
-}
-
-export class ActionPotential extends React.Component<IProps, IState> {
+export class ActionPotential extends React.PureComponent<IProps> {
   props: IProps
-  state: IState = { isAnimating: false, animationProgress: 0 }
 
   componentDidMount () {
     // this.setState({ startAnimation: true })
     this.renderD3(0)
   }
 
-  componentDidUpdate (prevProps: IProps, prevState: IState) {
+  componentDidUpdate (prevProps: IProps) {
     // if (this.state.isAnimating && !prevState.isAnimating) {
     // console.log(prevState)
     // console.log(this.state)
@@ -75,7 +69,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
   //   }
   // }
 
-  componentWillUpdate (nextProps: IProps, nextState: IState) {
+  componentWillUpdate (nextProps: IProps) {
     // d3.select('#' + this.props.id).interrupt()
   }
 
@@ -170,7 +164,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
   }
 
   renderD3 (depth: number) {
-    const steps = 3
+    const steps = 1
     // console.log('renderD3')
     // console.log(depth)
     const {
@@ -190,13 +184,13 @@ export class ActionPotential extends React.Component<IProps, IState> {
       setApShouldAnimate
     } = this.props
 
-    const { isAnimating, animationProgress } = this.state
     // console.log(isAnimating)
 
-    const nextPos: Point = addPoints(
-      start,
-      vectorScalarMultiply(getLineVector({ start, stop }), progress + 0.1)
-    )
+    // const nextPos: Point = addPoints(
+    //   start,
+    //   vectorScalarMultiply(getLineVector({ start, stop }), progress + 0.1)
+    // )
+    const nextPos: Point = stop
 
     // console.log(length / speed)
     const duration = (stepInterval * length) / speed
@@ -222,12 +216,12 @@ export class ActionPotential extends React.Component<IProps, IState> {
       // })
       // .on('end', () => finishFiringApOnSynapse(id, synapseId))
       .on('end', () => {
-        if (progress >= 1 - 1 / steps) {
-          finishFiringApOnSynapse(id, synapseId, axonType)
-        } else {
-          setApProgress({ id, synapseId, progress: progress + 1 / steps })
-          setApShouldAnimate({ id, synapseId, shouldAnimate: true })
-        }
+        // if (progress >= 1 - 1 / steps) {
+        finishFiringApOnSynapse(id, synapseId, axonType)
+        // } else {
+        // setApProgress({ id, synapseId, progress: progress + 1 / steps })
+        // setApShouldAnimate({ id, synapseId, shouldAnimate: true })
+        // }
       })
       .on('interrupt', () => {
         // finishFiringApOnSynapse(id, synapseId)
@@ -254,7 +248,7 @@ export class ActionPotential extends React.Component<IProps, IState> {
 
     // this.setState({ isAnimating: true })
 
-    setApShouldAnimate({ id, synapseId, shouldAnimate: false })
+    // setApShouldAnimate({ id, synapseId, shouldAnimate: false })
     return null
   }
 }

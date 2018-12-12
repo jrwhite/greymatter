@@ -9,7 +9,7 @@ import { AxonType } from '../reducers/neurons'
 
 const d3 = require('d3')
 
-export interface IProps extends RouteComponentProps<any> {
+export interface IProps {
   finishFiringApOnSynapse (
     id: string,
     synapseId: string,
@@ -28,7 +28,7 @@ export interface IProps extends RouteComponentProps<any> {
   actionPotentials: ActionPotentialState[]
 }
 
-export class Synapse extends React.Component<IProps> {
+export class Synapse extends React.PureComponent<IProps> {
   props: IProps
 
   render () {

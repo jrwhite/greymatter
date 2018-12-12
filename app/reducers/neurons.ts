@@ -203,29 +203,29 @@ export default function neurons (
       if (n.id === action.payload.id) {
         return {
           ...n,
-          potential:
-            n.potential +
-            n.dends.find((d) => d.id === action.payload.dendId)!!.weighting,
-          dends: n.dends.map((d) => {
-            if (d.id === action.payload.dendId) {
-              // const delta = n.izhik.u - n.fireU
-              const delta = n.firePeriod
-              console.log(delta)
-              const change = delta > 0 ? action.payload.stdpFunc(delta) : 0
-              console.log('EXCITE CHANGE')
-              console.log(change)
-              const newWeighting = d.weighting + change
-              return {
-                ...d,
-                spikeTime: 1,
-                spikeType: AxonType.Excitatory,
-                spikeU: n.izhik.u,
-                weighting: newWeighting > 1 ? newWeighting : 0
-              }
-            } else {
-              return d
-            }
-          })
+          potential: 101
+          //   n.potential +
+          //   n.dends.find((d) => d.id === action.payload.dendId)!!.weighting,
+          // dends: n.dends.map((d) => {
+          //   if (d.id === action.payload.dendId) {
+          //     // const delta = n.izhik.u - n.fireU
+          //     const delta = n.firePeriod
+          //     console.log(delta)
+          //     const change = delta > 0 ? action.payload.stdpFunc(delta) : 0
+          //     console.log('EXCITE CHANGE')
+          //     console.log(change)
+          //     const newWeighting = d.weighting + change
+          //     return {
+          //       ...d,
+          //       spikeTime: 1,
+          //       spikeType: AxonType.Excitatory,
+          //       spikeU: n.izhik.u,
+          //       weighting: newWeighting > 1 ? newWeighting : 0
+          //     }
+          //   } else {
+          //     return d
+          //   }
+          // })
         }
       }
       return n
@@ -487,32 +487,33 @@ export default function neurons (
             if (d.spikeTime === undefined) return d
             if (d.spikeU === undefined) return d
             if (d.spikeType === undefined) return d
+            return d
             // const change = (MaxFirePeriod - d.spikeTime) * stdpPotFactor
             // console.log(d.spikeU)
             // console.log(n.fireU)
             // const change =
             //   d.spikeU < n.fireU ? (n.fireU - d.spikeU) * stdpPotFactor : 0
             // const delta = d.spikeU < n.fireU ? d.spikeU - n.fireU : 0
-            const delta = -1 * d.spikeTime
-            console.log(delta)
-            const change = action.payload.stdpFuncs[d.spikeType](delta)
-            const weightingMod = action.payload.weightingModFuncs[d.spikeType][
-              change > 0 ? StdpType.Potentiation : StdpType.Depression
-            ](d.weighting)
-            const daMod =
-              action.payload.daMods[d.spikeType][
-                change > 0 ? StdpType.Potentiation : StdpType.Depression
-              ]
-            console.log(change)
+            // const delta = -1 * d.spikeTime
+            // console.log(delta)
+            // const change = action.payload.stdpFuncs[d.spikeType](delta)
+            // const weightingMod = action.payload.weightingModFuncs[d.spikeType][
+            //   change > 0 ? StdpType.Potentiation : StdpType.Depression
+            // ](d.weighting)
+            // const daMod =
+            //   action.payload.daMods[d.spikeType][
+            //     change > 0 ? StdpType.Potentiation : StdpType.Depression
+            //   ]
             // console.log(change)
-            const newWeighting = d.weighting + change * weightingMod * daMod
-            return {
-              ...d,
-              spikeTime: undefined,
-              spikeU: undefined,
-              weighting:
-                newWeighting > maxWeighting ? maxWeighting : newWeighting
-            }
+            // // console.log(change)
+            // const newWeighting = d.weighting + change * weightingMod * daMod
+            // return {
+            //   ...d,
+            //   spikeTime: undefined,
+            //   spikeU: undefined,
+            //   weighting:
+            //     newWeighting > maxWeighting ? maxWeighting : newWeighting
+            // }
           })
         }
       } else {
@@ -556,39 +557,40 @@ export default function neurons (
     })
   } else if (decayNeurons.test(action)) {
     return state.map((n: NeuronState) => {
-      const v = n.izhik.potToMv(n.potential)
-      const newPot = n.izhik.mvToPot(stepIzhikPotential(v, n.izhik))
-      const newFirePeriod =
-        n.firePeriod + 1 > MaxFirePeriod ? MaxFirePeriod : n.firePeriod + 1
-      const newU = stepIzhikU(v, n.izhik)
-      // stop updating on small potential changes to save performance
-      if (newFirePeriod === MaxFirePeriod) {
-        if (
-          Math.abs(newPot - n.potential) < 0.01 ||
-          Math.abs(n.potential - newPot) < 0.01 ||
-          Math.abs(n.izhik.u - newU) < 0.001 ||
-          Math.abs(newU - n.izhik.u) < 0.001
-        ) {
-          // return n
-        }
-      }
-      return {
-        ...n,
-        firePeriod: newFirePeriod,
-        potential: newPot,
-        izhik: {
-          ...n.izhik,
-          u: stepIzhikU(v, n.izhik)
-        },
-        dends: n.dends.map((d) => ({
-          ...d,
-          spikeTime: d.spikeTime
-            ? d.spikeTime + 1 > MaxFirePeriod
-              ? d.spikeTime + 1
-              : d.spikeTime
-            : undefined
-        }))
-      }
+      // const v = n.izhik.potToMv(n.potential)
+      // const newPot = n.izhik.mvToPot(stepIzhikPotential(v, n.izhik))
+      // const newFirePeriod =
+      //   n.firePeriod + 1 > MaxFirePeriod ? MaxFirePeriod : n.firePeriod + 1
+      // const newU = stepIzhikU(v, n.izhik)
+      // // stop updating on small potential changes to save performance
+      // if (newFirePeriod === MaxFirePeriod) {
+      //   if (
+      //     Math.abs(newPot - n.potential) < 0.01 ||
+      //     Math.abs(n.potential - newPot) < 0.01 ||
+      //     Math.abs(n.izhik.u - newU) < 0.001 ||
+      //     Math.abs(newU - n.izhik.u) < 0.001
+      //   ) {
+      //     // return n
+      //   }
+      // }
+      // return {
+      //   ...n,
+      //   firePeriod: newFirePeriod,
+      //   potential: newPot,
+      //   izhik: {
+      //     ...n.izhik,
+      //     u: stepIzhikU(v, n.izhik)
+      //   },
+      //   dends: n.dends.map((d) => ({
+      //     ...d,
+      //     spikeTime: d.spikeTime
+      //       ? d.spikeTime + 1 > MaxFirePeriod
+      //         ? d.spikeTime + 1
+      //         : d.spikeTime
+      //       : undefined
+      //   }))
+      // }
+      return n
     })
   } else {
     return state

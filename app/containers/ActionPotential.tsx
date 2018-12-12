@@ -26,6 +26,7 @@ export interface IIProps {
   stop: Point
   speed: number
   length: number
+  fill: string
 }
 
 // const makeGetApState = () =>
@@ -58,7 +59,7 @@ const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
   return bindActionCreators(NetworkActions as any, dispatch)
 }
 
-export default connect(
+export default (connect(
   makeMapStateToProps,
   mapDispatchToProps
-)(ActionPotential) as any
+)(ActionPotential) as any) as React.StatelessComponent<IIProps>
