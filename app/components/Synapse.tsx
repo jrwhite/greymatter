@@ -28,7 +28,7 @@ export interface IProps extends RouteComponentProps<any> {
   actionPotentials: ActionPotentialState[]
 }
 
-export class Synapse extends React.Component<IProps> {
+export class Synapse extends React.PureComponent<IProps> {
   props: IProps
 
   render () {

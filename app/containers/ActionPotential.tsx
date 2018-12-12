@@ -26,6 +26,7 @@ export interface IIProps {
   stop: Point
   speed: number
   length: number
+  fill: string
 }
 
 // const makeGetApState = () =>
