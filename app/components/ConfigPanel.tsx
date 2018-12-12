@@ -38,6 +38,14 @@ export class ConfigPanel extends React.Component<IProps> {
             height={150}
           />
         </div>
+        <div className={styles.graph}>
+          <StdpEncodingGraph
+            id={'Inhibitory'}
+            color={'blue'}
+            width={250}
+            height={150}
+          />
+        </div>
       </div>
     )
   }

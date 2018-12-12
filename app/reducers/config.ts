@@ -135,7 +135,7 @@ const zeroModEncodings = {
 const initialConfigState: ConfigState = {
   selectedNeurons: [],
   selectedInputs: [],
-  stepSize: 5,
+  stepSize: 1,
   stepInterval: 30,
   isPaused: true,
   defaultIzhikParams: {
