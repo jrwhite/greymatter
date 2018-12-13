@@ -247,7 +247,7 @@ export function fireNeuron (payload: FireNeuronAction) {
       potentiateDends({ id: payload.id, stdpFuncs, weightingModFuncs, daMods })
     )
     dispatch(hyperpolarizeNeuron({ id: payload.id }))
-    dispatch(recalcAllDends())
+    dispatch(calcDends({neuronId: payload.id}))
     // dispatch(depressDends({ id }))
   }
 }
@@ -282,12 +282,42 @@ export function removeNeuron (id: string) {
 
 export interface CalcDendsAction {
   neuronId: string
-  axonPos: Point
 }
 
 export function calcDends (payload: CalcDendsAction) {
   // calculate closest dendrite positions for neuron
-  return (dispatch: Function) => {}
+  return (dispatch: Function, getState: () => IState) => {
+    const neurons = getState().network.neurons
+    const synapses = getState().network.synapses
+    const state = getState()
+    neurons.map((n) => {
+      if (n.id === payload.neuronId) {
+        const closestDends: Array<DendPos | { id: string }> = n.dends.map((d) => {
+          const synapse = getSynapse(state, { id: d.synapseId })
+          const axonPos = getAxonAbsPos(getState(), synapse)
+          const ellipse = getNeuronEllipseGeo(n)
+          const dendGeo = calcClosestDend(n.pos, axonPos, ellipse)
+          const dendPos: DendPos = {
+            baseCPos: dendGeo.point,
+            synCPos: calcTipPos(
+              dendGeo.point,
+              dendGeo.inTheta,
+              15 + d.weighting / 5
+            ),
+            nu: dendGeo.nu,
+            incomingAngle: dendGeo.inTheta
+          }
+          return {
+            id: d.id,
+            ...dendPos
+          }
+        })
+        const payload: SetDendsPosAction = _.keyBy(closestDends, 'id')
+        console.log(payload)
+        dispatch(setDendsPos({ neuronId: n.id, ...payload }))
+      }
+    })
+  }
 }
 
 export function recalcAllDends () {

@@ -105,7 +105,7 @@ export class ActionPotential extends React.PureComponent<IProps> {
       fill
       // mask
     } = this.props
-    // console.log('render')
+    console.log('render')
 
     const pos: Point = addPoints(
       start,

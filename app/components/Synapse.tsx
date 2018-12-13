@@ -80,10 +80,6 @@ export class Synapse extends React.PureComponent<IProps> {
           line={{ start: axonPos, stop: dendPos }}
         />
         {/* <Line line={line} stroke='black' width={3} /> */}
-        //TODO: refactor AP animation into synapse component // actually. i
-        think that we just need to take the ActionPotential out of synapse and
-        prtty much never allow it to rerender //TODO: refactor into
-        ActionPotential container w/ selector. NEVER RERENDER
         {actionPotentials.map((ap) => (
           <ActionPotential
             key={ap.id}

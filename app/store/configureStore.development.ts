@@ -45,7 +45,8 @@ const logger = (createLogger as any)({
     action.type !== 'DECAY_NEURONS' &&
     action.type !== 'POTENTIATE_NEURON' &&
     action.type !== 'STEP_GYM' &&
-    action.type !== 'SET_AP_PROGRESS'
+    action.type !== 'SET_AP_PROGRESS' &&
+    action.type !== 'DECAY_DA'
 })
 
 const history = createHashHistory()
