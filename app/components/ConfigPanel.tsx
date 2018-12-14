@@ -1,11 +1,13 @@
 import * as React from 'react'
 import { IzhikParamsControls } from './IzhikParamsControls'
-import { IzhikParams } from '../reducers/neurons'
+import { IzhikParams, StdpType } from '../reducers/neurons'
 import {
   SetDefaultIzhikParamsAction,
   setDefaultIzhikParams
 } from '../actions/config'
 import StdpEncodingGraph from '../containers/StdpEncodingGraph'
+import DaModulationGraph from '../containers/DaModulationGraph'
+import { StdpModTypes } from '../reducers/config'
 
 const styles = require('./ConfigPanel.scss')
 
@@ -41,6 +43,15 @@ export class ConfigPanel extends React.Component<IProps> {
         <div className={styles.graph}>
           <StdpEncodingGraph
             id={'Inhibitory'}
+            color={'blue'}
+            width={250}
+            height={150}
+          />
+        </div>
+        <div className={styles.graph}>
+          <DaModulationGraph
+            id={'Excitatory'}
+            modType={StdpModTypes.Volume}
             color={'blue'}
             width={250}
             height={150}
