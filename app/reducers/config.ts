@@ -250,10 +250,7 @@ export default function config (
             if (i === action.payload.index) {
               return {
                 ...c,
-                pos:
-                  i === 1 || i === 2
-                    ? { ...action.payload.newPos, x: c.pos.x }
-                    : action.payload.newPos
+                pos: action.payload.newPos
               }
             }
             return c
@@ -264,38 +261,35 @@ export default function config (
   } else if (moveModControlPoint.test(action)) {
     const encoding = state.stdpEncodings[action.payload.encodingId]
     const mod = encoding.modEncodings[action.payload.modType]
-    // return {
-    //   ...state,
-    //   stdpEncodings: {
-    //     ...state.stdpEncodings,
-    //     [action.payload.encodingId]: {
-    //       ...encoding,
-    //       modEncodings: {
-    //         ...encoding.modEncodings,
-    //         [action.payload.modType]: {
-    //           ...mod,
-    //           controlPoints: {
-    //             ...mod.controlPoints,
-    //             [action.payload.stdpType]: mod.controlPoints[
-    //               action.payload.stdpType
-    //             ].map((c, i) => {
-    //               if (i === action.payload.index) {
-    //                 return {
-    //                   ...c,
-    //                   pos:
-    //                     i === 1 || i === 2
-    //                       ? { ...action.payload.newPos, x: c.pos.x }
-    //                       : action.payload.newPos
-    //                 }
-    //               }
-    //               return c
-    //             })
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    return {
+      ...state,
+      stdpEncodings: {
+        ...state.stdpEncodings,
+        [action.payload.encodingId]: {
+          ...encoding,
+          modEncodings: {
+            ...encoding.modEncodings,
+            [action.payload.modType]: {
+              ...mod,
+              controlPoints: {
+                ...mod.controlPoints,
+                [action.payload.stdpType]: mod.controlPoints[
+                  action.payload.stdpType
+                ].map((c, i) => {
+                  if (i === action.payload.index) {
+                    return {
+                      ...c,
+                      pos: action.payload.newPos
+                    }
+                  }
+                  return c
+                })
+              }
+            }
+          }
+        }
+      }
+    }
     return state
     // BEGIN VOID ACTIONS
   } else if (pauseNetwork.test(action)) {

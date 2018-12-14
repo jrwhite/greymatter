@@ -24,8 +24,8 @@ export const moveStdpControlPoint = actionCreator<MoveControlPointAction>(
 )
 
 export interface MoveModControlPointAction extends MoveControlPointAction {
-  modType: StdpModTypes
-  stdpType: StdpType
+  modType: string
+  stdpType: string
 }
 
 export const moveModControlPoint = actionCreator<MoveModControlPointAction>(
@@ -53,11 +53,13 @@ export const resetNetwork = actionCreatorVoid('RESET_NETWORK')
 
 export function moveDaControlPoint (payload: MoveControlPointAction) {
   return (dispatch: Function) => {
+    const modType = 'Volume'
+    const stdpType = 'Potentiation'
     dispatch(
       moveModControlPoint({
         ...payload,
-        modType: StdpModTypes.Volume,
-        stdpType: StdpType.Potentiation
+        modType,
+        stdpType
       })
     )
   }
