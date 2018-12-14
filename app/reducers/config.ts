@@ -8,7 +8,8 @@ import {
   slowDownNetwork,
   setDefaultIzhikParams,
   setStepInterval,
-  moveStdpControlPoint
+  moveStdpControlPoint,
+  moveModControlPoint
 } from '../actions/config'
 import {
   IzhikParams,
@@ -16,7 +17,6 @@ import {
   recoveryDeltaRange,
   stdpRange,
   firePeriodRange,
-  dendWeightingRange,
   maxWeighting
 } from './neurons'
 import * as _ from 'lodash'
@@ -29,6 +29,7 @@ export const maxStepInterval = 200
 export const maxFps = 60
 export const minFps = 5
 export const minStepInterval = 10
+export const dendWeightingRange = { start: 0, stop: 80 }
 
 export enum StdpModTypes {
   Volume = 'Volume',
@@ -260,6 +261,42 @@ export default function config (
         }
       }
     }
+  } else if (moveModControlPoint.test(action)) {
+    const encoding = state.stdpEncodings[action.payload.encodingId]
+    const mod = encoding.modEncodings[action.payload.modType]
+    // return {
+    //   ...state,
+    //   stdpEncodings: {
+    //     ...state.stdpEncodings,
+    //     [action.payload.encodingId]: {
+    //       ...encoding,
+    //       modEncodings: {
+    //         ...encoding.modEncodings,
+    //         [action.payload.modType]: {
+    //           ...mod,
+    //           controlPoints: {
+    //             ...mod.controlPoints,
+    //             [action.payload.stdpType]: mod.controlPoints[
+    //               action.payload.stdpType
+    //             ].map((c, i) => {
+    //               if (i === action.payload.index) {
+    //                 return {
+    //                   ...c,
+    //                   pos:
+    //                     i === 1 || i === 2
+    //                       ? { ...action.payload.newPos, x: c.pos.x }
+    //                       : action.payload.newPos
+    //                 }
+    //               }
+    //               return c
+    //             })
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    return state
     // BEGIN VOID ACTIONS
   } else if (pauseNetwork.test(action)) {
     return {

@@ -53,7 +53,16 @@ export class ConfigPanel extends React.Component<IProps> {
             id={'Excitatory'}
             modType={StdpModTypes.Volume}
             color={'blue'}
-            width={250}
+            width={125}
+            height={150}
+          />
+        </div>
+        <div className={styles.graph}>
+          <DaModulationGraph
+            id={'Excitatory'}
+            modType={StdpModTypes.Weighting}
+            color={'blue'}
+            width={125}
             height={150}
           />
         </div>

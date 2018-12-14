@@ -41,7 +41,6 @@ export const stdpDepFactor = 10
 export const maxWeighting = 80
 export const daWeighting = 5
 export const recoveryDeltaRange = { start: -5, stop: 5 }
-export const dendWeightingRange = { start: 0, stop: 80 }
 export const firePeriodRange = {
   start: -1 * MaxFirePeriod,
   stop: MaxFirePeriod

@@ -7,14 +7,13 @@ import { EncodingGraph, IProps as IIIProps } from '../components/EncodingGraph'
 import { makeGetEncodingById } from '../selectors/encodings'
 import * as Actions from '../actions/encodings'
 import { makeGetObservableById } from '../selectors/observables'
-import { moveStdpControlPoint } from '../actions/config'
+import { moveStdpControlPoint, moveDaControlPoint } from '../actions/config'
 import {
   StdpEncoding,
   StdpModEncoding,
   StdpModTypes
 } from '../reducers/config'
 import { StdpType } from '../reducers/neurons'
-import StdpEncodingGraph from './StdpEncodingGraph'
 
 export interface IProps {
   id: string // axonType
@@ -43,7 +42,7 @@ const mapStateToProps = (state: IState, props: IProps): Partial<IIProps> => {
 
 const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IIProps> => {
   return bindActionCreators(
-    { moveControlPoint: moveStdpControlPoint },
+    { moveControlPoint: moveDaControlPoint },
     dispatch
   )
 }

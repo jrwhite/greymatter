@@ -1,7 +1,7 @@
 import { createSelector, Selector } from 'reselect'
 import { IState } from '../reducers'
 import { IProps } from '../components/Neuron'
-import neurons, {
+import {
   NeuronState,
   DendState,
   IzhikParams,

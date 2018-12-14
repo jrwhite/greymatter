@@ -3,7 +3,7 @@ import { addDa, decayDa } from '../actions/volume'
 
 export const daRange = {
   start: 0,
-  stop: 100
+  stop: 300
 }
 
 export interface ExpDecayState {
