@@ -8,6 +8,7 @@ import {
 import StdpEncodingGraph from '../containers/StdpEncodingGraph'
 import DaModulationGraph from '../containers/DaModulationGraph'
 import { StdpModTypes } from '../reducers/config'
+import WeightingModulationGraph from '../containers/WeightingModulationGraph';
 
 const styles = require('./ConfigPanel.scss')
 
@@ -58,7 +59,7 @@ export class ConfigPanel extends React.Component<IProps> {
           />
         </div>
         <div className={styles.graph}>
-          <DaModulationGraph
+          <WeightingModulationGraph
             id={'Excitatory'}
             modType={StdpModTypes.Weighting}
             color={'blue'}

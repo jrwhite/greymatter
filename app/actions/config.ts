@@ -64,3 +64,17 @@ export function moveDaControlPoint (payload: MoveControlPointAction) {
     )
   }
 }
+
+export function moveWeightingControlPoint (payload: MoveControlPointAction) {
+  return (dispatch: Function) => {
+    const modType = 'Weighting'
+    const stdpType = 'Potentiation'
+    dispatch(
+      moveModControlPoint({
+        ...payload,
+        modType,
+        stdpType
+      })
+    )
+  }
+}
