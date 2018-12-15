@@ -250,7 +250,10 @@ export default function config (
             if (i === action.payload.index) {
               return {
                 ...c,
-                pos: action.payload.newPos
+                pos:
+                  i === 1 || i === 2
+                    ? { ...action.payload.newPos, x: c.pos.x }
+                    : action.payload.newPos
               }
             }
             return c

@@ -503,8 +503,10 @@ export default function neurons (
                 change > 0 ? StdpType.Potentiation : StdpType.Depression
               ]
             console.log(change)
+            console.log(daMod)
             // console.log(change)
             const newWeighting = d.weighting + change * weightingMod * daMod
+            console.log(newWeighting)
             return {
               ...d,
               spikeTime: undefined,
