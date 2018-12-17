@@ -56,18 +56,18 @@ export class ActionPotential extends React.PureComponent<IProps> {
     // this.renderD3(0)
     // }
     if (!prevProps.shouldAnimate && this.props.shouldAnimate) {
-      this.renderD3(0)
+      // this.renderD3(0)
     }
     // this.renderD3(0)
   }
 
-  // shouldComponentUpdate (nextProps: IProps, nextState: IState) {
-  //   if (nextState.isAnimating === false) {
-  //     return true
-  //   } else {
-  //     return false
-  //   }
-  // }
+  shouldComponentUpdate (nextProps: IProps) {
+    // if (nextState.isAnimating === false) {
+    // return true
+    // } else {
+    return false
+    // }
+  }
 
   componentWillUpdate (nextProps: IProps) {
     // d3.select('#' + this.props.id).interrupt()
@@ -106,6 +106,7 @@ export class ActionPotential extends React.PureComponent<IProps> {
       // mask
     } = this.props
     console.log('render')
+    console.log(progress)
 
     const pos: Point = addPoints(
       start,

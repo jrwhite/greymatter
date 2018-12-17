@@ -46,7 +46,6 @@ export interface IIProps {
 const makeMapStateToProps = () => {
   // const getApState = makeGetApState()
   const getApState = makeGetAp()
-  const getSynapseState = makeGetSynapse()
   return (state: IState, props: IIProps): Partial<IProps> => ({
     ...props,
     ...getApState(state, props),
@@ -59,7 +58,13 @@ const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
   return bindActionCreators(NetworkActions as any, dispatch)
 }
 
-export default connect(
+export default (connect(
   makeMapStateToProps,
-  mapDispatchToProps
-)(ActionPotential) as any
+  mapDispatchToProps,
+  null,
+  {
+    areStatesEqual: (next, prev) => {
+      return true
+    }
+  }
+)(ActionPotential) as any) as React.StatelessComponent<IIProps>
