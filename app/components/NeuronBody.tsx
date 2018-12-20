@@ -38,43 +38,11 @@ export class NeuronBody extends React.PureComponent<IProps> {
   }
 
   shouldComponentUpdate (nextProps: IProps) {
-    console.log(this.props.dends === nextProps.dends)
-    console.log(this.props)
-    console.log(nextProps)
-    // return false
-    return true
+    return !(this.props.bodyArcs === nextProps.bodyArcs)
   }
 
   render () {
     const { dends, theta, bodyArcs } = this.props
-
-    // const dendArcs: Arc[] = dends.map((d) => {
-    //   return d.arc!!
-    // })
-
-    // // if an arc is below a certain length, maybe just make it a joining segmetn??
-
-    // const sortedDendArcs: Arc[] = _.sortBy(dendArcs, 'start')
-    // // const noOverlap: Arc[] = _.map(sortedDendArcs, (arc) => {
-    // //   _.takeRightWhile()
-    // // })
-
-    // const bodyArcs: Arc[] = _.reduce(
-    //   sortedDendArcs,
-    //   (body, d): Arc[] => {
-    //     return _.concat(_.initial(body), [
-    //       {
-    //         start: _.last(body)!!.start,
-    //         stop: d.stop
-    //       },
-    //       {
-    //         start: d.start,
-    //         stop: _.last(body)!!.stop
-    //       }
-    //     ])
-    //   },
-    //   [{ start: 1 / 4, stop: 7 / 4 }]
-    // )
 
     return (
       <g>
