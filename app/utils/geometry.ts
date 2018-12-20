@@ -121,7 +121,7 @@ export const calcArcOverlap = (arc: Arc, sortedOtherArcs: Arc[]) => {
 
 const overlapModScale = d3
   .scaleLinear()
-  .domain([0, 500]) // arc overlap
+  .domain([0, 1]) // arc overlap
   .range([1, 4]) // tip length modifier
   .clamp(true)
 

@@ -47,6 +47,7 @@ export class Dendrite extends React.Component<IProps> {
       incomingAngle,
       overlap
     } = this.props
+    console.log(overlap)
     const tipPos = calcTipPos(
       baseCpos,
       incomingAngle,

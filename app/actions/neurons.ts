@@ -13,7 +13,10 @@ import {
   DendGeo,
   Ellipse,
   Point,
-  calcTipPos
+  calcTipPos,
+  Arc,
+  dendArcLength,
+  calcArcOverlap
 } from '../utils/geometry'
 import { SelectNeuronAction } from './config'
 import {
@@ -28,6 +31,7 @@ import { getNeuronEllipseGeo } from '../selectors/neurons'
 import { makeEncodingFromCtrlPoints } from '../utils/encoding'
 import { StdpEncoding, StdpModEncoding } from '../reducers/config'
 import { ControlPointState } from '../reducers/encodings'
+import { arcWeightingScale } from '../components/Dendrite'
 const _ = require('lodash')
 
 export interface MoveNeuronAction {
@@ -102,6 +106,7 @@ export interface DendPos {
   synCPos: Point
   nu: number
   incomingAngle: number
+  arc: Arc
 }
 
 export interface SetDendsPosAction {
@@ -247,7 +252,7 @@ export function fireNeuron (payload: FireNeuronAction) {
       potentiateDends({ id: payload.id, stdpFuncs, weightingModFuncs, daMods })
     )
     dispatch(hyperpolarizeNeuron({ id: payload.id }))
-    dispatch(calcDends({neuronId: payload.id}))
+    dispatch(calcDends({ neuronId: payload.id }))
     // dispatch(depressDends({ id }))
   }
 }
@@ -284,6 +289,49 @@ export interface CalcDendsAction {
   neuronId: string
 }
 
+function calcNewDendPos (
+  neuron: NeuronState,
+  state: IState
+): Array<DendPos | { id: string }> {
+  const dends = neuron.dends
+  const dendArcs: Arc[] = dends.map((d) => {
+    const arcAdjustment = arcWeightingScale(d.weighting)
+    const arc = {
+      start: d.nu - dendArcLength - arcAdjustment,
+      stop: d.nu + dendArcLength + arcAdjustment
+    }
+    return arc
+  })
+  const sortedDendArcs: Arc[] = _.sortBy(dendArcs, 'start')
+  const closestDends: Array<DendPos | { id: string }> = dends.map((d, i) => {
+    const synapse = getSynapse(state, { id: d.synapseId })
+    const axonPos = getAxonAbsPos(state, synapse)
+    const ellipse = getNeuronEllipseGeo(neuron)
+    const dendGeo = calcClosestDend(neuron.pos, axonPos, ellipse)
+    const overlap = calcArcOverlap(
+      dendArcs[i],
+      _.without(sortedDendArcs, dendArcs[i])
+    )
+    const dendPos: DendPos = {
+      baseCPos: dendGeo.point,
+      synCPos: calcTipPos(
+        dendGeo.point,
+        dendGeo.inTheta,
+        15 + d.weighting / 5,
+        overlap
+      ),
+      nu: dendGeo.nu,
+      incomingAngle: dendGeo.inTheta,
+      arc: dendArcs[i]
+    }
+    return {
+      id: d.id,
+      ...dendPos
+    }
+  })
+  return _.keyBy(closestDends, 'id')
+}
+
 export function calcDends (payload: CalcDendsAction) {
   // calculate closest dendrite positions for neuron
   return (dispatch: Function, getState: () => IState) => {
@@ -292,26 +340,7 @@ export function calcDends (payload: CalcDendsAction) {
     const state = getState()
     neurons.map((n) => {
       if (n.id === payload.neuronId) {
-        const closestDends: Array<DendPos | { id: string }> = n.dends.map((d) => {
-          const synapse = getSynapse(state, { id: d.synapseId })
-          const axonPos = getAxonAbsPos(getState(), synapse)
-          const ellipse = getNeuronEllipseGeo(n)
-          const dendGeo = calcClosestDend(n.pos, axonPos, ellipse)
-          const dendPos: DendPos = {
-            baseCPos: dendGeo.point,
-            synCPos: calcTipPos(
-              dendGeo.point,
-              dendGeo.inTheta,
-              15 + d.weighting / 5
-            ),
-            nu: dendGeo.nu,
-            incomingAngle: dendGeo.inTheta
-          }
-          return {
-            id: d.id,
-            ...dendPos
-          }
-        })
+        const closestDends = calcNewDendPos(n, state)
         const payload: SetDendsPosAction = _.keyBy(closestDends, 'id')
         console.log(payload)
         dispatch(setDendsPos({ neuronId: n.id, ...payload }))
@@ -327,26 +356,7 @@ export function recalcAllDends () {
     const state = getState()
 
     neurons.map((n) => {
-      const closestDends: Array<DendPos | { id: string }> = n.dends.map((d) => {
-        const synapse = getSynapse(state, { id: d.synapseId })
-        const axonPos = getAxonAbsPos(getState(), synapse)
-        const ellipse = getNeuronEllipseGeo(n)
-        const dendGeo = calcClosestDend(n.pos, axonPos, ellipse)
-        const dendPos: DendPos = {
-          baseCPos: dendGeo.point,
-          synCPos: calcTipPos(
-            dendGeo.point,
-            dendGeo.inTheta,
-            15 + d.weighting / 5
-          ),
-          nu: dendGeo.nu,
-          incomingAngle: dendGeo.inTheta
-        }
-        return {
-          id: d.id,
-          ...dendPos
-        }
-      })
+      const closestDends = calcNewDendPos(n, state)
       const payload: SetDendsPosAction = _.keyBy(closestDends, 'id')
       console.log(payload)
       dispatch(setDendsPos({ neuronId: n.id, ...payload }))
@@ -374,7 +384,7 @@ export function addNewDend (
         neuronId,
         baseCpos: newDendGeo.point,
         // synCpos: newDendGeo.point,
-        synCpos: calcTipPos(newDendGeo.point, newDendGeo.inTheta, 30),
+        synCpos: calcTipPos(newDendGeo.point, newDendGeo.inTheta, 30, 0),
         nu: newDendGeo.nu,
         incomingAngle: newDendGeo.inTheta
       })
