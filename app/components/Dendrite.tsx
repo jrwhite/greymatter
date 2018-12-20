@@ -25,6 +25,7 @@ export interface IProps extends IIProps {
   bodyEllipse: Ellipse
   incomingAngle: number
   baseCpos: Point
+  overlap: number
   // sourceVal: number
 }
 
@@ -43,9 +44,15 @@ export class Dendrite extends React.Component<IProps> {
       baseCpos,
       weighting,
       bodyEllipse,
-      incomingAngle
+      incomingAngle,
+      overlap
     } = this.props
-    const tipPos = calcTipPos(baseCpos, incomingAngle, 15 + weighting / 5)
+    const tipPos = calcTipPos(
+      baseCpos,
+      incomingAngle,
+      15 + weighting / 5,
+      overlap
+    )
     // const arcAdjustment = arcWeightingScale(weighting)
     // const arc = {
     //   start: nu - dendArcLength - arcAdjustment,

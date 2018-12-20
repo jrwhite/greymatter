@@ -1,6 +1,11 @@
 import * as React from 'react'
 import { Ellipse } from './Ellipse'
-import { Arc, Ellipse as EllipseGeo, dendArcLength } from '../utils/geometry'
+import {
+  Arc,
+  Ellipse as EllipseGeo,
+  dendArcLength,
+  calcArcOverlap
+} from '../utils/geometry'
 import * as _ from 'lodash'
 import { DendState } from '../reducers/neurons'
 import Dendrite from '../containers/Dendrite'
@@ -38,8 +43,13 @@ export class NeuronBody extends React.Component<IProps> {
 
     // if an arc is below a certain length, maybe just make it a joining segmetn??
 
+    const sortedDendArcs: Arc[] = _.sortBy(dendArcs, 'start')
+    // const noOverlap: Arc[] = _.map(sortedDendArcs, (arc) => {
+    //   _.takeRightWhile()
+    // })
+
     const bodyArcs: Arc[] = _.reduce(
-      dendArcs,
+      sortedDendArcs,
       (body, d): Arc[] => {
         return _.concat(_.initial(body), [
           {
@@ -58,15 +68,16 @@ export class NeuronBody extends React.Component<IProps> {
     return (
       <g>
         <Ellipse {...defaultEllipseGeo} theta={theta} arcs={bodyArcs} />
-        {dends.map((d) => (
+        {dends.map((d, i) => (
           <Dendrite
             key={d.id}
             id={d.id}
-            arc={{
-              start: d.nu - dendArcLength - arcWeightingScale(d.weighting),
-              stop: d.nu + dendArcLength + arcWeightingScale(d.weighting)
-            }}
+            arc={dendArcs[i]}
             neuronId={id}
+            overlap={calcArcOverlap(
+              dendArcs[i],
+              _.without(sortedDendArcs, dendArcs[i])
+            )}
             bodyEllipse={{
               ...defaultEllipseGeo,
               theta

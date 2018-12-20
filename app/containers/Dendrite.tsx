@@ -17,6 +17,7 @@ export interface IIProps {
   neuronId: string
   bodyEllipse: Ellipse
   arc: Arc
+  overlap: number
 }
 
 const getDendState = (state: IState, props: IIProps): DendState => {

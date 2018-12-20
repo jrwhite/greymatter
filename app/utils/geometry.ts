@@ -98,13 +98,41 @@ export const calcClosestDend = (
   }
 }
 
+export const calcArcOverlap = (arc: Arc, sortedOtherArcs: Arc[]) => {
+  // arcs sorted by start
+  // arcs don't include arc
+  const leftArcs = _.takeWhile(sortedOtherArcs, (a) => a.start < arc.start)
+  const leftOverlappingArcs = _.filter(leftArcs, (a) => a.stop > arc.start)
+  const leftOverlap = _.reduce(
+    leftOverlappingArcs,
+    (total, a) => total + a.stop - arc.start,
+    0
+  )
+  const rightArcs = _.takeWhile(sortedOtherArcs, (a) => a.start > arc.start)
+  const rightOverlappingArcs = _.filter(rightArcs, (a) => a.start < arc.stop)
+  const rightOverlap = _.reduce(
+    rightOverlappingArcs,
+    (total, a) =>
+      total + (a.stop > arc.stop ? arc.stop - a.start : a.stop - a.start),
+    0
+  )
+  return leftOverlap + rightOverlap
+}
+
+const overlapModScale = d3
+  .scaleLinear()
+  .domain([0, 500]) // arc overlap
+  .range([1, 4]) // tip length modifier
+  .clamp(true)
+
 export const calcTipPos = (
   base: Point,
   theta: number,
-  weighting: number
+  weighting: number,
+  overlap: number // percentage overlap
 ): Point => {
   const tipVec = addPoints(base, {
-    x: Math.cos(theta * Math.PI) * weighting,
+    x: Math.cos(theta * Math.PI) * weighting * overlapModScale(overlap),
     y: Math.sin(theta * Math.PI) * weighting
   })
   // const unitTipVec = getUnitVector(tipVec)
