@@ -189,6 +189,15 @@ export class Neuron extends React.Component<IProps, IState> {
           cx={axonPos.x}
           cy={axonPos.y}
           r={5}
+          fill={
+            axon.type === AxonType.Excitatory
+              ? 'white'
+              : axon.type === AxonType.Inhibitory
+              ? 'black'
+              : axon.type === AxonType.Volume
+              ? 'green'
+              : 'red'
+          }
           onClick={this.handleAxonClick.bind(this)}
         />
         {isSelected ? <NeuronOverlay id={id} axon={axon} /> : undefined}
