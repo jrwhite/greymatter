@@ -1,22 +1,25 @@
 import * as React from 'react'
 import {
+  Ellipse,
   Arc,
   ellipseBoundarySetter,
   ellipsePathSetter
 } from '../utils/geometry'
 
 export interface IProps {
-  major: number
-  minor: number
-  theta: number
+  ellipse: Ellipse
   arcs: Arc[]
 }
 
-export const Ellipse: React.SFC<IProps> = (props) => {
-  const { major, minor, theta, arcs } = props
+export const EllipseSegments: React.SFC<IProps> = (props) => {
+  const { major, minor, theta } = props.ellipse
+  const { arcs } = props
 
   return (
     <g>
+      <g>
+        <path stroke='none' d={ellipseBoundarySetter(major, minor, theta)} />
+      </g>
       <g>
         <path
           fill-rule='nonzero'

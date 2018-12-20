@@ -12,6 +12,7 @@ import { DendState } from '../reducers/neurons'
 import { arcWeightingScale, DendProps, Dendrite } from './Dendrite'
 import { DendPos } from '../actions/neurons'
 import { InjectedDendProps } from '../containers/NeuronBody'
+import { EllipseSegments } from './EllipseSegments'
 const d3 = require('d3')
 
 export interface IProps {
@@ -41,6 +42,7 @@ export class NeuronBody extends React.PureComponent<IProps> {
     return (
       <g>
         <Ellipse {...defaultEllipseGeo} theta={theta} arcs={bodyArcs} />
+        <EllipseSegments ellipse={defaultEllipseGeo} arcs={bodyArcs} />
         {dends.map((d, i) => (
           <Dendrite
             key={i}
