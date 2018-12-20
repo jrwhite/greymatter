@@ -25,13 +25,13 @@ export const getAxonAbsPos = (state: IState, props: Partial<IProps>): Point => {
     const neuronState = state.network.neurons.find(
       (n) => n.id === props.axon!!.neuronId
     )!!
-    const axonCPos = calcAxonPos({
+    const axonCpos = calcAxonPos({
       major: 50,
       minor: 30,
       theta: neuronState.theta,
       ecc: 5 / 3
     })
-    return addPoints(neuronState.pos, axonCPos)
+    return addPoints(neuronState.pos, axonCpos)
   }
 }
 

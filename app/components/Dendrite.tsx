@@ -15,17 +15,12 @@ const d3 = require('d3')
 import * as _ from 'lodash'
 import { DendState } from '../reducers/neurons'
 import { changeDendWeighting } from '../actions/neurons'
-import { IIProps } from '../containers/Dendrite'
 
-export interface IProps extends IIProps {
+export interface DendProps {
   synCpos: Point
-  weighting: number
   arc: Arc
-  nu: number
   bodyEllipse: Ellipse
-  incomingAngle: number
-  baseCpos: Point
-  overlap: number
+  weighting: number
   // sourceVal: number
 }
 
@@ -34,57 +29,40 @@ export const arcWeightingScale = d3
   .domain([0, 100])
   .range([-1 / 32, 1 / 16])
 
-export class Dendrite extends React.Component<IProps> {
-  props: IProps
+export class Dendrite extends React.PureComponent<DendProps> {
+  props: DendProps
 
   render () {
-    const {
-      arc,
-      nu,
-      baseCpos,
-      weighting,
-      bodyEllipse,
-      incomingAngle,
-      overlap
-    } = this.props
-    console.log(overlap)
-    const tipPos = calcTipPos(
-      baseCpos,
-      incomingAngle,
-      15 + weighting / 5,
-      overlap
-    )
-    // const arcAdjustment = arcWeightingScale(weighting)
-    // const arc = {
-    //   start: nu - dendArcLength - arcAdjustment,
-    //   stop: nu + dendArcLength + arcAdjustment
-    // }
-
-    // do overlap calculations here
+    const { arc, bodyEllipse, synCpos, weighting } = this.props
+    console.log('rerender dendrite')
 
     const curves: Curve[] = calcDendCurves(
-      tipPos,
+      synCpos,
       weighting / 12, // ctrlWidth
       weighting / 5, // ctrlHeight
       arc,
       bodyEllipse
     )
 
-    // const lineSetter = d3
-    //   .line()
-    //   .x((d: Point) => d.x)
-    //   .y((d: Point) => d.y)
-    // .curve(d3.curveNatural)
-
     const baseLeft = curves[0].points[0]
     const ctrlLeft = curves[0].points[1]
     const baseRight = curves[1].points[0]
     const ctrlRight = curves[1].points[1]
 
+    if (
+      baseLeft === undefined ||
+      ctrlLeft === undefined ||
+      baseRight === undefined ||
+      ctrlRight === undefined ||
+      synCpos === undefined
+    ) {
+      return null
+    }
+
     const pathSetter = d3.path()
 
     pathSetter.moveTo(baseLeft.x, baseLeft.y)
-    pathSetter.quadraticCurveTo(ctrlLeft.x, ctrlLeft.y, tipPos.x, tipPos.y)
+    pathSetter.quadraticCurveTo(ctrlLeft.x, ctrlLeft.y, synCpos.x, synCpos.y)
     pathSetter.quadraticCurveTo(
       ctrlRight.x,
       ctrlRight.y,

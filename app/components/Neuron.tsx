@@ -1,7 +1,12 @@
 import * as React from 'react'
 import { RouteComponentProps, StaticRouter } from 'react-router'
 import { Ellipse } from './Ellipse'
-import { Point, calcAxonPos, Ellipse as EllipseGeo } from '../utils/geometry'
+import {
+  Point,
+  calcAxonPos,
+  Ellipse as EllipseGeo,
+  Arc
+} from '../utils/geometry'
 import { Rotate } from './Rotate'
 
 import Draggable from 'react-draggable'
@@ -53,6 +58,7 @@ export interface IProps extends IIProps {
   theta: number
   axon: AxonState
   dends: DendState[]
+  bodyArcs: Arc[]
   potential: number
   isSelected: boolean
 }
@@ -140,7 +146,8 @@ export class Neuron extends React.Component<IProps, IState> {
       axon,
       dends,
       potential,
-      isSelected
+      isSelected,
+      bodyArcs
     } = this.props
 
     const { dragging } = this.state
@@ -175,7 +182,7 @@ export class Neuron extends React.Component<IProps, IState> {
           onClick={this.handleNeuronClick.bind(this)}
           fill={d3.interpolateGreys(potGreyScale(potential))}
         >
-          <NeuronBody id={id} dends={dends} theta={theta} />
+          <NeuronBody id={id} dends={dends} theta={theta} bodyArcs={bodyArcs} />
           {/* <Soma potential={potential} id={id} theta={theta} /> */}
         </g>
         <circle

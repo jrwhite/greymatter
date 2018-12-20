@@ -102,8 +102,8 @@ export interface AddDendAction {
 }
 
 export interface DendPos {
-  baseCPos: Point
-  synCPos: Point
+  baseCpos: Point
+  synCpos: Point
   nu: number
   incomingAngle: number
   arc: Arc
@@ -111,6 +111,7 @@ export interface DendPos {
 
 export interface SetDendsPosAction {
   neuronId: string
+  bodyArcs: Arc[]
   dends: {
     [id: string]: DendPos;
   }
@@ -285,10 +286,6 @@ export function removeNeuron (id: string) {
   }
 }
 
-export interface CalcDendsAction {
-  neuronId: string
-}
-
 function calcNewDendPos (
   neuron: NeuronState,
   state: IState
@@ -313,8 +310,8 @@ function calcNewDendPos (
       _.without(sortedDendArcs, dendArcs[i])
     )
     const dendPos: DendPos = {
-      baseCPos: dendGeo.point,
-      synCPos: calcTipPos(
+      baseCpos: dendGeo.point,
+      synCpos: calcTipPos(
         dendGeo.point,
         dendGeo.inTheta,
         15 + d.weighting / 5,
@@ -332,6 +329,28 @@ function calcNewDendPos (
   return _.keyBy(closestDends, 'id')
 }
 
+function calcBodyArcs (neuron: NeuronState, dendArcs: Arc[]): Arc[] {
+  return _.reduce(
+    dendArcs,
+    (body: Arc[], d: Arc): Arc[] => {
+      return _.concat(_.initial(body), [
+        {
+          start: _.last(body)!!.start,
+          stop: d.stop
+        },
+        {
+          start: d.start,
+          stop: _.last(body)!!.stop
+        }
+      ])
+    },
+    [{ start: 1 / 4, stop: 7 / 4 }]
+  )
+}
+
+export interface CalcDendsAction {
+  neuronId: string
+}
 export function calcDends (payload: CalcDendsAction) {
   // calculate closest dendrite positions for neuron
   return (dispatch: Function, getState: () => IState) => {
@@ -341,9 +360,17 @@ export function calcDends (payload: CalcDendsAction) {
     neurons.map((n) => {
       if (n.id === payload.neuronId) {
         const closestDends = calcNewDendPos(n, state)
+        const bodyArcs = calcBodyArcs(n, _.mapValues(closestDends, 'arc'))
+        console.log(bodyArcs)
         const payload: SetDendsPosAction = _.keyBy(closestDends, 'id')
         console.log(payload)
-        dispatch(setDendsPos({ neuronId: n.id, ...payload }))
+        dispatch(
+          setDendsPos({
+            neuronId: n.id,
+            bodyArcs,
+            ...payload
+          })
+        )
       }
     })
   }
@@ -357,9 +384,17 @@ export function recalcAllDends () {
 
     neurons.map((n) => {
       const closestDends = calcNewDendPos(n, state)
+      const bodyArcs = calcBodyArcs(n, _.mapValues(closestDends, 'arc'))
+      console.log(closestDends)
       const payload: SetDendsPosAction = _.keyBy(closestDends, 'id')
       console.log(payload)
-      dispatch(setDendsPos({ neuronId: n.id, ...payload }))
+      dispatch(
+        setDendsPos({
+          neuronId: n.id,
+          bodyArcs,
+          ...payload
+        })
+      )
     })
   }
 }
@@ -432,6 +467,7 @@ export function tryMakeSynapseAtNewDend (
         )
       )
       dispatch(tryMakeSynapseAtDend(newId, neuronId))
+      dispatch(calcDends({ neuronId }))
     }
   }
 }

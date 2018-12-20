@@ -64,6 +64,7 @@ export interface NeuronState {
   izhik: IzhikState
   axon: AxonState
   dends: DendState[]
+  bodyArcs: Arc[]
 }
 
 export enum AxonType {
@@ -150,7 +151,9 @@ const initialNeuronState: NeuronState = {
     synapses: [],
     type: AxonType.Excitatory
   },
-  dends: []
+  dends: [],
+  bodyArcs: [{ start: 1 / 4, stop: 7 / 4 }]
+
 }
 
 const initialDendState: DendState = {
@@ -525,6 +528,7 @@ export default function neurons (
       if (n.id === action.payload.neuronId) {
         return {
           ...n,
+          bodyArcs: action.payload.bodyArcs,
           dends: n.dends.map((d) => {
             const dends: any = action.payload
             const newD = dends[d.id]
@@ -532,8 +536,8 @@ export default function neurons (
             console.log(newD)
             return {
               ...d,
-              baseCpos: newD.baseCPos,
-              synCpos: newD.synCPos,
+              baseCpos: newD.baseCpos,
+              synCpos: newD.synCpos,
               nu: newD.nu,
               incomingAngle: newD.incomingAngle,
               arc: {
