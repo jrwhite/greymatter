@@ -29,7 +29,7 @@ export const defaultEllipseGeo: EllipseGeo = {
   ecc: 5 / 3
 }
 
-export class NeuronBody extends React.PureComponent<IProps> {
+export class NeuronBody extends React.Component<IProps> {
   props: IProps
 
   shouldComponentUpdate (nextProps: IProps) {
