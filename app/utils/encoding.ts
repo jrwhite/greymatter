@@ -51,8 +51,6 @@ export function makeEncodingFromCtrlPoints (
       }
     )
     if (!lower || !upper) return () => 0
-    console.log(lower)
-    console.log(upper)
     const scale = d3
       .scaleLinear()
       .domain([lower.pos.x, upper.pos.x])

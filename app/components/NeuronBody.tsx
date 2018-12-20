@@ -31,12 +31,6 @@ export const defaultEllipseGeo: EllipseGeo = {
 export class NeuronBody extends React.PureComponent<IProps> {
   props: IProps
 
-  componentDidUpdate (prev: IProps, current: IProps, blah: IProps) {
-    console.log(prev)
-    console.log(current)
-    console.log(blah)
-  }
-
   shouldComponentUpdate (nextProps: IProps) {
     return !(this.props.bodyArcs === nextProps.bodyArcs)
   }
