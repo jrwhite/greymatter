@@ -9,7 +9,6 @@ export interface MoveTestCtrlPointAction {
   id: string
   index: number
   newPos: Point
-  data: number[]
 }
 export const moveTestCtrlPoint = actionCreator<MoveTestCtrlPointAction>(
   'MOVE_TEST_CTRL_POINT'
