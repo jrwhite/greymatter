@@ -1,6 +1,6 @@
 import { ControlPointState } from '../reducers/encodings'
 import { actionCreator, actionCreatorVoid } from './helpers'
-import { TestInput } from '../reducers/environment'
+import { TestInput } from '../reducers/testInputs'
 import { Point } from '../utils/geometry'
 
 export const addTestInput = actionCreator<TestInput>('ADD_TEST_INPUT')

@@ -10,11 +10,17 @@ export enum EncodedSourceEnum {
   GymAction = 'Gym Action'
 }
 
+export enum InterpolationEnum {
+  Linear = 'Linear',
+  Delta = 'Delta'
+}
+
 export type EncodingFunction = (input: number) => number
 
 export interface ControlPointState {
   pos: Point
   index: number
+  interpolate?: InterpolationEnum
 }
 
 export interface EncodedSourceState {
