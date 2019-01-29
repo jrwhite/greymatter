@@ -4,7 +4,7 @@ import { connect, Dispatch } from 'react-redux'
 import * as Actions from '../actions/neurons'
 import { bindActionCreators } from 'redux'
 import { IProps, Neuron } from '../components/Neuron'
-import NetworkActions from '../actions/network'
+import NetworkActions, { mapAllDispatchToProps } from '../actions/network'
 
 export interface IIProps {
   id: string
@@ -22,5 +22,5 @@ const mapDispatchToProps = (dispatch: Dispatch<IState>): Partial<IProps> => {
 
 export default (connect(
   makeMapStateToProps(),
-  mapDispatchToProps
+  (dispatch) => mapAllDispatchToProps<Partial<IProps>>(dispatch)
 )(Neuron) as any) as React.StatelessComponent<IIProps>

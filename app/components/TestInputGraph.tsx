@@ -4,17 +4,16 @@ import { Curve, Point } from '../utils/geometry'
 import * as _ from 'lodash'
 import { ControlPoint } from './ControlPoint'
 import { MoveTestCtrlPointAction } from '../actions/testInputs'
+import { IIProps } from '../containers/TestInputGraph'
 
 const d3 = require('d3')
 
-export interface IProps {
+export interface IProps extends IIProps {
   moveTestCtrlPoint: (payload: MoveTestCtrlPointAction) => void
   width: number
   height: number
   rangeY: { start: number; stop: number }
-  steps: number
-  startStep: number
-  maxSteps: number
+  rangeX: { start: number; stop: number }
   id: string
   controlPoints: ControlPointState[]
 }
@@ -23,16 +22,16 @@ export class TestInputGraph extends React.Component<IProps> {
   props: IProps
 
   render () {
-    const { startStep, maxSteps, width, height } = this.props
+    const { width, height } = this.props
 
-    return <g />
+    return <g>{this.renderLines()}</g>
   }
 
   makeScaleX () {
-    const { startStep, maxSteps, width } = this.props
+    const { rangeX, width } = this.props
     const scale = d3
       .scaleLinear()
-      .domain([startStep, maxSteps])
+      .domain([rangeX.start, rangeX.stop])
       .range([0, width])
     return scale
   }
@@ -73,14 +72,12 @@ export class TestInputGraph extends React.Component<IProps> {
       id,
       controlPoints,
       moveTestCtrlPoint,
-      startStep,
-      maxSteps,
+      rangeX,
       rangeY,
       height,
       width
     } = this.props
 
-    const rangeX = { start: startStep, stop: maxSteps }
     const invScaleX = d3
       .scaleLinear()
       .domain([0, width])

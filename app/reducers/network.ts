@@ -9,6 +9,7 @@ import synapses, { SynapseState } from './synapses'
 import encodings, { EncodedSourceState } from './encodings'
 import observables, { ObservableState } from './observables'
 import volume, { VolumeState } from './volume'
+import testInputs, { TestState } from './testInputs'
 
 export interface ActionPotentialState {
   id: string
@@ -26,6 +27,7 @@ export interface NetworkState {
   encodings: EncodedSourceState[]
   observables: ObservableState[]
   volume: VolumeState
+  testInputs: TestState
 }
 
 const network = combineReducers({
@@ -37,7 +39,8 @@ const network = combineReducers({
   gym,
   encodings,
   observables,
-  volume
+  volume,
+  testInputs
 })
 
 export default network
