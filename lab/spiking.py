@@ -21,7 +21,7 @@ with tf.name_scope('neurons'):
 
 
 with tf.name_scope('synapses'):
-    n_s = tf.constant(20, name='n_s', dtype=tf.int32)
+    n_s = tf.constant(100, name='n_s', dtype=tf.int32)
     prepost = tf.Variable(tf.random_uniform(
         [tf.cast(n_s, tf.int64), 2], 0, tf.cast(n, tf.int64), dtype=tf.int64), dtype=tf.int64)
     s = tf.SparseTensor(prepost, tf.fill([n_s], 1), dense_shape=[
@@ -29,11 +29,13 @@ with tf.name_scope('synapses'):
     w = tf.constant(30.0)
 
 with tf.name_scope('input'):
-    i_in = tf.constant([0, 0, 10, 0, 1, 0, 0, 0, 0, 0],
-                       dtype=tf.float32, name="input_current")
+    rand_n = tf.Variable(tf.random_uniform([n], 0, 2, dtype=tf.int32))
+    rand_i = tf.Variable(tf.random_uniform([n], 0, 10.0, dtype=tf.float32))
+    i_in = tf.Variable(tf.cast(rand_n, tf.float32) * rand_i)
     i_op = tf.assign(v, v + i_in)
 
 with tf.name_scope('fire'):
+    fire_log = tf.Variable(tf.zeros([n], dtype=tf.int32), dtype=tf.int32)
     firing_op = s * tf.cast(tf.greater(v, 30.0), tf.int32)
     potentiate_op = tf.assign(v, tf.add(
         v,
@@ -44,6 +46,7 @@ with tf.name_scope('fire'):
         )
     )
     print(potentiate_op)
+    log_firing_op = tf.assign(fire_log, tf.where(tf.greater(v, 30.0), tf.fill([n], 1), tf.zeros([n], dtype=tf.int32)))
     hyperpolarize_op = tf.assign(
         v, tf.where(tf.greater(v, 30.0), tf.fill([n], resting_v), v))
 
@@ -60,6 +63,7 @@ T = 1000
 t_step = 1
 t = 0
 v_out = []
+fire_out = []
 feed = {}
 
 with tf.Session() as sess:
@@ -67,8 +71,18 @@ with tf.Session() as sess:
     sess.run(init)
     for step in range(int(T / t_step)):
         t += t_step
-        sess.run([u_op, v_op, i_op, potentiate_op, hyperpolarize_op], feed)
+        sess.run([
+            u_op,
+            v_op,
+            i_op,
+            potentiate_op,
+            log_firing_op,
+            hyperpolarize_op
+            ], feed
+         )
         v_out.append((t, v.eval()))
+        fire_out.append((t, fire_log.eval()))
+
 
 writer.close()
 
